@@ -38,6 +38,7 @@ void Gui::entities(Scene &scene, Config &c) {
         ImGui::EndTable();
         
         ImGui::Checkbox("Display collision boxes", &c.render_collision_boxes);
+        ImGui::Checkbox("Use shaders", &c.use_shaders);
     }
     
     ImGui::End();

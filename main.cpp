@@ -30,6 +30,7 @@ int main(int argc, const char * argv[]) {
     Config config = {
         .name = "lume",
         .version = "0.0.6",
+        .use_shaders = false,
         .render_collision_boxes = false
     };
     

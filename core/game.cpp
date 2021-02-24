@@ -62,7 +62,7 @@ bool Game::update(Scene &scene) {
     Gui::prerender(scene, *config);
 #endif
     
-    Graphics::clear();
+    Graphics::clear(*config);
     
     Graphics::render(scene, *config);
     
@@ -70,7 +70,7 @@ bool Game::update(Scene &scene) {
     Gui::render();
 #endif
     
-    Graphics::display();
+    Graphics::display(*config);
     
     //Prevent the game from rendering faster than the refresh speed
     ui32 frameTicks = (ui32)(time() - Time::current);

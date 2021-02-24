@@ -2,8 +2,6 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include <SDL2/SDL.h>
-
 #include "time.h"
 
 using namespace Verse;

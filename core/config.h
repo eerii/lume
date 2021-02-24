@@ -12,6 +12,7 @@ namespace Verse
         str name;
         str version;
         
+        bool use_shaders;
         bool render_collision_boxes;
     };
 }

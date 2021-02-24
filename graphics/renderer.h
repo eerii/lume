@@ -14,6 +14,7 @@
 #include "ecs.h"
 #include "config.h"
 
+
 #define RENDER_SCALE 4
 
 namespace Verse
@@ -22,12 +23,16 @@ namespace Verse
     {
         static SDL_Window *window;
         static SDL_Renderer *renderer;
+        static SDL_Texture *render_target;
     
         void init();
     
-        void clear();
+        void clear(Config &c);
         void render(Scene &scene, Config &c);
-        void display();
+        void display(Config &c);
+    
+        void presentBackBuffer(SDL_Renderer *renderer, SDL_Window* win, SDL_Texture* backBuffer, ui32 pid);
+        static ui32 programId;
     
         void calculateRefreshRate();
         static int refreshRate = 60;
