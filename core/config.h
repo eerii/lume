@@ -4,9 +4,14 @@
 
 #pragma once
 
+#include "dtypes.h"
+
 namespace Verse
 {
     struct Config {
+        str name;
+        str version;
+        
         bool render_collision_boxes;
     };
 }
