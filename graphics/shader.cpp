@@ -7,9 +7,6 @@
 using namespace Verse;
 
 #ifndef __APPLE__
-
-// I'm avoiding the use of GLEW or some extensions handler, but that
-// doesn't mean you should...
 PFNGLCREATESHADERPROC glCreateShader;
 PFNGLSHADERSOURCEPROC glShaderSource;
 PFNGLCOMPILESHADERPROC glCompileShader;
@@ -44,83 +41,83 @@ bool Graphics::Shader::initGLExtensions() {
         glLinkProgram && glValidateProgram && glGetProgramiv && glGetProgramInfoLog &&
         glUseProgram;
 }
-
 #endif
 
-GLuint Graphics::Shader::compileShader(const char* source, GLuint shaderType) {
-    log::info("Compiling Shader...");
-    //std::cout << "Compilando shader:" << std::endl << source << std::endl;
-    // Create ID for shader
-    GLuint result = glCreateShader(shaderType);
-    // Define shader text
-    glShaderSource(result, 1, &source, NULL);
-    // Compile shader
-    glCompileShader(result);
+ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
+    //log::info("Compiling Shader...");
+    
+    //CREATE SHADER FROM SOURCE
+    ui8 id = glCreateShader(shaderType);
+    glShaderSource(id, 1, &source, NULL);
+    //COMPILE SHADER
+    glCompileShader(id);
 
-    //Check vertex shader for errors
-    GLint shaderCompiled = GL_FALSE;
-    glGetShaderiv( result, GL_COMPILE_STATUS, &shaderCompiled );
-    if( shaderCompiled != GL_TRUE ) {
-        std::cout << "Error en la compilación: " << result << "!" << std::endl;
-        GLint logLength;
-        glGetShaderiv(result, GL_INFO_LOG_LENGTH, &logLength);
-        if (logLength > 0)
-        {
-            GLchar *log = (GLchar*)malloc(logLength);
-            glGetShaderInfoLog(result, logLength, &logLength, log);
-            std::cout << "Shader compile log:" << log << std::endl;
+    //ERROR HANDLING
+    int shaderCompiled = GL_FALSE;
+    glGetShaderiv(id, GL_COMPILE_STATUS, &shaderCompiled);
+    if(shaderCompiled != GL_TRUE) {
+        log::error("Shader Compilation Error, ID: %d", id);
+        int logLen;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLen);
+        if (logLen > 0) {
+            char *log = (char*)malloc(logLen);
+            glGetShaderInfoLog(id, logLen, &logLen, log);
+            
+            log::error("Shader compile log: %s", log);
             free(log);
         }
-        glDeleteShader(result);
-        result = 0;
+        glDeleteShader(id);
+        id = 0;
     } else {
-        log::info("Shader Compiled Correctly, ID: %d", result);
-        //std::cout << "Shader compilado correctamente. Id = " << result << std::endl;
+        log::info("Shader Compiled Correctly, ID: %d", id);
     }
-    return result;
+    
+    return id;
 }
 
-GLuint Graphics::Shader::compileProgram(str vtxFile, str fragFile) {
-    log::info("Compiling Program...");
+ui8 Graphics::Shader::compileProgram(str vertexFile, str fragmentFile) {
+    //log::info("Compiling Program...");
     
-    GLuint programId = 0;
-    GLuint vtxShaderId, fragShaderId;
+    ui8 program = 0;
+    ui8 vertexShader, fragmentShader;
 
-    programId = glCreateProgram();
+    program = glCreateProgram();
 
-    std::ifstream f(vtxFile.c_str());
+    //COMPILE VERTEX SHADER
+    std::ifstream f(vertexFile.c_str());
     std::string source((std::istreambuf_iterator<char>(f)),
                         std::istreambuf_iterator<char>());
-    vtxShaderId = compileShader(source.c_str(), GL_VERTEX_SHADER);
+    vertexShader = compileShader(source.c_str(), GL_VERTEX_SHADER);
     
-    f=std::ifstream(fragFile.c_str());
+    //COMPILE FRAGMENT SHADER
+    f=std::ifstream(fragmentFile.c_str());
     source=std::string((std::istreambuf_iterator<char>(f)),
                         std::istreambuf_iterator<char>());
-    fragShaderId = compileShader(source.c_str(), GL_FRAGMENT_SHADER);
+    fragmentShader = compileShader(source.c_str(), GL_FRAGMENT_SHADER);
 
-    if(vtxShaderId && fragShaderId) {
-        // Associate shader with program
-        glAttachShader(programId, vtxShaderId);
-        glAttachShader(programId, fragShaderId);
-        glLinkProgram(programId);
-        glValidateProgram(programId);
+    //ATTACH TO PROGRAM
+    if(vertexShader && fragmentShader) {
+        glAttachShader(program, vertexShader);
+        glAttachShader(program, fragmentShader);
+        glLinkProgram(program);
+        glValidateProgram(program);
 
-        // Check the status of the compile/link
-        GLint logLen;
-        glGetProgramiv(programId, GL_INFO_LOG_LENGTH, &logLen);
+        int logLen;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLen);
         if(logLen > 0) {
-            char* log = (char*) malloc(logLen * sizeof(char));
-            // Show any errors as appropriate
-            glGetProgramInfoLog(programId, logLen, &logLen, log);
-            std::cout << "Prog Info Log: " << std::endl << log << std::endl;
+            char* log = (char*)malloc(logLen * sizeof(char));
+            glGetProgramInfoLog(program, logLen, &logLen, log);
+            
+            log::error("Program compile log: %s", log);
             free(log);
         }
     }
-    if(vtxShaderId) {
-        glDeleteShader(vtxShaderId);
-    }
-    if(fragShaderId) {
-        glDeleteShader(fragShaderId);
-    }
-    return programId;
+    
+    //COULD DELETE THE SHADERS
+    /*if(vertexShader)
+        glDeleteShader(vertexShader);
+    if(fragmentShader)
+        glDeleteShader(fragmentShader);*/
+    
+    return program;
 }

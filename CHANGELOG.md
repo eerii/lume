@@ -8,7 +8,9 @@
 - [x]  Texture Loading
     - [x]  Offset
     - [x]  Load Surface, then Texture
-- [x]  Preliminary Shader Support
+- [x]  Shader Support
+- [x]  Multi Textured GL Shader Renderer
+- [x]  PALETTE SHADER
 - [x]  (Other) Create Versioning
 - [x]  (Other) Move to Lume
 #### Changed

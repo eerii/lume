@@ -13,6 +13,9 @@ namespace Verse
         str version;
         
         bool use_shaders;
+        int palette_index;
+        int num_palettes;
+        
         bool render_collision_boxes;
     };
 }

@@ -23,6 +23,9 @@ using namespace Graphics;
 
 void Graphics::init() {
     
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    //Can't use modern opengl with sdl renderer, might change to custom renderer in the future
+    
     //CREATE A WINDOW
     window = SDL_CreateWindow(W_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W_WIDTH, W_HEIGHT, W_FLAGS);
     if (window == nullptr) {
@@ -69,15 +72,13 @@ void Graphics::init() {
         if(!strncmp(rendererInfo.name, "opengl", 6)) {
             log::info("Using OpenGL");
     #ifndef __APPLE__
-            // If you want to use GLEW or some other GL extension handler, do it here!
             if (!initGLExtensions()) {
-                std::cout << "Couldn't init GL extensions!" << std::endl;
+                log::error("Couldn't init GL extensions!");
                 SDL_Quit();
                 exit(-1);
             }
     #endif
-            // Compile the shader
-            programId = Graphics::Shader::compileProgram("res/shaders/std.vertex", "res/shaders/crt.fragment");
+            programId = Graphics::Shader::compileProgram("res/shaders/palette.vertex", "res/shaders/palette.frag");
             log::info("Program ID: %d", programId);
         }
     
@@ -87,6 +88,9 @@ void Graphics::init() {
     //IMGUI
     ImGui::CreateContext();
     ImGuiSDL::Initialize(renderer, 1280, 720);
+    
+    //PALETTE
+    palette_tex = loadTexture("res/graphics/palette_multi.png");
 }
 
 void Graphics::clear(Config &c) {
@@ -108,7 +112,7 @@ void Graphics::render(Scene &scene, Config &c) {
 
 void Graphics::display(Config &c) {
     if (c.use_shaders)
-        presentBackBuffer(renderer, window, render_target, programId);
+        presentWithShaders(c);
     else
         SDL_RenderPresent(renderer);
 }
@@ -138,24 +142,33 @@ SDL_Texture* Graphics::loadTexture(std::string path) {
     return tex;
 }
 
-void Graphics::presentBackBuffer(SDL_Renderer *renderer, SDL_Window* win, SDL_Texture* backBuffer, ui32 pid) {
-    GLuint programId = pid;
-    GLint oldProgramId = 0;
-    //Obtain textureid (in driverdata->texture)
-    //Detach the texture
+void Graphics::presentWithShaders(Config &c) {
+    int oldProgramId = 0;
     SDL_SetRenderTarget(renderer, NULL);
     SDL_RenderClear(renderer);
-
-    SDL_GL_BindTexture(backBuffer, NULL, NULL);
+    
     if(programId != 0) {
         glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgramId);
         glUseProgram(programId);
     }
+    
+    //GENERATE AND BIND TEXTURES
+    glGenTextures(2, textures);
+    
+    glActiveTexture(GL_TEXTURE0);
+    SDL_GL_BindTexture(render_target, NULL, NULL);
+    glUniform1i(glGetUniformLocation(programId, "tex"), 0);
+    
+    glActiveTexture(GL_TEXTURE1);
+    SDL_GL_BindTexture(palette_tex, NULL, NULL);
+    glUniform1i(glGetUniformLocation(programId, "palette"), 1);
+    
+    glUniform1f(glGetUniformLocation(programId, "palette_index"), ((float)c.palette_index / (float)c.num_palettes) + 0.001);
 
-    GLfloat minx, miny, maxx, maxy;
-    GLfloat minu, maxu, minv, maxv;
+    //COORDINATES FOR DRAWING
+    float minx, miny, maxx, maxy;
+    float minu, maxu, minv, maxv;
 
-    // Coordenadas de la ventana donde pintar.
     minx = 0.0f;
     miny = 0.0f;
     maxx = W_WIDTH;
@@ -165,7 +178,7 @@ void Graphics::presentBackBuffer(SDL_Renderer *renderer, SDL_Window* win, SDL_Te
     maxu = 1.0f;
     minv = 1.0f;
     maxv = 0.0f;
-
+    
     glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(minu, minv);
         glVertex2f(minx, miny);
@@ -176,7 +189,8 @@ void Graphics::presentBackBuffer(SDL_Renderer *renderer, SDL_Window* win, SDL_Te
         glTexCoord2f(maxu, maxv);
         glVertex2f(maxx, maxy);
     glEnd();
-    SDL_GL_SwapWindow(win);
+    
+    SDL_GL_SwapWindow(window);
 
     if(programId != 0) {
         //TODO: Check this

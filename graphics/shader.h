@@ -1,8 +1,11 @@
 //project verse, 2017-2021
 //by jose pazos perez
 //all rights reserved uwu
-//this specific code is based on https://github.com/AugustoRuiz/sdl2glsl under the MIT License
-//thank you so so much to augusto ruiz for the help with this part c:
+
+//thank you so much to
+//- augusto ruiz (https://github.com/AugustoRuiz/sdl2glsl)
+//- the cherno (https://youtu.be/71BLZwRGUJE)
+//for the help with this part c:
 
 #pragma once
 
@@ -37,6 +40,6 @@
 namespace Verse::Graphics::Shader
 {
     bool initGLExtensions();
-    GLuint compileShader(const char* source, GLuint shaderType);
-    GLuint compileProgram(str vtxFile, str fragFile);
+    ui8 compileShader(const char* source, ui32 shaderType);
+    ui8 compileProgram(str vertexFile, str fragmentFile);
 }
