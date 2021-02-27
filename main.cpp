@@ -60,9 +60,6 @@ int main(int argc, const char * argv[]) {
     actor->max_fall_speed = 250;
     actor->acc_ground = 1000;
     actor->friction_ground = 0.25;
-    actor->jump_impulse = 300;
-    actor->jump_grace = 150;
-    actor->jump_coyote = 100;
     
     EntityID test2 = scene.createEntity("Ground");
     

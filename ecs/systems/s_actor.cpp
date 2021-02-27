@@ -8,8 +8,8 @@
 
 using namespace Verse;
 
-void System::Actor::init() {
-    gravity = 800;
+namespace {
+    float gravity = 800;
 }
 
 void System::Actor::update(Scene &scene) {
@@ -26,7 +26,7 @@ void System::Actor::move(Scene &scene, EntityID eid) {
     actor->controller();
 
     //Gravity
-    if (actor->hasGravity && !actor->isOnGround) {
+    if (actor->has_gravity && !actor->is_on_ground) {
         actor->vel.y += gravity * DELTA;
     }
     
@@ -59,7 +59,7 @@ void System::Actor::move(Scene &scene, EntityID eid) {
                     collider->transform.pos += Vec2::j;
                     bool isColliding = System::Collider::checkCollisions(eid, scene);
                     if (!isColliding)
-                        actor->isOnGround = false;
+                        actor->is_on_ground = false;
                     collider->transform.pos -= Vec2::j;
                 }
             }
@@ -78,11 +78,11 @@ void System::Actor::move(Scene &scene, EntityID eid) {
                 actor->remainder.y = 0;
                 actor->vel.y = 0;
                 
-                actor->isOnGround = true;
+                actor->is_on_ground = true;
             } else {
                 to_move.y -= sy;
                 
-                actor->isOnGround = false;
+                actor->is_on_ground = false;
             }
         }
         

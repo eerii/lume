@@ -15,16 +15,12 @@ namespace Verse::Component
         
         int max_move_speed;
         int max_fall_speed;
-        int jump_impulse;
         
         int acc_ground;
         float friction_ground;
         
-        bool hasGravity = true;
-        bool isOnGround = false;
-        
-        int jump_grace;
-        int jump_coyote;
+        bool has_gravity = true;
+        bool is_on_ground = false;
         
         std::function<bool()> controller;
     };

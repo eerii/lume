@@ -14,6 +14,6 @@ namespace Verse::Component
         SDL_Texture* tex;
         Rect transform;
         Vec2 offset = Vec2(0,0);
-        std::vector<std::vector<SDL_Rect>> animation;
+        //std::vector<std::vector<SDL_Rect>> animation;
     };
 }

@@ -12,7 +12,7 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(EntityID eid, Scen
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
     SDL_Rect rect = collider->transform.toSDL();
     
-    collider->isColliding = false;
+    collider->is_colliding = false;
     
     std::vector<EntityID> collisions;
     
@@ -23,13 +23,13 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(EntityID eid, Scen
         Component::Collider* test_collider = scene.getComponent<Component::Collider>(e);
         SDL_Rect test_rect = test_collider->transform.toSDL();
         
-        test_collider->isColliding = false;
+        test_collider->is_colliding = false;
         
         if(SDL_HasIntersection(&rect, &test_rect)) {
             collisions.push_back(e);
             
-            collider->isColliding = true;
-            test_collider->isColliding = true;
+            collider->is_colliding = true;
+            test_collider->is_colliding = true;
         }
     }
     
@@ -37,7 +37,7 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(EntityID eid, Scen
 }
 
 bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Component::Collider* tile_col, Component::Tilemap* tilemap) {
-    bool isCollidingWithTile = false;
+    bool is_colliding_with_tile = false;
     
     Vec2 rel_pos = test_col->transform.pos - tile_col->transform.pos;
     Vec2 upleft = Vec2(floor(rel_pos.x / tilemap->tex_size.x), floor(rel_pos.y / tilemap->tex_size.y));
@@ -51,15 +51,15 @@ bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Comp
             if (j < 0 or j >= tilemap->tiles.size())
                 continue;
             if (tilemap->tiles[j][i] != 0)
-                isCollidingWithTile = true;
+                is_colliding_with_tile = true;
         }
     }
     
-    return isCollidingWithTile;
+    return is_colliding_with_tile;
 }
 
 bool System::Collider::checkCollisions(EntityID eid, Scene &scene) {
-    bool isColliding = false;
+    bool is_colliding = false;
     
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
     std::vector<EntityID> collisions = System::Collider::checkObjectCollisions(eid, scene);
@@ -72,16 +72,16 @@ bool System::Collider::checkCollisions(EntityID eid, Scene &scene) {
             if (c_tile != nullptr) {
                 bool isCollidingWithTile = System::Collider::checkTilemapCollision(collider, c_col, c_tile);
                 if (isCollidingWithTile)
-                    isColliding = true;
+                    is_colliding = true;
                 else
-                    collider->isColliding = false;
+                    collider->is_colliding = false;
             } else {
-                isColliding = true;
+                is_colliding = true;
             }
         }
     }
     
-    return isColliding;
+    return is_colliding;
 }
 
 
@@ -90,7 +90,7 @@ void System::Collider::render(Scene &scene, SDL_Renderer* renderer) {
         Component::Collider* collider = scene.getComponent<Component::Collider>(e);
         SDL_Rect rect = Rect(collider->transform.pos * RENDER_SCALE, collider->transform.size * RENDER_SCALE).toSDL();
         
-        if (collider->isColliding) {
+        if (collider->is_colliding) {
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
         } else {
             SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);

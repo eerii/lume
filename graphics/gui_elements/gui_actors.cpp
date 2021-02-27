@@ -42,7 +42,7 @@ void Gui::actors(Scene &scene) {
                         scene.getComponent<Component::Actor>(ent)->vel.y);
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", scene.getComponent<Component::Actor>(ent)->isOnGround ? "true" : "false");
+            ImGui::Text("%s", scene.getComponent<Component::Actor>(ent)->is_on_ground ? "true" : "false");
         }
         ImGui::EndTable();
     }

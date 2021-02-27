@@ -11,9 +11,6 @@
 
 namespace Verse::System::Actor
 {
-    void init();
     void update(Scene &scene);
     void move(Scene &scene, EntityID eid);
-
-    static float gravity;
 }

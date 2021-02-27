@@ -75,7 +75,7 @@ ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
     return id;
 }
 
-ui8 Graphics::Shader::compileProgram(str vertexFile, str fragmentFile) {
+ui8 Graphics::Shader::compileProgram(str vertex_file, str fragment_file) {
     //log::graphics("Compiling Program...");
     
     ui8 pid = 0;
@@ -84,13 +84,13 @@ ui8 Graphics::Shader::compileProgram(str vertexFile, str fragmentFile) {
     pid = glCreateProgram();
 
     //COMPILE VERTEX SHADER
-    std::ifstream f(vertexFile.c_str());
+    std::ifstream f(vertex_file.c_str());
     std::string source((std::istreambuf_iterator<char>(f)),
                         std::istreambuf_iterator<char>());
     vertex_shader = compileShader(source.c_str(), GL_VERTEX_SHADER);
     
     //COMPILE FRAGMENT SHADER
-    f=std::ifstream(fragmentFile.c_str());
+    f=std::ifstream(fragment_file.c_str());
     source=std::string((std::istreambuf_iterator<char>(f)),
                         std::istreambuf_iterator<char>());
     fragment_shader = compileShader(source.c_str(), GL_FRAGMENT_SHADER);

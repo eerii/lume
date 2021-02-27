@@ -20,7 +20,7 @@ namespace
 }
 
 bool Game::init(Config &c) {
-    log::info("Starting the game...");
+    log::debug("Starting the game...");
     
     //CONFIGURATION
     config = &c;
@@ -44,9 +44,6 @@ bool Game::init(Config &c) {
     
     //INITIALIZE GRAPHICS
     Graphics::init();
-    
-    //OTHER INITIALIZATIONS
-    System::Actor::init();
     
     return true;
 }
@@ -107,7 +104,7 @@ void Game::time_frame() {
 }
 
 void Game::stop() {
-    log::info("Closing the game...");
+    log::debug("Closing the game...");
     
     Graphics::destroy();
     SDL_Quit();

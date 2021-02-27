@@ -12,10 +12,14 @@
 using namespace Verse;
 
 namespace {
+    int jump_impulse = 300;
+    int jump_grace = 150;
+    int jump_coyote = 100;
+
     Component::Actor* actor;
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
-    bool previouslyOnGround = false;
+    bool previously_on_ground = false;
 }
 
 bool Controller::Player::controller(Scene &scene, EntityID eid) {
@@ -37,43 +41,39 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
             actor->vel.x = 0;
     }
     
-    
     //JUMP
     if (Input::pressed(Input::Key::Space)) {
         
-        if (actor->isOnGround or previouslyOnGround) {
+        if (actor->is_on_ground or previously_on_ground) {
             jump();
         } else {
             jump_time = Time::current;
         }
     }
-    
     //Coyote Time
-    if (actor->isOnGround)
-        previouslyOnGround = true;
-    if (!actor->isOnGround and previouslyOnGround and coyote_time == 0)
+    if (actor->is_on_ground)
+        previously_on_ground = true;
+    if (!actor->is_on_ground and previously_on_ground and coyote_time == 0)
         coyote_time = Time::current;
     
     if (coyote_time != 0) {
         int diff = (int)(Time::current - coyote_time);
         
-        if (diff > actor->jump_coyote) {
-            previouslyOnGround = false;
+        if (diff > jump_coyote) {
+            previously_on_ground = false;
             coyote_time = 0;
         }
     }
-    
     //Jump Grace
     if (jump_time != 0) {
         int diff = (int)(Time::current - jump_time);
         
-        if (actor->isOnGround)
+        if (actor->is_on_ground)
             jump();
         
-        if (diff > actor->jump_grace)
+        if (diff > jump_grace)
             jump_time = 0;
     }
-    
     
     //RESPAWN
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
@@ -81,14 +81,13 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         collider->transform.pos = Vec2(40, 100); //TODO: Change for a propper spawn
     }
     
-    
     return actor->vel != Vec2(0,0);
 }
 
 void Controller::Player::jump() {
-    actor->vel.y = -actor->jump_impulse;
+    actor->vel.y = -jump_impulse;
     jump_time = 0;
     
-    actor->isOnGround = false;
-    previouslyOnGround = false;
+    actor->is_on_ground = false;
+    previously_on_ground = false;
 }

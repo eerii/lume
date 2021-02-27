@@ -40,6 +40,6 @@
 namespace Verse::Graphics::Shader
 {
     bool initGLExtensions();
-    ui8 compileShader(const char* source, ui32 shaderType);
-    ui8 compileProgram(str vertexFile, str fragmentFile);
+    ui8 compileShader(const char* source, ui32 shader_type);
+    ui8 compileProgram(str vertex_file, str fragment_file);
 }
