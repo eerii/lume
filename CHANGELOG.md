@@ -2,77 +2,82 @@
 
 ## **0.1** ~ Basics
 
-
-### **[0.0.6]** ~ Color _2021-02-22_
-#### Added
-- [x]  Texture Loading
-    - [x]  Offset
-    - [x]  Load Surface, then Texture
-- [x]  Shader Support
-- [x]  Multi Textured GL Shader Renderer
-- [x]  PALETTE SHADER
-- [x]  (Other) Create Versioning
-- [x]  (Other) Move to Lume
+### **[0.0.7]** ~ Screen _2021-02-27_
 #### Changed
-- [x]  Revamped Graphics Renderer
+- Cleaned up rendering code
+
+---
+
+### **[0.0.6]** ~ Color _2021-02-25_
+#### Added
+- Texture Loading
+    - Offset
+    - Load Surface, then Texture
+- Shader Support
+- Multi Textured GL Shader Renderer
+- PALETTE SHADER
+- (Other) Create Versioning
+- (Other) Move to Lume
+#### Changed
+- Revamped Graphics Renderer
 
 ---
 
 ### **[0.0.5]** ~ Actor _2021-02-22_
 #### Added
-- [x]  Free Controller
-- [x]  Player Controller
-    - [x]  Acceleration
-    - [x]  Friction
-- [x]  Jump
-    - [x]  Jump Grace
-    - [x]  Coyote Time
-- [x]  Respawn
-- [x]  Actor List (GUI)
+- Free Controller
+- Player Controller
+    - Acceleration
+    - Friction
+- Jump
+    - Jump Grace
+    - Coyote Time
+- Respawn
+- Actor List (GUI)
 
 ---
 
 ### **[0.0.4]** ~ Collisions _2021-02-21_
 #### Added
-- [x]  Create Basic Components
-    - [x]  Collider
-    - [x]  Texture
-    - [x]  Tilemap
-    - [x]  Actor
-- [x]  Collision System
-- [x]  Tilemap Collision System
-- [x]  Render Collision Boxes
+- Create Basic Components
+    - Collider
+    - Texture
+    - Tilemap
+    - Actor
+- Collision System
+- Tilemap Collision System
+- Render Collision Boxes
 
 ---
 
 ### **[0.0.3]** ~ GUI _2020-12-05_
 #### Added
-- [x]  Add imGUI
-- [x]  SDL + imGUI
-- [x]  Display the GUI
-- [x]  Entity List
+- Add imGUI
+- SDL + imGUI
+- Display the GUI
+- Entity List
 
 ---
 
 ### **[0.0.2]** ~ ECS _2020-12-05_
 #### Added
-- [x]  Entity Basics
-- [x]  Component
-- [x]  Component Pool
-- [x]  Scene
-- [x]  Add, Get, Remove Components
-- [x]  Scene View
+- Entity Basics
+- Component
+- Component Pool
+- Scene
+- Add, Get, Remove Components
+- Scene View
 
 ---
 
 ### **[0.0.1]** ~ Core App _2020-12-04_
 #### Added
-- [x]  Graphic Rendering
-- [x]  Time
-- [x]  Game Loop
-- [x]  Events
-- [x]  Input
-- [x]  Logging
+- Graphic Rendering
+- Time
+- Game Loop
+- Events
+- Input
+- Logging
 
 ---
 

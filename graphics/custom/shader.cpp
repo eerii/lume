@@ -113,11 +113,11 @@ ui8 Graphics::Shader::compileProgram(str vertexFile, str fragmentFile) {
         }
     }
     
-    //COULD DELETE THE SHADERS
-    /*if(vertexShader)
+    //DELETE SHADERS
+    if(vertexShader)
         glDeleteShader(vertexShader);
     if(fragmentShader)
-        glDeleteShader(fragmentShader);*/
+        glDeleteShader(fragmentShader);
     
     return program;
 }

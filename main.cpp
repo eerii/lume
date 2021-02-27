@@ -33,6 +33,7 @@ int main(int argc, const char * argv[]) {
         .use_shaders = true,
         .palette_index = 0,
         .num_palettes = 4,
+        .background_color = {133, 144, 188, 255},
         .render_collision_boxes = false
     };
     

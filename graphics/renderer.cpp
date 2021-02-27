@@ -12,6 +12,7 @@
 #include "s_collider.h"
 
 #include "shader.h"
+#include "render_present.h"
 
 using namespace Verse;
 using namespace Graphics;
@@ -20,6 +21,18 @@ using namespace Graphics;
 #define W_WIDTH 1280
 #define W_HEIGHT 720
 #define W_FLAGS SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+
+namespace {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+
+    int refreshRate = 60;
+
+    SDL_Texture *render_target;
+    SDL_Texture *palette_tex;
+
+    ui8 programId;
+}
 
 void Graphics::init() {
     
@@ -93,11 +106,13 @@ void Graphics::init() {
     palette_tex = loadTexture("res/graphics/palette_multi.png");
 }
 
+
 void Graphics::clear(Config &c) {
     if (c.use_shaders)
         SDL_SetRenderTarget(renderer, render_target);
     SDL_RenderClear(renderer);
 }
+
 
 void Graphics::render(Scene &scene, Config &c) {
     System::Tilemap::render(scene, renderer);
@@ -107,25 +122,44 @@ void Graphics::render(Scene &scene, Config &c) {
         System::Collider::render(scene, renderer);
     
     //Color the window
-    SDL_SetRenderDrawColor(renderer, 133, 144, 188, 255);
+    SDL_SetRenderDrawColor(renderer, c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
 }
+
 
 void Graphics::display(Config &c) {
     if (c.use_shaders)
-        presentWithShaders(c);
+        Graphics::present(c, renderer, window,
+                          render_target, palette_tex,
+                          programId, W_WIDTH, W_HEIGHT); //TODO: CHANGE WIDTH HEIGHT
     else
         SDL_RenderPresent(renderer);
 }
+
+
+void Graphics::destroy() {
+    SDL_DestroyTexture(palette_tex);
+    SDL_DestroyTexture(render_target);
+    
+    SDL_DestroyRenderer(renderer);
+    
+    SDL_DestroyWindow(window);
+}
+
 
 void Graphics::calculateRefreshRate() {
     int displayIndex = SDL_GetWindowDisplayIndex(window);
     
     SDL_DisplayMode mode;
-    
     SDL_GetDisplayMode(displayIndex, 0, &mode);
     
     refreshRate = mode.refresh_rate;
 }
+
+
+int Graphics::getRefreshRate() {
+    return refreshRate;
+}
+
 
 SDL_Texture* Graphics::loadTexture(std::string path) {
     if (renderer == nullptr) {
@@ -140,60 +174,4 @@ SDL_Texture* Graphics::loadTexture(std::string path) {
         log::error("There was an error loading the texture: %s", path.c_str());
     }
     return tex;
-}
-
-void Graphics::presentWithShaders(Config &c) {
-    int oldProgramId = 0;
-    SDL_SetRenderTarget(renderer, NULL);
-    SDL_RenderClear(renderer);
-    
-    if(programId != 0) {
-        glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgramId);
-        glUseProgram(programId);
-    }
-    
-    //GENERATE AND BIND TEXTURES
-    glGenTextures(2, textures);
-    
-    glActiveTexture(GL_TEXTURE0);
-    SDL_GL_BindTexture(render_target, NULL, NULL);
-    glUniform1i(glGetUniformLocation(programId, "tex"), 0);
-    
-    glActiveTexture(GL_TEXTURE1);
-    SDL_GL_BindTexture(palette_tex, NULL, NULL);
-    glUniform1i(glGetUniformLocation(programId, "palette"), 1);
-    
-    glUniform1f(glGetUniformLocation(programId, "palette_index"), ((float)c.palette_index / (float)c.num_palettes) + 0.001);
-
-    //COORDINATES FOR DRAWING
-    float minx, miny, maxx, maxy;
-    float minu, maxu, minv, maxv;
-
-    minx = 0.0f;
-    miny = 0.0f;
-    maxx = W_WIDTH;
-    maxy = W_HEIGHT;
-
-    minu = 0.0f;
-    maxu = 1.0f;
-    minv = 1.0f;
-    maxv = 0.0f;
-    
-    glBegin(GL_TRIANGLE_STRIP);
-        glTexCoord2f(minu, minv);
-        glVertex2f(minx, miny);
-        glTexCoord2f(maxu, minv);
-        glVertex2f(maxx, miny);
-        glTexCoord2f(minu, maxv);
-        glVertex2f(minx, maxy);
-        glTexCoord2f(maxu, maxv);
-        glVertex2f(maxx, maxy);
-    glEnd();
-    
-    SDL_GL_SwapWindow(window);
-
-    if(programId != 0) {
-        //TODO: Check this
-        glUseProgram(oldProgramId);
-    }
 }

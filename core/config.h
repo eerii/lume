@@ -16,6 +16,8 @@ namespace Verse
         int palette_index;
         int num_palettes;
         
+        int background_color[4];
+        
         bool render_collision_boxes;
     };
 }

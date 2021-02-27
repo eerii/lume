@@ -74,8 +74,8 @@ bool Game::update(Scene &scene) {
     
     //Prevent the game from rendering faster than the refresh speed
     ui32 frameTicks = (ui32)(time() - Time::current);
-    if (frameTicks < 1000 / Graphics::refreshRate)
-        SDL_Delay(1000 / Graphics::refreshRate - frameTicks);
+    if (frameTicks < 1000 / Graphics::getRefreshRate())
+        SDL_Delay(1000 / Graphics::getRefreshRate() - frameTicks);
     
     return running;
 }
@@ -90,6 +90,6 @@ void Game::time_frame() {
 void Game::stop() {
     log::info("Closing the game...");
     
-    SDL_DestroyWindow(Graphics::window);
+    Graphics::destroy();
     SDL_Quit();
 }

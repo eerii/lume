@@ -20,23 +20,16 @@ namespace Verse
 {
     namespace Graphics
     {
-        static SDL_Window *window;
-        static SDL_Renderer *renderer;
-        static SDL_Texture *render_target;
-    
         void init();
     
         void clear(Config &c);
         void render(Scene &scene, Config &c);
         void display(Config &c);
-    
-        void presentWithShaders(Config &c);
-        static ui8 programId;
-        static SDL_Texture *palette_tex;
-        static unsigned int textures[2];
+        
+        void destroy();
     
         void calculateRefreshRate();
-        static int refreshRate = 60;
+        int getRefreshRate();
     
         SDL_Texture* loadTexture(std::string path);
     }
