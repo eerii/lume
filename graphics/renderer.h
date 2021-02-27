@@ -20,7 +20,7 @@ namespace Verse
 {
     namespace Graphics
     {
-        void init();
+        void init(Config &c);
     
         void clear(Config &c);
         void render(Scene &scene, Config &c);

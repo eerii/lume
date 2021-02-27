@@ -27,8 +27,8 @@ using namespace Verse;
 int main(int argc, const char * argv[]) {
     
     Config config = {
-        .name = "lume",
-        .version = "0.0.6",
+        .name = "Proxecto Lume",
+        .version = "0.0.7",
         .use_shaders = true,
         .palette_index = 0,
         .num_palettes = 4,
@@ -60,6 +60,7 @@ int main(int argc, const char * argv[]) {
     actor->max_fall_speed = 250;
     actor->acc_ground = 1000;
     actor->friction_ground = 0.25;
+    
     
     EntityID test2 = scene.createEntity("Ground");
     

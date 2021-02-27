@@ -21,7 +21,6 @@
 #ifdef __APPLE__ //MACOS
 #define GL_SILENCE_DEPRECATION
 
-#include "CoreFoundation/CoreFoundation.h"
 #include <OpenGL/OpenGL.h>
 
 #if ESSENTIAL_GL_PRACTICES_SUPPORT_GL3

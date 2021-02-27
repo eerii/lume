@@ -5,6 +5,7 @@
 #include "game.h"
 #include "time.h"
 #include "input.h"
+#include "file.h"
 #include "events.h"
 #include "gui.h"
 #include "s_actor.h"
@@ -25,6 +26,9 @@ bool Game::init(Config &c) {
     //CONFIGURATION
     config = &c;
     
+    //INITIALIZE FILE SYSTEM
+    File::init();
+    
     #if _WIN32
     SetProcessDPIAware();
     #endif
@@ -43,7 +47,7 @@ bool Game::init(Config &c) {
     }
     
     //INITIALIZE GRAPHICS
-    Graphics::init();
+    Graphics::init(*config);
     
     return true;
 }

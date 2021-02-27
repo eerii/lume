@@ -17,7 +17,6 @@
 using namespace Verse;
 using namespace Graphics;
 
-#define W_TITLE "Project Verse"
 #define W_WIDTH 1280
 #define W_HEIGHT 720
 #define W_FLAGS SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
@@ -32,17 +31,17 @@ namespace {
     SDL_Texture *palette_tex;
 
     ui8 pid;
-
-    //int previous_palette;
 }
 
-void Graphics::init() {
+void Graphics::init(Config &c) {
     
     //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     //Can't use modern opengl with sdl renderer, might change to custom renderer in the future
     
     //CREATE A WINDOW
-    window = SDL_CreateWindow(W_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W_WIDTH, W_HEIGHT, W_FLAGS);
+    window = SDL_CreateWindow((c.name + " - Version " + c.version).c_str(),
+                              SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                              W_WIDTH, W_HEIGHT, W_FLAGS);
     if (window == nullptr) {
         log::error("Failed to create a Window", SDL_GetError());
     }
