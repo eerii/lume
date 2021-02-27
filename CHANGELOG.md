@@ -5,10 +5,12 @@
 ### **[0.0.7]** ~ Screen _2021-02-27_
 #### Added
 - Log levels
+- Palette transitions
 #### Changed
 - Cleaned up rendering code
 - Fix variable names
 - Changed "platform" to "events"
+- Window title
 
 ---
 

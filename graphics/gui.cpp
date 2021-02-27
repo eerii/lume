@@ -7,6 +7,7 @@
 
 #include "gui_entities.h"
 #include "gui_actors.h"
+#include "gui_performance.h"
 
 using namespace Verse;
 
@@ -21,11 +22,12 @@ void Gui::update(float delta) {
     imgui_io.MouseWheel = static_cast<float>(Input::mouseWheel());
 }
 
-void Gui::prerender(Scene &scene, Config &c) {
+void Gui::prerender(Scene &scene, Config &c, ui16 &fps) {
     ImGui::NewFrame();
     
     Gui::entities(scene, c);
     Gui::actors(scene);
+    Gui::performance(fps);
     
     //ImGui::ShowDemoWindow();
 }

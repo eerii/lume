@@ -18,6 +18,6 @@
 namespace Verse::Gui
 {
     void update(float delta);
-    void prerender(Scene &scene, Config &c);
+    void prerender(Scene &scene, Config &c, ui16 &fps);
     void render();
 }

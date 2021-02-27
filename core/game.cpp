@@ -18,6 +18,7 @@ namespace
 {
     Config* config;
     ui32 accumulator;
+    ui16 fps;
 }
 
 bool Game::init(Config &c) {
@@ -79,7 +80,7 @@ bool Game::update(Scene &scene) {
     
     //Render Update
 #ifdef ENABLE_GUI
-    Gui::prerender(scene, *config);
+    Gui::prerender(scene, *config, fps);
 #endif
     
     Graphics::clear(*config);
@@ -93,9 +94,14 @@ bool Game::update(Scene &scene) {
     Graphics::display(*config);
     
     //Prevent the game from rendering faster than the refresh speed
-    ui32 frameTicks = (ui32)(time() - Time::current);
-    if (frameTicks < 1000 / Graphics::getRefreshRate())
-        SDL_Delay(1000 / Graphics::getRefreshRate() - frameTicks);
+    ui16 frame_ticks = (ui16)(time() - Time::current);
+    if (frame_ticks < 1000.0 / (float)Graphics::getRefreshRate()) {
+        SDL_Delay((1000.0 / (float)Graphics::getRefreshRate()) - frame_ticks);
+        fps = Graphics::getRefreshRate();
+    } else {
+        fps = round(1000.0 / (float)(time() - Time::current));
+        log::error("dropped frame");
+    }
     
     return running;
 }
