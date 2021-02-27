@@ -5,7 +5,7 @@
 #include "game.h"
 #include "time.h"
 #include "input.h"
-#include "platform.h"
+#include "events.h"
 #include "gui.h"
 #include "s_actor.h"
 
@@ -22,14 +22,33 @@ namespace
 bool Game::init(Config &c) {
     log::info("Starting the game...");
     
+    //CONFIGURATION
     config = &c;
     
-    bool running = Platform::init();
+    #if _WIN32
+    SetProcessDPIAware();
+    #endif
+
+    //INITIALIZE SDL
+    SDL_version version;
+    SDL_GetVersion(&version);
+    log::debug("SDL v%d.%d.%d", version.major, version.minor, version.patch);
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0) {
+        log::error("SDL_Init has failed!!", SDL_GetError());
+        return false;
+    }
+    if (!(IMG_Init(IMG_INIT_PNG))) {
+        log::error("IMG_Init has failed!!", SDL_GetError());
+        return false;
+    }
+    
+    //INITIALIZE GRAPHICS
     Graphics::init();
     
+    //OTHER INITIALIZATIONS
     System::Actor::init();
     
-    return running;
+    return true;
 }
 
 bool Game::update(Scene &scene) {
@@ -41,7 +60,7 @@ bool Game::update(Scene &scene) {
         accumulator -= TIMESTEP;
         
         //Event Update
-        running &= Platform::handle_events(&Platform::event);
+        running &= Events::handleEvents();
         
         //Gui Update
 #ifdef ENABLE_GUI

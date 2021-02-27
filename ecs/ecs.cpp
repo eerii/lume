@@ -5,7 +5,7 @@
 #include "ecs.h"
 
 #define SHOW_DEBUG_LOG false
-#define logComponentID(x) log::debug(SHOW_DEBUG_LOG, "%s ID: %d", #x, Component::getID<Component::x>())
+#define logComponentID(x) log::debug("%s ID: %d", #x, Component::getID<Component::x>())
 
 using namespace Verse;
 

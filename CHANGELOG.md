@@ -8,6 +8,7 @@
 #### Changed
 - Cleaned up rendering code
 - Fix variable names
+- Changed "platform" to "events"
 
 ---
 

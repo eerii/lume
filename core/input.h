@@ -2,6 +2,8 @@
 //by jose pazos perez
 //all rights reserved uwu
 
+//thanks to noelfb and his engine (blah)[https://github.com/NoelFB/blah] for the help with his part
+
 #pragma once
 
 #include <SDL2/SDL.h>
@@ -274,25 +276,25 @@ namespace Verse
         void frame();
 
         // Call this when the Mouse moves relative to the window
-        void on_mouse_move(float x, float y);
+        void onMouseMove(float x, float y);
 
         // Call this when the Mouse moves relative to the screen
-        void on_mouse_screen_move(float x, float y);
+        void onMouseScreenMove(float x, float y);
 
         // Call this when a Mouse Button is pressed
-        void on_mouse_down(ui8 button);
+        void onMouseDown(ui8 button);
 
         // Call this when a Mouse Button is released
-        void on_mouse_up(ui8 button);
+        void onMouseUp(ui8 button);
     
         // Call this when the Mouse Wheel is changed
-        void on_mouse_wheel(int p);
+        void onMouseWheel(int p);
 
         // Call this when a keyboard key is pressed
-        void on_key_down(Input::Key key);
+        void onKeyDown(Input::Key key);
 
         // Call this when a keyboard key is released
-        void on_key_up(Input::Key key);
+        void onKeyUp(Input::Key key);
 
 
         //Functions
@@ -303,17 +305,17 @@ namespace Verse
 
         // Returns the Input State of the previous frame.
         // This pointer is only valid for the current frame and should not be stored.
-        const InputState* last_state();
+        const InputState* lastState();
 
 
         // Gets the Mouse Position
         Vec2 mouse();
 
         // Gets the Mouse Position in Screen Coordinates
-        Vec2 mouse_screen();
+        Vec2 mouseScreen();
     
         //Gets the Mouse Wheel
-        int mouse_wheel();
+        int mouseWheel();
 
 
         // Checks if the given Mouse Button is pressed
@@ -347,7 +349,7 @@ namespace Verse
 
 
         // Returns a string name of the given key
-        const char* name_of(Key key);
+        const char* nameOf(Key key);
 
     }
 }

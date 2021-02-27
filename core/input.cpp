@@ -40,18 +40,18 @@ void Input::frame() {
 }
 
 
-void Input::on_mouse_move(float x, float y) {
+void Input::onMouseMove(float x, float y) {
     g_next_state.mouse.position.x = x;
     g_next_state.mouse.position.y = y;
 }
 
-void Input::on_mouse_screen_move(float x, float y)
+void Input::onMouseScreenMove(float x, float y)
 {
     g_next_state.mouse.screen_position.x = x;
     g_next_state.mouse.screen_position.y = y;
 }
 
-void Input::on_mouse_down(ui8 button)
+void Input::onMouseDown(ui8 button)
 {
     if (button >= 0 && button < max_mouse_buttons)
     {
@@ -60,7 +60,7 @@ void Input::on_mouse_down(ui8 button)
     }
 }
 
-void Input::on_mouse_up(ui8 button)
+void Input::onMouseUp(ui8 button)
 {
     if (button >= 0 && button < max_mouse_buttons)
     {
@@ -69,13 +69,13 @@ void Input::on_mouse_up(ui8 button)
     }
 }
 
-void Input::on_mouse_wheel(int p)
+void Input::onMouseWheel(int p)
 {
     g_next_state.mouse.wheel = p;
 }
 
 
-void Input::on_key_down(Key key)
+void Input::onKeyDown(Key key)
 {
     int i = (int)key;
     if (i >= 0 && i < max_keyboard_keys)
@@ -85,7 +85,7 @@ void Input::on_key_down(Key key)
     }
 }
 
-void Input::on_key_up(Key key)
+void Input::onKeyUp(Key key)
 {
     int i = (int)key;
     if (i >= 0 && i < max_keyboard_keys)
@@ -97,13 +97,13 @@ void Input::on_key_up(Key key)
 
 
 const InputState* Input::state() { return &g_curr_state; }
-const InputState* Input::last_state() { return &g_last_state; }
+const InputState* Input::lastState() { return &g_last_state; }
 
 
 Vec2 Input::mouse() { return g_curr_state.mouse.position; }
-Vec2 Input::mouse_screen() { return g_curr_state.mouse.screen_position; }
+Vec2 Input::mouseScreen() { return g_curr_state.mouse.screen_position; }
 
-int Input::mouse_wheel() { return g_curr_state.mouse.wheel; };
+int Input::mouseWheel() { return g_curr_state.mouse.wheel; };
 
 
 bool Input::pressed(ui8 button) {
@@ -135,7 +135,7 @@ bool Input::ctrl() { return Input::down(Key::LeftControl) || Input::down(Key::Ri
 bool Input::shift() { return Input::down(Key::LeftShift) || Input::down(Key::RightShift); }
 bool Input::alt() { return Input::down(Key::LeftAlt) || Input::down(Key::RightAlt); }
 
-const char* Input::name_of(Key key)
+const char* Input::nameOf(Key key)
 {
     switch (key)
     {

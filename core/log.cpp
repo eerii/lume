@@ -73,18 +73,16 @@ void log::graphics(str p_info, ...)
 #endif
 }
 
-void log::debug(bool p_debug, str p_info, ...)
+void log::debug(str p_info, ...)
 {
 #if LOG_LEVEL>=5
-    if (p_debug) {
-        char msg[lenght];
-        va_list ap;
-        va_start(ap, p_info);
-        vsnprintf(msg, sizeof(char) * lenght, p_info.c_str(), ap);
-        va_end(ap);
+    char msg[lenght];
+    va_list ap;
+    va_start(ap, p_info);
+    vsnprintf(msg, sizeof(char) * lenght, p_info.c_str(), ap);
+    va_end(ap);
 
-        std::cout << "[DEBUG] " << msg << std::endl;
-    }
+    std::cout << "[DEBUG] " << msg << std::endl;
 #endif
 }
 

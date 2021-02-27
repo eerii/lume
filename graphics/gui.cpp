@@ -18,7 +18,7 @@ void Gui::update(float delta) {
     imgui_io.MousePos = ImVec2(static_cast<float>(Input::mouse().x), static_cast<float>(Input::mouse().y));
     imgui_io.MouseDown[0] = Input::down(SDL_BUTTON_LEFT);
     imgui_io.MouseDown[1] = Input::down(SDL_BUTTON_RIGHT);
-    imgui_io.MouseWheel = static_cast<float>(Input::mouse_wheel());
+    imgui_io.MouseWheel = static_cast<float>(Input::mouseWheel());
 }
 
 void Gui::prerender(Scene &scene, Config &c) {

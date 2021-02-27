@@ -10,7 +10,6 @@
 #include "dtypes.h"
 #include "log.h"
 
-#include "platform.h"
 #include "renderer.h"
 #include "gui.h"
 #include "config.h"

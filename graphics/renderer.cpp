@@ -85,7 +85,7 @@ void Graphics::init() {
         SDL_GetRendererInfo(renderer, &rendererInfo);
 
         if(!strncmp(rendererInfo.name, "opengl", 6)) {
-            log::info("Using OpenGL");
+            log::graphics("Using OpenGL");
     #ifndef __APPLE__
             if (!initGLExtensions()) {
                 log::error("Couldn't init GL extensions!");
