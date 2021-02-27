@@ -26,12 +26,14 @@ namespace {
     SDL_Window *window;
     SDL_Renderer *renderer;
 
-    int refreshRate = 60;
+    int refresh_rate = 60;
 
     SDL_Texture *render_target;
     SDL_Texture *palette_tex;
 
-    ui8 programId;
+    ui8 pid;
+
+    //int previous_palette;
 }
 
 void Graphics::init() {
@@ -70,7 +72,7 @@ void Graphics::init() {
     
     //REFRESH RATE
     Graphics::calculateRefreshRate();
-    //log::info("Refresh Rate: %d", Graphics::refreshRate);
+    //log::graphics("Refresh Rate: %d", Graphics::refreshRate);
     
     //CREATE THE RENDERER
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE);
@@ -91,8 +93,8 @@ void Graphics::init() {
                 exit(-1);
             }
     #endif
-            programId = Graphics::Shader::compileProgram("res/shaders/palette.vertex", "res/shaders/palette.frag");
-            log::info("Program ID: %d", programId);
+            pid = Graphics::Shader::compileProgram("res/shaders/palette.vertex", "res/shaders/palette.frag");
+            log::graphics("Program ID: %d", pid);
         }
     
     //RENDER TARGET
@@ -121,7 +123,6 @@ void Graphics::render(Scene &scene, Config &c) {
     if (c.render_collision_boxes)
         System::Collider::render(scene, renderer);
     
-    //Color the window
     SDL_SetRenderDrawColor(renderer, c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
 }
 
@@ -130,7 +131,7 @@ void Graphics::display(Config &c) {
     if (c.use_shaders)
         Graphics::present(c, renderer, window,
                           render_target, palette_tex,
-                          programId, W_WIDTH, W_HEIGHT); //TODO: CHANGE WIDTH HEIGHT
+                          pid, W_WIDTH, W_HEIGHT); //TODO: CHANGE WIDTH HEIGHT
     else
         SDL_RenderPresent(renderer);
 }
@@ -152,12 +153,12 @@ void Graphics::calculateRefreshRate() {
     SDL_DisplayMode mode;
     SDL_GetDisplayMode(displayIndex, 0, &mode);
     
-    refreshRate = mode.refresh_rate;
+    refresh_rate = mode.refresh_rate;
 }
 
 
 int Graphics::getRefreshRate() {
-    return refreshRate;
+    return refresh_rate;
 }
 
 
@@ -166,8 +167,6 @@ SDL_Texture* Graphics::loadTexture(std::string path) {
         log::error("Renderer doesn't exist and you tried to load a texture");
         return nullptr;
     }
-    
-    //SDL_Surface* surface = IMG_Load(path.c_str());
     
     SDL_Texture* tex = IMG_LoadTexture(renderer, path.c_str());
     if (tex == nullptr) {

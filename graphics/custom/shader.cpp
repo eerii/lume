@@ -44,7 +44,7 @@ bool Graphics::Shader::initGLExtensions() {
 #endif
 
 ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
-    //log::info("Compiling Shader...");
+    //log::graphics("Compiling Shader...");
     
     //CREATE SHADER FROM SOURCE
     ui8 id = glCreateShader(shaderType);
@@ -69,44 +69,44 @@ ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
         glDeleteShader(id);
         id = 0;
     } else {
-        log::info("Shader Compiled Correctly, ID: %d", id);
+        log::graphics("Shader Compiled Correctly, ID: %d", id);
     }
     
     return id;
 }
 
 ui8 Graphics::Shader::compileProgram(str vertexFile, str fragmentFile) {
-    //log::info("Compiling Program...");
+    //log::graphics("Compiling Program...");
     
-    ui8 program = 0;
-    ui8 vertexShader, fragmentShader;
+    ui8 pid = 0;
+    ui8 vertex_shader, fragment_shader;
 
-    program = glCreateProgram();
+    pid = glCreateProgram();
 
     //COMPILE VERTEX SHADER
     std::ifstream f(vertexFile.c_str());
     std::string source((std::istreambuf_iterator<char>(f)),
                         std::istreambuf_iterator<char>());
-    vertexShader = compileShader(source.c_str(), GL_VERTEX_SHADER);
+    vertex_shader = compileShader(source.c_str(), GL_VERTEX_SHADER);
     
     //COMPILE FRAGMENT SHADER
     f=std::ifstream(fragmentFile.c_str());
     source=std::string((std::istreambuf_iterator<char>(f)),
                         std::istreambuf_iterator<char>());
-    fragmentShader = compileShader(source.c_str(), GL_FRAGMENT_SHADER);
+    fragment_shader = compileShader(source.c_str(), GL_FRAGMENT_SHADER);
 
     //ATTACH TO PROGRAM
-    if(vertexShader && fragmentShader) {
-        glAttachShader(program, vertexShader);
-        glAttachShader(program, fragmentShader);
-        glLinkProgram(program);
-        glValidateProgram(program);
+    if(vertex_shader && fragment_shader) {
+        glAttachShader(pid, vertex_shader);
+        glAttachShader(pid, fragment_shader);
+        glLinkProgram(pid);
+        glValidateProgram(pid);
 
         int logLen;
-        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLen);
+        glGetProgramiv(pid, GL_INFO_LOG_LENGTH, &logLen);
         if(logLen > 0) {
             char* log = (char*)malloc(logLen * sizeof(char));
-            glGetProgramInfoLog(program, logLen, &logLen, log);
+            glGetProgramInfoLog(pid, logLen, &logLen, log);
             
             log::error("Program compile log: %s", log);
             free(log);
@@ -114,10 +114,10 @@ ui8 Graphics::Shader::compileProgram(str vertexFile, str fragmentFile) {
     }
     
     //DELETE SHADERS
-    if(vertexShader)
-        glDeleteShader(vertexShader);
-    if(fragmentShader)
-        glDeleteShader(fragmentShader);
+    if(vertex_shader)
+        glDeleteShader(vertex_shader);
+    if(fragment_shader)
+        glDeleteShader(fragment_shader);
     
-    return program;
+    return pid;
 }

@@ -12,14 +12,14 @@ namespace {
 
 void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
                        SDL_Texture *render_target, SDL_Texture *palette_tex,
-                       int programId, int width, int height) {
-    int oldProgramId = 0;
+                       int pid, int width, int height) {
+    int previous_pid = 0;
     SDL_SetRenderTarget(renderer, NULL);
     SDL_RenderClear(renderer);
     
-    if(programId != 0) {
-        glGetIntegerv(GL_CURRENT_PROGRAM, &oldProgramId);
-        glUseProgram(programId);
+    if(pid != 0) {
+        glGetIntegerv(GL_CURRENT_PROGRAM, &previous_pid);
+        glUseProgram(pid);
     }
     
     //GENERATE AND BIND TEXTURES
@@ -27,13 +27,13 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     
     glActiveTexture(GL_TEXTURE0);
     SDL_GL_BindTexture(render_target, NULL, NULL);
-    glUniform1i(glGetUniformLocation(programId, "tex"), 0);
+    glUniform1i(glGetUniformLocation(pid, "tex"), 0);
     
     glActiveTexture(GL_TEXTURE1);
     SDL_GL_BindTexture(palette_tex, NULL, NULL);
-    glUniform1i(glGetUniformLocation(programId, "palette"), 1);
+    glUniform1i(glGetUniformLocation(pid, "palette"), 1);
     
-    glUniform1f(glGetUniformLocation(programId, "palette_index"), ((float)c.palette_index / (float)c.num_palettes) + 0.001);
+    glUniform1f(glGetUniformLocation(pid, "palette_index"), ((float)c.palette_index / (float)c.num_palettes) + 0.001);
 
     //COORDINATES FOR DRAWING
     float minx, miny, maxx, maxy;
@@ -51,7 +51,7 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     
     SDL_GL_SwapWindow(window);
 
-    if(programId != 0) {
-        glUseProgram(oldProgramId);
+    if(pid != 0) {
+        glUseProgram(previous_pid);
     }
 }

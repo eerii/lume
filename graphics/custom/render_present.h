@@ -13,5 +13,5 @@ namespace Verse::Graphics
 {
     void present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
                  SDL_Texture *render_target, SDL_Texture *palette_tex,
-                 int programId, int width, int height);
+                 int pid, int width, int height);
 }

@@ -15,6 +15,7 @@ namespace Verse
         void info(str p_info, ...);
         void warn(str p_info, ...);
         void error(str p_info, ...);
+        void graphics(str p_info, ...);
         void debug(bool p_debug, str p_info, ...);
     
         void vec2(Vec2 p_vector, str p_name = "");
