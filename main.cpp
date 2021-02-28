@@ -30,6 +30,7 @@ int main(int argc, const char * argv[]) {
         .name = "Proxecto Lume",
         .version = "0.0.7",
         .resolution = Vec2(256, 180),
+        .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .use_shaders = true,
         .palette_index = 0,

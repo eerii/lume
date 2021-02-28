@@ -4,6 +4,7 @@
 
 #include "render_present.h"
 #include "time.h"
+#include <SDL2/SDL.h>
 
 #define TRANSITION_TIME 500
 
@@ -18,8 +19,7 @@ namespace {
 }
 
 void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
-                       SDL_Texture *render_target, SDL_Texture *palette_tex,
-                       int pid, int width, int height) {
+                       SDL_Texture *render_target, SDL_Texture *palette_tex, int pid) {
     int previous_pid = 0;
     SDL_SetRenderTarget(renderer, NULL);
     SDL_RenderClear(renderer);
@@ -47,13 +47,40 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     glUniform1f(glGetUniformLocation(pid, "previous_palette_index"), ((float)previous_palette / (float)c.num_palettes) + 0.001);
     glUniform1f(glGetUniformLocation(pid, "transition_percent"), transition_percent);
     
-
     //COORDINATES FOR DRAWING
     float minx, miny, maxx, maxy;
     float minu, maxu, minv, maxv;
-
-    minx = 0.0f; miny = 0.0f; maxx = width; maxy = height;
-    minu = 0.0f; maxu = 1.0f; minv = 1.0f; maxv = 0.0f;
+    
+    //Bacground
+    minx = 0.0f;
+    miny = 0.0f;
+    maxx = c.window_size.x;
+    maxy = c.window_size.y;
+    
+    glUniform1i(glGetUniformLocation(pid, "is_background"), 1);
+    
+    glBegin(GL_TRIANGLE_STRIP);
+        glVertex2f(minx, miny);
+        glVertex2f(maxx, miny);
+        glVertex2f(minx, maxy);
+        glVertex2f(maxx, maxy);
+    glEnd();
+    
+    //Texture
+    float w = c.render_scale * c.resolution.x;
+    float h = c.render_scale * c.resolution.y;
+    
+    minx = c.window_padding.x;
+    miny = c.window_padding.y;
+    maxx = w + c.window_padding.x;
+    maxy = h + c.window_padding.y;
+    
+    minu = 0.0f;
+    maxu = 1.0f - (2.0f * c.window_padding.x / c.window_size.x);
+    minv = 1.0f - (2.0f * c.window_padding.y / c.window_size.y);
+    maxv = 0.0f;
+    
+    glUniform1i(glGetUniformLocation(pid, "is_background"), 0);
     
     glBegin(GL_TRIANGLE_STRIP);
         glTexCoord2f(minu, minv); glVertex2f(minx, miny);
@@ -86,7 +113,4 @@ void Graphics::handlePaletteTransition(Config &c) {
     } else if (switch_palette_time != 0 or transition_percent != 0.0) {
         switch_palette_time = 0; transition_percent = 0.0;
     }
-}
-
-void Graphics::finishPaletteTransition(Config &c) {
 }

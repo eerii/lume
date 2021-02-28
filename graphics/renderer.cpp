@@ -29,6 +29,7 @@ namespace {
 
     SDL_Texture *render_target;
     SDL_Texture *palette_tex;
+    Vec2 previous_window_size;
 
     ui8 pid;
 }
@@ -109,8 +110,15 @@ void Graphics::init(Config &c) {
 
 
 void Graphics::clear(Config &c) {
-    if (c.use_shaders)
+    if (c.use_shaders) {
         SDL_SetRenderTarget(renderer, render_target);
+        
+        if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
+            previous_window_size = c.window_size;
+            render_target = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
+                                              c.window_size.x, c.window_size.y);
+        }
+    }
     SDL_RenderClear(renderer);
 }
 
@@ -128,9 +136,7 @@ void Graphics::render(Scene &scene, Config &c) {
 
 void Graphics::display(Config &c) {
     if (c.use_shaders)
-        Graphics::present(c, renderer, window,
-                          render_target, palette_tex,
-                          pid, W_WIDTH, W_HEIGHT); //TODO: CHANGE WIDTH HEIGHT
+        Graphics::present(c, renderer, window, render_target, palette_tex, pid);
     else
         SDL_RenderPresent(renderer);
 }

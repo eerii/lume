@@ -7,11 +7,15 @@
 - Log levels
 - Palette transitions
 - FPS counter
+- Always pixel perfect resolution
+- Window resizing and padding
+- Background padding color matches palette
 #### Changed
 - Cleaned up rendering code
 - Fix variable names
 - Changed "platform" to "events"
 - Window title
+- ImGUI mouse handling (for window padding)
 
 ---
 

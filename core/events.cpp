@@ -4,7 +4,7 @@
 
 #include "events.h"
 #include "input.h"
-#include "imgui.h"
+#include "window.h"
 
 using namespace Verse;
 
@@ -12,7 +12,7 @@ namespace {
     SDL_Event event;
 }
 
-bool Events::handleEvents() {
+bool Events::handleEvents(Config &c) {
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_QUIT:
@@ -38,11 +38,8 @@ bool Events::handleEvents() {
                 Input::onMouseWheel(event.wheel.y);
                 break;
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    ImGuiIO& imgui_io = ImGui::GetIO();
-                    imgui_io.DisplaySize.x = static_cast<float>(event.window.data1);
-                    imgui_io.DisplaySize.y = static_cast<float>(event.window.data2);
-                }
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+                    Window::onResize(event, c);
                 break;
         }
     }

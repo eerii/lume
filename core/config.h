@@ -13,6 +13,8 @@ namespace Verse
         str version;
         
         Vec2 resolution;
+        Vec2 window_size;
+        Vec2 window_padding;
         int render_scale;
         
         bool use_shaders;

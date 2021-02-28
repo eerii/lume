@@ -8,7 +8,7 @@
 #include "log.h"
 #include "config.h"
 
-namespace Verse::Events
+namespace Verse::Window
 {
-    bool handleEvents(Config &c);
+    void onResize(SDL_Event &e, Config &c);
 }

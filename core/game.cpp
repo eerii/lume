@@ -62,11 +62,11 @@ bool Game::update(Scene &scene) {
         accumulator -= TIMESTEP;
         
         //Event Update
-        running &= Events::handleEvents();
+        running &= Events::handleEvents(*config);
         
         //Gui Update
 #ifdef ENABLE_GUI
-        Gui::update(1.0f / 60.0f);
+        Gui::update(1.0f / 60.0f, *config);
 #endif
         
         //Entity Update
@@ -100,7 +100,6 @@ bool Game::update(Scene &scene) {
         fps = Graphics::getRefreshRate();
     } else {
         fps = round(1000.0 / (float)(time() - Time::current));
-        log::error("dropped frame");
     }
     
     return running;
