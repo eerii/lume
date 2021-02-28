@@ -6,6 +6,7 @@
 #### Added
 - Log levels
 - Palette transitions
+- FPS counter
 #### Changed
 - Cleaned up rendering code
 - Fix variable names

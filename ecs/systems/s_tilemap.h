@@ -12,6 +12,6 @@
 
 namespace Verse::System::Tilemap
 {
-    void render(Scene &scene, SDL_Renderer* renderer);
+    void render(Scene &scene, SDL_Renderer* renderer, Config &c);
     Vec2 calculateSize(Component::Tilemap* tilemap);
 }

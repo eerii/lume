@@ -12,6 +12,9 @@ namespace Verse
         str name;
         str version;
         
+        Vec2 resolution;
+        int render_scale;
+        
         bool use_shaders;
         int palette_index;
         int num_palettes;

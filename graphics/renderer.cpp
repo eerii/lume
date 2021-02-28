@@ -17,7 +17,7 @@
 using namespace Verse;
 using namespace Graphics;
 
-#define W_WIDTH 1280
+#define W_WIDTH 1024
 #define W_HEIGHT 720
 #define W_FLAGS SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
 
@@ -51,8 +51,8 @@ void Graphics::init(Config &c) {
         float ddpi, hdpi, vdpi;
         if (SDL_GetDisplayDPI(display, &ddpi, &hdpi, &vdpi) == 0)
         {
-            float hidpiRes = 96;
-            float dpi = (ddpi / hidpiRes);
+            float hidpi_res = 96;
+            float dpi = (ddpi / hidpi_res);
             if (dpi != 1)
             {
                 SDL_DisplayMode mode;
@@ -64,7 +64,7 @@ void Graphics::init(Config &c) {
     }
     #endif
     SDL_SetWindowResizable(window, SDL_TRUE);
-    SDL_SetWindowMinimumSize(window, 256, 256);
+    SDL_SetWindowMinimumSize(window, 256, 180);
     
     //USE OPENGL
     SDL_SetHint(SDL_HINT_RENDER_DRIVER, "opengl");
@@ -101,7 +101,7 @@ void Graphics::init(Config &c) {
     
     //IMGUI
     ImGui::CreateContext();
-    ImGuiSDL::Initialize(renderer, 1280, 720);
+    ImGuiSDL::Initialize(renderer, W_WIDTH, W_HEIGHT);
     
     //PALETTE
     palette_tex = loadTexture("res/graphics/palette_multi.png");
@@ -116,11 +116,11 @@ void Graphics::clear(Config &c) {
 
 
 void Graphics::render(Scene &scene, Config &c) {
-    System::Tilemap::render(scene, renderer);
-    System::Texture::render(scene, renderer);
+    System::Tilemap::render(scene, renderer, c);
+    System::Texture::render(scene, renderer, c);
     
     if (c.render_collision_boxes)
-        System::Collider::render(scene, renderer);
+        System::Collider::render(scene, renderer, c);
     
     SDL_SetRenderDrawColor(renderer, c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
 }

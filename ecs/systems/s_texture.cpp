@@ -6,12 +6,12 @@
 
 using namespace Verse;
 
-void System::Texture::render(Scene &scene, SDL_Renderer* renderer) {
+void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
     for (EntityID e : SceneView<Component::Texture>(scene)) {
         Component::Texture* tex = scene.getComponent<Component::Texture>(e);
         
         SDL_Rect src = Rect(Vec2(), tex->transform.size).toSDL();
-        SDL_Rect dst = Rect((tex->transform.pos + tex->offset) * RENDER_SCALE, tex->transform.size * RENDER_SCALE).toSDL();
+        SDL_Rect dst = Rect((tex->transform.pos + tex->offset) * c.render_scale, tex->transform.size * c.render_scale).toSDL();
         
         SDL_RenderCopy(renderer, tex->tex, &src, &dst);
     }

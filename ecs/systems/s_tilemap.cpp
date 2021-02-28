@@ -8,7 +8,7 @@
 
 using namespace Verse;
 
-void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer) {
+void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(scene)) {
         Component::Tilemap* tmap = scene.getComponent<Component::Tilemap>(e);
         
@@ -19,10 +19,10 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer) {
         src.h = tmap->tex_size.y;
         
         SDL_Rect dst;
-        dst.x = tmap->pos.x * RENDER_SCALE;
-        dst.y = tmap->pos.y * RENDER_SCALE;
-        dst.w = tmap->tex_size.x * RENDER_SCALE;
-        dst.h = tmap->tex_size.y * RENDER_SCALE;
+        dst.x = tmap->pos.x * c.render_scale;
+        dst.y = tmap->pos.y * c.render_scale;
+        dst.w = tmap->tex_size.x * c.render_scale;
+        dst.h = tmap->tex_size.y * c.render_scale;
         
         for (int i = 0; i < tmap->tiles.size(); i++) {
             for (int j = 0; j < tmap->tiles[i].size(); j++) {
@@ -31,10 +31,10 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer) {
                     SDL_RenderCopy(renderer, tmap->tex, &src, &dst);
                 }
                 
-                dst.x += tmap->tex_size.x * RENDER_SCALE;
+                dst.x += tmap->tex_size.x * c.render_scale;
             }
-            dst.x = tmap->pos.x * RENDER_SCALE;
-            dst.y += tmap->tex_size.y * RENDER_SCALE;
+            dst.x = tmap->pos.x * c.render_scale;
+            dst.y += tmap->tex_size.y * c.render_scale;
         }
     }
 }
