@@ -11,6 +11,7 @@
 #include "texture.h"
 #include "actor.h"
 #include "tilemap.h"
+#include "light.h"
 
 #define INVALID_ENTITY Entity::createID(EntityIndex(-1), 0)
 

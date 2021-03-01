@@ -24,5 +24,6 @@ void Component::registerComponents() {
     logComponentID(Texture);
     logComponentID(Actor);
     logComponentID(Tilemap);
+    logComponentID(Light);
 }
 //-------------------------------------

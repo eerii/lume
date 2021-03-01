@@ -10,6 +10,7 @@
 #include "s_texture.h"
 #include "s_tilemap.h"
 #include "s_collider.h"
+#include "s_light.h"
 
 #include "shader.h"
 #include "render_present.h"
@@ -126,6 +127,7 @@ void Graphics::clear(Config &c) {
 void Graphics::render(Scene &scene, Config &c) {
     System::Tilemap::render(scene, renderer, c);
     System::Texture::render(scene, renderer, c);
+    System::Light::render(scene, renderer, c);
     
     if (c.render_collision_boxes)
         System::Collider::render(scene, renderer, c);
