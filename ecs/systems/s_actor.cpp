@@ -80,7 +80,8 @@ void System::Actor::move(Scene &scene, EntityID eid) {
                 actor->remainder.y = 0;
                 actor->vel.y = 0;
                 
-                actor->is_on_ground = true;
+                if (sy > 0)
+                    actor->is_on_ground = true;
             } else {
                 to_move.y -= sy;
                 

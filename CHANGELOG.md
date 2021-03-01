@@ -2,6 +2,12 @@
 
 ## **0.1** ~ Basics
 
+### **[0.0.9]** ~ Movement _2021-02-29_
+#### Added
+- Variable jump height
+#### Fixed
+- When hitting a block's downside on_ground was set so you sticked to the ceiling
+
 ### **[0.0.8]** ~ Levels _2021-02-29_
 #### Added
 - Barebones animation
