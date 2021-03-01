@@ -40,7 +40,6 @@ void Gui::entities(Scene &scene, Config &c) {
         ImGui::Checkbox("Display collision boxes", &c.render_collision_boxes);
         ImGui::Checkbox("Use shaders", &c.use_shaders);
         ImGui::SliderInt("Palette", &c.palette_index, 0, c.num_palettes - 1);
-        ImGui::SliderInt("Render Scale", &c.render_scale, 0, 6);
     }
     
     ImGui::End();
