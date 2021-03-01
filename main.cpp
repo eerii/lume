@@ -32,7 +32,7 @@ int main(int argc, const char * argv[]) {
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
-        .use_shaders = false,
+        .use_shaders = true,
         .palette_index = 0,
         .num_palettes = 4,
         .background_color = {0, 0, 0, 255},

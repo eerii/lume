@@ -12,7 +12,7 @@
 namespace Verse::Graphics
 {
     void present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
-                 SDL_Texture *render_target, SDL_Texture *palette_tex, int pid);
+                 SDL_Texture *render_target, SDL_Texture *palette_tex, ui8 pid);
 
     void handlePaletteTransition(Config &c);
 }

@@ -107,6 +107,9 @@ void Graphics::init(Config &c) {
     
     //PALETTE
     palette_tex = loadTexture("res/graphics/palette_multi.png");
+    
+    //LIGHT
+    System::Light::init(renderer, c);
 }
 
 
@@ -127,7 +130,6 @@ void Graphics::clear(Config &c) {
 void Graphics::render(Scene &scene, Config &c) {
     System::Tilemap::render(scene, renderer, c);
     System::Texture::render(scene, renderer, c);
-    System::Light::render(scene, renderer, c);
     
     if (c.render_collision_boxes)
         System::Collider::render(scene, renderer, c);

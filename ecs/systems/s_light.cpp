@@ -3,6 +3,7 @@
 //all rights reserved uwu
 
 #include "s_light.h"
+#include "shader.h"
 
 using namespace Verse;
 
@@ -12,8 +13,6 @@ namespace {
 
     SDL_Rect src;
     SDL_Rect dst;
-
-    SDL_BlendMode subtract;
 }
 
 void System::Light::init(SDL_Renderer* renderer, Config &c) {
@@ -43,26 +42,20 @@ void System::Light::init(SDL_Renderer* renderer, Config &c) {
     //EVERY PIXEL TO WHITE
     clean();
     
-    //CUSTOM BLEND MODE - Subtract
-    subtract = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ONE, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_REV_SUBTRACT,
-                                          SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_ONE, SDL_BLENDOPERATION_ADD);
-    
     //TEXTURE
     light_tex = SDL_CreateTextureFromSurface(renderer, light_surface);
-    int e = SDL_SetTextureBlendMode(light_tex, subtract);
-    if (e == -1)
-        log::error("Blend mode not supported, %s", SDL_GetError());
     
     //RECTS
     src = Rect(Vec2(0,0), c.window_size).toSDL();
     dst = Rect(Vec2(0,0), c.window_size).toSDL();
 }
 
-void System::Light::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
-    if (light_surface == nullptr)
-        init(renderer, c);
+void System::Light::render(ui8 pid) {
+    //Change lighting
     
-    //SDL_RenderCopy(renderer, light_tex, &src, &dst); TODO: Enable rendering
+    glActiveTexture(GL_TEXTURE2);
+    SDL_GL_BindTexture(light_tex, NULL, NULL);
+    glUniform1i(glGetUniformLocation(pid, "light"), 2);
 }
 
 void System::Light::clean() {
@@ -70,7 +63,7 @@ void System::Light::clean() {
         for (int i = 0; i < light_surface->w; i++) {
             ui8 *color = (ui8*)light_surface->pixels + j * light_surface->pitch + i * 4;
             
-            color[0] = color[1] = color[2] = 255;
+            color[0] = color[1] = color[2] = (i > light_surface->w / 2) ? 255 : 0;
             color[3] = 255;
         }
     }

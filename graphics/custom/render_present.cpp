@@ -2,16 +2,18 @@
 //by jose pazos perez
 //all rights reserved uwu
 
+#include <SDL2/SDL.h>
+
 #include "render_present.h"
 #include "time.h"
-#include <SDL2/SDL.h>
+#include "s_light.h"
 
 #define TRANSITION_TIME 500
 
 using namespace Verse;
 
 namespace {
-    unsigned int textures[2];
+    unsigned int textures[3];
 
     int previous_palette = 0;
     ui64 switch_palette_time = 0;
@@ -19,7 +21,7 @@ namespace {
 }
 
 void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
-                       SDL_Texture *render_target, SDL_Texture *palette_tex, int pid) {
+                       SDL_Texture *render_target, SDL_Texture *palette_tex, ui8 pid) {
     int previous_pid = 0;
     SDL_SetRenderTarget(renderer, NULL);
     SDL_RenderClear(renderer);
@@ -30,7 +32,7 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     }
     
     //GENERATE AND BIND TEXTURES
-    glGenTextures(2, textures);
+    glGenTextures(3, textures);
     
     glActiveTexture(GL_TEXTURE0);
     SDL_GL_BindTexture(render_target, NULL, NULL);
@@ -47,11 +49,14 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     glUniform1f(glGetUniformLocation(pid, "previous_palette_index"), ((float)previous_palette / (float)c.num_palettes) + 0.001);
     glUniform1f(glGetUniformLocation(pid, "transition_percent"), transition_percent);
     
+    //LIGHT
+    System::Light::render(pid);
+    
     //COORDINATES FOR DRAWING
     float minx, miny, maxx, maxy;
     float minu, maxu, minv, maxv;
     
-    //Bacground
+    //Background
     minx = 0.0f;
     miny = 0.0f;
     maxx = c.window_size.x;
