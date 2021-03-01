@@ -13,12 +13,14 @@ using namespace Verse;
 
 namespace {
     int jump_impulse = 220;
+    int min_jump_impulse = 70;
     int jump_grace = 150;
     int jump_coyote = 100;
 
     Component::Actor* actor;
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
+    bool on_jump = false;
     bool previously_on_ground = false;
 }
 
@@ -43,17 +45,25 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     
     //JUMP
     if (Input::pressed(Input::Key::Space)) {
-        
         if (actor->is_on_ground or previously_on_ground) {
             jump();
         } else {
             jump_time = Time::current;
         }
     }
+    //Stop Jump
+    if (Input::released(Input::Key::Space) and on_jump) {
+        on_jump = false;
+        
+        if (-actor->vel.y > min_jump_impulse)
+            actor->vel.y = -min_jump_impulse;
+    }
     //Coyote Time
-    if (actor->is_on_ground)
+    if (actor->is_on_ground) {
         previously_on_ground = true;
-    if (!actor->is_on_ground and previously_on_ground and coyote_time == 0)
+        on_jump = false;
+    }
+    if (!actor->is_on_ground and previously_on_ground and coyote_time == 0 and !on_jump)
         coyote_time = Time::current;
     
     if (coyote_time != 0) {
@@ -87,6 +97,7 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
 void Controller::Player::jump() {
     actor->vel.y = -jump_impulse;
     jump_time = 0;
+    on_jump = true;
     
     actor->is_on_ground = false;
     previously_on_ground = false;
