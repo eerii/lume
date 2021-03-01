@@ -2,10 +2,11 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.8]** ~ Animation _2021-02-29_
+### **[0.0.8]** ~ Levels _2021-02-29_
 #### Added
 - Barebones animation
 - Texture flip
+- Load levels from PNGs
 
 ---
 

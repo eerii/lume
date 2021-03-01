@@ -31,6 +31,7 @@ namespace Verse
         void calculateRefreshRate();
         int getRefreshRate();
     
-        SDL_Texture* loadTexture(std::string path);
+        SDL_Texture* loadTexture(str path);
+        SDL_Surface* loadSurface(str path);
     }
 }

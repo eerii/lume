@@ -13,5 +13,6 @@
 namespace Verse::System::Tilemap
 {
     void render(Scene &scene, SDL_Renderer* renderer, Config &c);
+    std::vector<std::vector<ui8>> load(str path);
     Vec2 calculateSize(Component::Tilemap* tilemap);
 }

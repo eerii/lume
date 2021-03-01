@@ -39,6 +39,35 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
     }
 }
 
+std::vector<std::vector<ui8>> System::Tilemap::load(str path) {
+    std::vector<std::vector<ui8>> tiles = {{}};
+    
+    SDL_Surface* map = Graphics::loadSurface(path);
+    
+    if (map->pixels == nullptr) {
+        log::error("The tilemap surface has no pixels");
+        return tiles;
+    }
+    
+    for (int j = 0; j < map->h; j++) {
+        tiles.push_back({});
+        for (int i = 0; i < map->w; i++) {
+            ui8 *color = (ui8*)map->pixels + j * map->pitch + i * 4;
+            
+            if (color[3] == 0) {
+                tiles[j].push_back(0);
+                continue;
+            }
+            
+            //HANDLE MULTIPLE TILES HERE
+            //ui8 luminance = round((c[0] + c[1] + c[2]) / 3);
+            tiles[j].push_back(1);
+        }
+    }
+    
+    return tiles;
+}
+
 Vec2 System::Tilemap::calculateSize(Component::Tilemap* tilemap) {
     Vec2 size;
     

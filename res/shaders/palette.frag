@@ -15,7 +15,7 @@ void main() {
     
     if (is_background == 1) {
         luminance = 0.0;
-        color.a = 1.0;
+        color.a = 0.5;
     }
     
     vec4 i_color = texture2D(palette, vec2(luminance, palette_index));

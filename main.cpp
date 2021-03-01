@@ -50,11 +50,11 @@ int main(int argc, const char * argv[]) {
     EntityID test = scene.createEntity("Player");
     
     Component::Collider* collider = scene.addComponent<Component::Collider>(test);
-    collider->transform = Rect(40, 100, 9, 14);
+    collider->transform = Rect(32, 64, 9, 14);
     
     Component::Texture* texture = scene.addComponent<Component::Texture>(test);
     texture->tex = Graphics::loadTexture("res/graphics/lume_idle.png");
-    texture->transform = Rect(40, 100, 11, 14);
+    texture->transform = Rect(32, 64, 11, 14);
     texture->offset = Vec2(-1, 0);
     texture->animation.push_back(Vec2(0,2));
     
@@ -66,23 +66,23 @@ int main(int argc, const char * argv[]) {
     actor->friction_ground = 0.25;
     
     
-    EntityID test2 = scene.createEntity("Ground");
+    /*EntityID test2 = scene.createEntity("Ground");
     
     Component::Collider* collider2 = scene.addComponent<Component::Collider>(test2);
     collider2->transform = Rect(40, 140, 8, 8);
     
     Component::Texture* texture2 = scene.addComponent<Component::Texture>(test2);
     texture2->tex = Graphics::loadTexture("res/graphics/ground2.png");
-    texture2->transform = Rect(40, 140, 8, 8);
+    texture2->transform = Rect(40, 140, 8, 8);*/
     
     
     EntityID tile = scene.createEntity("Tilemap");
     
     Component::Tilemap* tilemap = scene.addComponent<Component::Tilemap>(tile);
-    tilemap->tiles = {{1, 0, 0, 0, 0, 0, 0, 1, 0}, {1, 0, 1, 0, 0, 0, 0, 1, 0}, {1, 1, 1, 1, 0, 1, 1, 1, 1}};
+    tilemap->tiles = System::Tilemap::load("res/levels/1.png");
     tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png");
     tilemap->tex_size = Vec2(8, 8);
-    tilemap->pos = Vec2(80, 140);
+    tilemap->pos = Vec2(0, 96);
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));

@@ -167,7 +167,7 @@ int Graphics::getRefreshRate() {
 }
 
 
-SDL_Texture* Graphics::loadTexture(std::string path) {
+SDL_Texture* Graphics::loadTexture(str path) {
     if (renderer == nullptr) {
         log::error("Renderer doesn't exist and you tried to load a texture");
         return nullptr;
@@ -178,4 +178,17 @@ SDL_Texture* Graphics::loadTexture(std::string path) {
         log::error("There was an error loading the texture: %s", path.c_str());
     }
     return tex;
+}
+
+SDL_Surface* Graphics::loadSurface(str path) {
+    if (renderer == nullptr) {
+        log::error("Renderer doesn't exist and you tried to load a texture");
+        return nullptr;
+    }
+    
+    SDL_Surface* surface = IMG_Load(path.c_str());
+    if (surface == nullptr) {
+        log::error("There was an error loading the surface: %s", path.c_str());
+    }
+    return surface;
 }
