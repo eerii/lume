@@ -13,7 +13,10 @@ namespace Verse::Component
     struct Texture {
         SDL_Texture* tex;
         Rect transform;
+        
         Vec2 offset = Vec2(0,0);
+        bool is_reversed = false;
+        
         std::vector<Vec2> animation;
         int current_animation;
     };

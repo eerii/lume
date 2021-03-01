@@ -37,6 +37,8 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         SDL_Rect src = frame.toSDL();
         SDL_Rect dst = Rect((tex->transform.pos + tex->offset) * c.render_scale, tex->transform.size * c.render_scale).toSDL();
         
-        SDL_RenderCopy(renderer, tex->tex, &src, &dst);
+        SDL_RendererFlip flip = tex->is_reversed ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+        
+        SDL_RenderCopyEx(renderer, tex->tex, &src, &dst, 0, NULL, flip);
     }
 }

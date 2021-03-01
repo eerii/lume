@@ -12,7 +12,7 @@
 using namespace Verse;
 
 namespace {
-    int jump_impulse = 300;
+    int jump_impulse = 220;
     int jump_grace = 150;
     int jump_coyote = 100;
 

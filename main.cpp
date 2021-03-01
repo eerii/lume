@@ -50,12 +50,12 @@ int main(int argc, const char * argv[]) {
     EntityID test = scene.createEntity("Player");
     
     Component::Collider* collider = scene.addComponent<Component::Collider>(test);
-    collider->transform = Rect(40, 100, 11, 12);
+    collider->transform = Rect(40, 100, 9, 14);
     
     Component::Texture* texture = scene.addComponent<Component::Texture>(test);
     texture->tex = Graphics::loadTexture("res/graphics/lume_idle.png");
     texture->transform = Rect(40, 100, 11, 14);
-    texture->offset = Vec2(0, -2);
+    texture->offset = Vec2(-1, 0);
     texture->animation.push_back(Vec2(0,2));
     
     Component::Actor* actor = scene.addComponent<Component::Actor>(test);
@@ -82,7 +82,7 @@ int main(int argc, const char * argv[]) {
     tilemap->tiles = {{1, 0, 0, 0, 0, 0, 0, 1, 0}, {1, 0, 1, 0, 0, 0, 0, 1, 0}, {1, 1, 1, 1, 0, 1, 1, 1, 1}};
     tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png");
     tilemap->tex_size = Vec2(8, 8);
-    tilemap->pos = Vec2(100, 116);
+    tilemap->pos = Vec2(80, 140);
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));

@@ -2,9 +2,12 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.8]** ~ Screen _2021-02-28_
+### **[0.0.8]** ~ Animation _2021-02-29_
 #### Added
 - Barebones animation
+- Texture flip
+
+---
 
 ### **[0.0.7]** ~ Screen _2021-02-27_
 #### Added

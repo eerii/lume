@@ -41,6 +41,8 @@ void System::Actor::move(Scene &scene, EntityID eid) {
         
         //MoveX
         int sx = sign(to_move.x);
+        if (to_move.x != 0)
+            texture->is_reversed = sx == -1;
         while (to_move.x != 0) {
             collider->transform.pos += Vec2::i * sx;
             
