@@ -50,12 +50,14 @@ void System::Light::init(SDL_Renderer* renderer, Config &c) {
     dst = Rect(Vec2(0,0), c.window_size).toSDL();
 }
 
-void System::Light::render(ui8 pid) {
-    //Change lighting
+void System::Light::render(ui8 pid, Config &c) {
+    glUniform2f(glGetUniformLocation(pid, "light_source"), 128 * c.render_scale, 90 * c.render_scale);
+    glUniform1f(glGetUniformLocation(pid, "light_radius"), 16 * 8 * c.render_scale);
+    glUniform1f(glGetUniformLocation(pid, "light_centre"), 8 * 8 * c.render_scale);
     
-    glActiveTexture(GL_TEXTURE2);
+    /*glActiveTexture(GL_TEXTURE2);
     SDL_GL_BindTexture(light_tex, NULL, NULL);
-    glUniform1i(glGetUniformLocation(pid, "light"), 2);
+    glUniform1i(glGetUniformLocation(pid, "light"), 2);*/
 }
 
 void System::Light::clean() {

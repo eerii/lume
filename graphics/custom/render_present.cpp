@@ -13,7 +13,7 @@
 using namespace Verse;
 
 namespace {
-    unsigned int textures[3];
+    unsigned int textures[2];
 
     int previous_palette = 0;
     ui64 switch_palette_time = 0;
@@ -32,7 +32,7 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     }
     
     //GENERATE AND BIND TEXTURES
-    glGenTextures(3, textures);
+    glGenTextures(2, textures);
     
     glActiveTexture(GL_TEXTURE0);
     SDL_GL_BindTexture(render_target, NULL, NULL);
@@ -50,7 +50,9 @@ void Graphics::present(Config &c, SDL_Renderer *renderer, SDL_Window *window,
     glUniform1f(glGetUniformLocation(pid, "transition_percent"), transition_percent);
     
     //LIGHT
-    System::Light::render(pid);
+    System::Light::render(pid, c);
+    glUniform2f(glGetUniformLocation(pid, "window_size"), c.window_size.x, c.window_size.y);
+    glUniform1i(glGetUniformLocation(pid, "use_grayscale"), c.use_grayscale ? 1 : 0);
     
     //COORDINATES FOR DRAWING
     float minx, miny, maxx, maxy;

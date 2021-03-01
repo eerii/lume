@@ -18,6 +18,7 @@ namespace Verse
         int render_scale;
         
         bool use_shaders;
+        bool use_grayscale;
         int palette_index;
         int num_palettes;
         

@@ -2,13 +2,15 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.9]** ~ Movement _2021-02-29_
+### **[0.0.9]** ~ Movement _2021-03-01_
 #### Added
 - Variable jump height
+- LIGHT SHADER
+- Grayscale render mode
 #### Fixed
 - When hitting a block's downside on_ground was set so you sticked to the ceiling
 
-### **[0.0.8]** ~ Levels _2021-02-29_
+### **[0.0.8]** ~ Levels _2021-03-01_
 #### Added
 - Barebones animation
 - Texture flip
