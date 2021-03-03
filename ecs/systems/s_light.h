@@ -12,7 +12,7 @@
 namespace Verse::System::Light
 {
     void init(SDL_Renderer* renderer, Config &c);
-    void render(Scene &scene);
+    void render(Scene &scene, Config &c);
     void passToShader(ui8 pid, Config &c);
     void clean();
 }

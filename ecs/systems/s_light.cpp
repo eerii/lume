@@ -55,7 +55,7 @@ void System::Light::init(SDL_Renderer* renderer, Config &c) {
     dst = Rect(Vec2(0,0), c.window_size).toSDL();
 }
 
-void System::Light::render(Scene &scene) {
+void System::Light::render(Scene &scene, Config &c) {
     for (EntityID e : SceneView<Component::Light>(scene)) {
         Component::Light* light = scene.getComponent<Component::Light>(e);
         Component::Texture* tex = scene.getComponent<Component::Texture>(e);
@@ -64,25 +64,25 @@ void System::Light::render(Scene &scene) {
         if (it != light_entities.end()) {
             long i = it - light_entities.begin();
             
-            light_sources[i] = light->pos;
+            light_sources[i] = light->pos * c.render_scale;
             if (tex != nullptr) //This is to render the light relative to the texture
-                light_sources[i] += tex->transform.pos;
+                light_sources[i] += tex->transform.pos * c.render_scale;
             
-            light_radius[i] = light->radius;
-            light_centres[i] = light->centre;
+            light_radius[i] = light->radius * c.render_scale;
+            light_centres[i] = light->centre * light_radius[i];
         } else {
             light_entities.push_back(e);
             light_sources.push_back(light->pos);
-            light_radius.push_back(light->radius);
+            light_radius.push_back(light->radius * c.render_scale);
             light_centres.push_back(light->centre);
         }
     }
 }
 
 void System::Light::passToShader(ui8 pid, Config &c) {
-    glUniform2f(glGetUniformLocation(pid, "light_source"), light_sources[0].x * c.render_scale, light_sources[0].y * c.render_scale);
-    glUniform1f(glGetUniformLocation(pid, "light_radius"), light_radius[0] * c.render_scale);
-    glUniform1f(glGetUniformLocation(pid, "light_centre"), light_radius[0] * light_centres[0] * c.render_scale);
+    glUniform2fv(glGetUniformLocation(pid, "light_source"), (int)light_sources.size(), reinterpret_cast<GLfloat *>(light_sources.data()));
+    glUniform1fv(glGetUniformLocation(pid, "light_radius"), (int)light_radius.size(), reinterpret_cast<GLfloat *>(light_radius.data()));
+    glUniform1fv(glGetUniformLocation(pid, "light_centre"), (int)light_centres.size(), reinterpret_cast<GLfloat *>(light_centres.data()));
 }
 
 void System::Light::clean() {

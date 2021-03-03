@@ -130,7 +130,7 @@ void Graphics::clear(Config &c) {
 void Graphics::render(Scene &scene, Config &c) {
     System::Tilemap::render(scene, renderer, c);
     System::Texture::render(scene, renderer, c);
-    System::Light::render(scene);
+    System::Light::render(scene, c);
     
     if (c.render_collision_boxes)
         System::Collider::render(scene, renderer, c);
