@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.0.8",
+        .version = "0.0.9",
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
@@ -65,6 +65,11 @@ int main(int argc, const char * argv[]) {
     actor->max_fall_speed = 250;
     actor->acc_ground = 1000;
     actor->friction_ground = 0.25;
+    
+    Component::Light* light = scene.addComponent<Component::Light>(test);
+    light->pos = texture->transform.size / 2;
+    light->radius = 72;
+    light->centre = 0.5;
     
     
     /*EntityID test2 = scene.createEntity("Ground");

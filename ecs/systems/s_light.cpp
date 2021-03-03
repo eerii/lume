@@ -13,6 +13,11 @@ namespace {
 
     SDL_Rect src;
     SDL_Rect dst;
+
+    std::vector<EntityID> light_entities;
+    std::vector<Vec2> light_sources;
+    std::vector<float> light_radius;
+    std::vector<float> light_centres;
 }
 
 void System::Light::init(SDL_Renderer* renderer, Config &c) {
@@ -50,14 +55,34 @@ void System::Light::init(SDL_Renderer* renderer, Config &c) {
     dst = Rect(Vec2(0,0), c.window_size).toSDL();
 }
 
-void System::Light::render(ui8 pid, Config &c) {
-    glUniform2f(glGetUniformLocation(pid, "light_source"), 128 * c.render_scale, 90 * c.render_scale);
-    glUniform1f(glGetUniformLocation(pid, "light_radius"), 16 * 8 * c.render_scale);
-    glUniform1f(glGetUniformLocation(pid, "light_centre"), 8 * 8 * c.render_scale);
-    
-    /*glActiveTexture(GL_TEXTURE2);
-    SDL_GL_BindTexture(light_tex, NULL, NULL);
-    glUniform1i(glGetUniformLocation(pid, "light"), 2);*/
+void System::Light::render(Scene &scene) {
+    for (EntityID e : SceneView<Component::Light>(scene)) {
+        Component::Light* light = scene.getComponent<Component::Light>(e);
+        Component::Texture* tex = scene.getComponent<Component::Texture>(e);
+        
+        std::vector<EntityID>::iterator it = std::find(light_entities.begin(), light_entities.end(), e);
+        if (it != light_entities.end()) {
+            long i = it - light_entities.begin();
+            
+            light_sources[i] = light->pos;
+            if (tex != nullptr) //This is to render the light relative to the texture
+                light_sources[i] += tex->transform.pos;
+            
+            light_radius[i] = light->radius;
+            light_centres[i] = light->centre;
+        } else {
+            light_entities.push_back(e);
+            light_sources.push_back(light->pos);
+            light_radius.push_back(light->radius);
+            light_centres.push_back(light->centre);
+        }
+    }
+}
+
+void System::Light::passToShader(ui8 pid, Config &c) {
+    glUniform2f(glGetUniformLocation(pid, "light_source"), light_sources[0].x * c.render_scale, light_sources[0].y * c.render_scale);
+    glUniform1f(glGetUniformLocation(pid, "light_radius"), light_radius[0] * c.render_scale);
+    glUniform1f(glGetUniformLocation(pid, "light_centre"), light_radius[0] * light_centres[0] * c.render_scale);
 }
 
 void System::Light::clean() {

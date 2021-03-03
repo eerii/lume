@@ -11,5 +11,6 @@ namespace Verse::Component
     struct Light {
         Vec2 pos;
         float radius;
+        float centre;
     };
 }

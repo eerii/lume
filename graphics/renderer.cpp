@@ -37,8 +37,8 @@ namespace {
 
 void Graphics::init(Config &c) {
     
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     //Can't use modern opengl with sdl renderer, might change to custom renderer in the future
+    //SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
     
     //CREATE A WINDOW
     window = SDL_CreateWindow((c.name + " - Version " + c.version).c_str(),
@@ -86,7 +86,7 @@ void Graphics::init(Config &c) {
         SDL_GetRendererInfo(renderer, &rendererInfo);
 
         if(!strncmp(rendererInfo.name, "opengl", 6)) {
-            log::graphics("Using OpenGL");
+            log::graphics("OpenGL Version: %s", glGetString(GL_VERSION));
     #ifndef __APPLE__
             if (!initGLExtensions()) {
                 log::error("Couldn't init GL extensions!");
@@ -130,6 +130,7 @@ void Graphics::clear(Config &c) {
 void Graphics::render(Scene &scene, Config &c) {
     System::Tilemap::render(scene, renderer, c);
     System::Texture::render(scene, renderer, c);
+    System::Light::render(scene);
     
     if (c.render_collision_boxes)
         System::Collider::render(scene, renderer, c);
