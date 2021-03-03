@@ -6,7 +6,6 @@
 
 #include "dtypes.h"
 #include "log.h"
-#include "shader.h"
 #include "config.h"
 
 namespace Verse::Graphics

@@ -10,17 +10,17 @@
 #include "dtypes.h"
 #include "log.h"
 
-#include "renderer.h"
-#include "gui.h"
-#include "config.h"
-
 #include "game.h"
 #include "ecs.h"
 #include "scene.h"
+#include "config.h"
+
+#include "r_pipeline.h"
+#include "gui.h"
 
 #include "s_collider.h"
 #include "s_tilemap.h"
-#include "player.h"
+#include "player_controller.h"
 
 using namespace Verse;
 

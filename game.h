@@ -10,8 +10,8 @@
 #include "dtypes.h"
 #include "log.h"
 #include "scene.h"
-#include "renderer.h"
 #include "config.h"
+#include "r_pipeline.h"
 
 #define TIMESTEP 10 //Update the simulation every 10ms (0.01s)
 #define DELTA (TIMESTEP * 0.001f)

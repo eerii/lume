@@ -6,6 +6,7 @@
 
 #include "dtypes.h"
 #include "log.h"
+#include "ecs.h"
 #include "scene.h"
 #include "config.h"
 

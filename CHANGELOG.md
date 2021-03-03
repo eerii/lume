@@ -2,7 +2,11 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.9]** ~ Light _2021-03-01_
+### **[0.0.10]** ~ Renderer _2021-03-03_
+
+---
+
+### **[0.0.9]** ~ Light _2021-03-03_
 #### Added
 - Variable jump height
 - LIGHT SHADER
@@ -10,6 +14,8 @@
 - Light follows the player
 #### Fixed
 - When hitting a block's downside on_ground was set so you sticked to the ceiling
+
+---
 
 ### **[0.0.8]** ~ Levels _2021-03-01_
 #### Added

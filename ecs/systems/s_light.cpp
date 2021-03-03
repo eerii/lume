@@ -3,7 +3,7 @@
 //all rights reserved uwu
 
 #include "s_light.h"
-#include "shader.h"
+#include "r_opengl.h"
 
 using namespace Verse;
 

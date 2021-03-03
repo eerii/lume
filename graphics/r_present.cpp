@@ -4,8 +4,11 @@
 
 #include <SDL2/SDL.h>
 
-#include "render_present.h"
 #include "time.h"
+
+#include "r_opengl.h"
+#include "r_present.h"
+
 #include "s_light.h"
 
 #define TRANSITION_TIME 500

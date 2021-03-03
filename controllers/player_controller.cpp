@@ -2,7 +2,7 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include "player.h"
+#include "player_controller.h"
 #include "game.h"
 #include "input.h"
 #include "time.h"

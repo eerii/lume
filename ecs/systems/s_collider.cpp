@@ -4,7 +4,7 @@
 
 #include "s_collider.h"
 #include "s_tilemap.h"
-#include "renderer.h"
+#include "r_pipeline.h"
 
 using namespace Verse;
 

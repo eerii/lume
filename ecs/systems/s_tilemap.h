@@ -7,8 +7,10 @@
 #include "dtypes.h"
 #include "log.h"
 
+#include "ecs.h"
 #include "scene.h"
-#include "renderer.h"
+#include "r_pipeline.h"
+#include "r_textures.h"
 
 namespace Verse::System::Tilemap
 {

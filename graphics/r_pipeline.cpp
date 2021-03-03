@@ -5,15 +5,16 @@
 #include "imgui.h"
 #include "imgui_sdl.h"
 
-#include "renderer.h"
-
 #include "s_texture.h"
 #include "s_tilemap.h"
 #include "s_collider.h"
 #include "s_light.h"
 
-#include "shader.h"
-#include "render_present.h"
+#include "r_pipeline.h"
+#include "r_shader.h"
+#include "r_opengl.h"
+#include "r_present.h"
+#include "r_textures.h"
 
 using namespace Verse;
 using namespace Graphics;
@@ -105,6 +106,9 @@ void Graphics::init(Config &c) {
     ImGui::CreateContext();
     ImGuiSDL::Initialize(renderer, W_WIDTH, W_HEIGHT);
     
+    //LINK TEXTURES TO RENDERER
+    Graphics::linkRendererToTexture(renderer);
+    
     //PALETTE
     palette_tex = loadTexture("res/graphics/palette_multi.png");
     
@@ -169,31 +173,4 @@ void Graphics::calculateRefreshRate() {
 
 int Graphics::getRefreshRate() {
     return refresh_rate;
-}
-
-
-SDL_Texture* Graphics::loadTexture(str path) {
-    if (renderer == nullptr) {
-        log::error("Renderer doesn't exist and you tried to load a texture");
-        return nullptr;
-    }
-    
-    SDL_Texture* tex = IMG_LoadTexture(renderer, path.c_str());
-    if (tex == nullptr) {
-        log::error("There was an error loading the texture: %s", path.c_str());
-    }
-    return tex;
-}
-
-SDL_Surface* Graphics::loadSurface(str path) {
-    if (renderer == nullptr) {
-        log::error("Renderer doesn't exist and you tried to load a texture");
-        return nullptr;
-    }
-    
-    SDL_Surface* surface = IMG_Load(path.c_str());
-    if (surface == nullptr) {
-        log::error("There was an error loading the surface: %s", path.c_str());
-    }
-    return surface;
 }

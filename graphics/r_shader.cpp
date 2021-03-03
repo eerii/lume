@@ -2,7 +2,8 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include "shader.h"
+#include "r_shader.h"
+#include "r_opengl.h"
 
 using namespace Verse;
 
