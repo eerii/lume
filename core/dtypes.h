@@ -12,6 +12,8 @@
 #define BOTTOMLEFT 2
 #define BOTTOMRIGHT 3
 
+//#define USE_OPENGL
+
 namespace Verse
 {
     //UNSIGNED INT
@@ -22,6 +24,13 @@ namespace Verse
 
     //STRING
     typedef std::string str;
+
+    //TEXTURES
+    #ifdef USE_OPENGL
+    typedef ui32 Tex;
+    #else
+    typedef SDL_Texture* Tex;
+    #endif
 
     //VEC2 - 2D Vector
     struct Vec2 {

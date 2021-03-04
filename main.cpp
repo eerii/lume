@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.0.9",
+        .version = "0.0.10",
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
@@ -72,17 +72,16 @@ int main(int argc, const char * argv[]) {
     light->radius = 96;
     light->centre = 0.2;
     
-    
-    /*EntityID test2 = scene.createEntity("Ground");
+#ifdef USE_OPENGL
+    EntityID test2 = scene.createEntity("Ground");
     
     Component::Collider* collider2 = scene.addComponent<Component::Collider>(test2);
     collider2->transform = Rect(40, 140, 8, 8);
     
     Component::Texture* texture2 = scene.addComponent<Component::Texture>(test2);
     texture2->tex = Graphics::loadTexture("res/graphics/ground2.png");
-    texture2->transform = Rect(40, 140, 8, 8);*/
-    
-    
+    texture2->transform = Rect(40, 140, 8, 8);
+#else
     EntityID tile = scene.createEntity("Tilemap");
     
     Component::Tilemap* tilemap = scene.addComponent<Component::Tilemap>(tile);
@@ -93,6 +92,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
+#endif
     
     while (running)
         running = Game::update(scene);

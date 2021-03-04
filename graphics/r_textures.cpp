@@ -6,6 +6,15 @@
 
 using namespace Verse;
 
+#ifdef USE_OPENGL
+
+Tex Graphics::loadTexture(str path) {
+    log::info("Loading Texture...");
+    return 0;
+}
+
+#else
+
 namespace {
     SDL_Renderer *renderer;
 }
@@ -14,7 +23,7 @@ void Graphics::linkRendererToTexture(SDL_Renderer* r) {
     renderer = r;
 }
 
-SDL_Texture* Graphics::loadTexture(str path) {
+Tex Graphics::loadTexture(str path) {
     if (renderer == nullptr) {
         log::error("Renderer doesn't exist and you tried to load a texture");
         return nullptr;
@@ -39,3 +48,5 @@ SDL_Surface* Graphics::loadSurface(str path) {
     }
     return surface;
 }
+
+#endif

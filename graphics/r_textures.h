@@ -4,16 +4,22 @@
 
 #pragma once
 
-//TODO: Remove in favour of my texture loading
-#include <SDL2/SDL.h>
+#ifdef USE_OPENGL
+#include "stb_image.h"
+#else
 #include <SDL2/SDL_image.h>
+#endif
 
 #include "dtypes.h"
 #include "log.h"
+#include "config.h"
 
 namespace Verse::Graphics
 {
-    void linkRendererToTexture(SDL_Renderer* r); //Deprecate in favour of custom renderer
-    SDL_Texture* loadTexture(str path);
+    Tex loadTexture(str path);
+
+    #ifndef USE_OPENGL
     SDL_Surface* loadSurface(str path);
+    void linkRendererToTexture(SDL_Renderer* r); //Deprecate in favour of custom renderer
+    #endif
 }

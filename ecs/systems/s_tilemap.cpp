@@ -42,6 +42,9 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
 std::vector<std::vector<ui8>> System::Tilemap::load(str path) {
     std::vector<std::vector<ui8>> tiles = {{}};
     
+#ifdef USE_OPENGL
+    //TODO: Load Tilemap
+#else
     SDL_Surface* map = Graphics::loadSurface(path);
     
     if (map->pixels == nullptr) {
@@ -64,6 +67,7 @@ std::vector<std::vector<ui8>> System::Tilemap::load(str path) {
             tiles[j].push_back(1);
         }
     }
+#endif
     
     return tiles;
 }

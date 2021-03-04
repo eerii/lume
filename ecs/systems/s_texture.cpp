@@ -18,7 +18,7 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
     for (EntityID e : SceneView<Component::Texture>(scene)) {
         Component::Texture* tex = scene.getComponent<Component::Texture>(e);
         
-        Rect frame;
+        Rect src;
         
         if (tex->animation.size() > 0) {
             if (frame_count >= animation_speed or frame_count == -1) {
@@ -29,16 +29,22 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
                     tex->current_animation = tex->animation[0].x;
                 }
             }
-            frame = Rect(Vec2((tex->transform.size.x * tex->current_animation), 0), tex->transform.size);
+            src = Rect(Vec2((tex->transform.size.x * tex->current_animation), 0), tex->transform.size);
         } else {
-            frame = Rect(Vec2(), tex->transform.size);
+            src = Rect(Vec2(), tex->transform.size);
         }
         
-        SDL_Rect src = frame.toSDL();
-        SDL_Rect dst = Rect((tex->transform.pos + tex->offset) * c.render_scale, tex->transform.size * c.render_scale).toSDL();
+        Rect dst = Rect((tex->transform.pos + tex->offset) * c.render_scale, tex->transform.size * c.render_scale);
+        
+#ifdef USE_OPENGL
+        //TODO: Render texture
+#else
+        SDL_Rect sdl_src = src.toSDL();
+        SDL_Rect sdl_dst = dst.toSDL();
         
         SDL_RendererFlip flip = tex->is_reversed ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
         
-        SDL_RenderCopyEx(renderer, tex->tex, &src, &dst, 0, NULL, flip);
+        SDL_RenderCopyEx(renderer, tex->tex, &sdl_src, &sdl_dst, 0, NULL, flip);
+#endif
     }
 }

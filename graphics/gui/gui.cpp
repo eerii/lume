@@ -27,16 +27,22 @@ void Gui::update(float delta, Config &c) {
 }
 
 void Gui::prerender(Scene &scene, Config &c, ui16 &fps) {
+#ifdef USE_OPENGL
+    
+#else
     ImGui::NewFrame();
     
     Gui::entities(scene, c);
     Gui::actors(scene);
     Gui::performance(fps);
-    
-    //ImGui::ShowDemoWindow();
+#endif
 }
 
 void Gui::render() {
+#ifdef USE_OPENGL
+    
+#else
     ImGui::Render();
     ImGuiSDL::Render(ImGui::GetDrawData());
+#endif
 }
