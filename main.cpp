@@ -32,6 +32,7 @@ int main(int argc, const char * argv[]) {
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
+        .enable_gui = true,
         .use_shaders = true,
         .use_grayscale = false,
         .palette_index = 0,

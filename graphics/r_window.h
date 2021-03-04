@@ -8,7 +8,8 @@
 #include "log.h"
 #include "config.h"
 
-namespace Verse::Window
+namespace Verse::Graphics::Window
 {
+    SDL_Window* createWindow(Config &c);
     void onResize(SDL_Event &e, Config &c);
 }

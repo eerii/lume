@@ -16,7 +16,7 @@
         #include <OpenGL/gl.h>
     #endif //!ESSENTIAL_GL_PRACTICES_SUPPORT_GL3
 
-    #else //OTHERS (Not tested)
+#else //OTHERS (Not tested)
 
     #include <SDL2/SDL_opengl.h>
     #include <SDL2/SDL_opengl_glext.h>

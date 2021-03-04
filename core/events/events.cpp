@@ -39,7 +39,7 @@ bool Events::handleEvents(Config &c) {
                 break;
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
-                    Window::onResize(event, c);
+                    Graphics::Window::onResize(event, c);
                 break;
         }
     }
