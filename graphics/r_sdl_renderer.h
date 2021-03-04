@@ -8,7 +8,10 @@
 #include "log.h"
 #include "config.h"
 
-namespace Verse::Graphics::Renderer
+namespace Verse::Graphics::Renderer::SDL
 {
-    SDL_Renderer* createSDLRenderer(Config &c, SDL_Window* window, SDL_Texture* render_target, ui8 &pid);
+    SDL_Renderer* create(Config &c, SDL_Window* window, ui8 &pid);
+
+    void clear(Config &c, SDL_Renderer* renderer);
+    void present(Config &c, SDL_Renderer* renderer, SDL_Window* window, SDL_Texture* palette_tex, ui8 &pid);
 }

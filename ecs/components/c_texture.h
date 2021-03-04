@@ -11,7 +11,7 @@
 namespace Verse::Component
 {
     struct Texture {
-        Tex tex;
+        Tex* tex;
         Rect transform;
         
         Vec2 offset = Vec2(0,0);

@@ -25,11 +25,9 @@ using namespace Graphics;
 
 namespace {
     SDL_Window *window;
-    Vec2 previous_window_size;
     int refresh_rate = 60;
 
-    Tex render_target;
-    Tex palette_tex;
+    Tex* palette_tex;
     
     ui8 pid;
 
@@ -59,7 +57,7 @@ void Graphics::init(Config &c) {
     #ifdef USE_OPENGL
     Renderer::createRenderer(pid);
     #else
-    sdl_renderer = Renderer::createSDLRenderer(c, window, render_target, pid);
+    sdl_renderer = Renderer::SDL::create(c, window, pid);
     Graphics::linkRendererToTexture(sdl_renderer);
     #endif
     
@@ -82,7 +80,11 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     prerender(scene, c, fps);
     
     //CLEAR
-    clear(c);
+#ifdef USE_OPENGL
+    
+#else
+    Renderer::SDL::clear(c, sdl_renderer);
+#endif
     
     //RENDER TEXTURES
     System::Tilemap::render(scene, sdl_renderer, c);
@@ -100,8 +102,12 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     if (c.enable_gui)
         Gui::render();
     
-    //DISPLAY
-    display(c);
+    //PRESENT
+#ifdef USE_OPENGL
+    
+#else
+    Renderer::SDL::present(c, sdl_renderer, window, palette_tex, pid);
+#endif
 }
 
 
@@ -111,42 +117,12 @@ void Graphics::prerender(Scene &scene, Config &c, ui16 fps) {
 }
 
 
-void Graphics::clear(Config &c) {
-#ifdef USE_OPENGL
-    
-#else
-    if (c.use_shaders) {
-        SDL_SetRenderTarget(sdl_renderer, render_target);
-        
-        if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
-            previous_window_size = c.window_size;
-            render_target = SDL_CreateTexture(sdl_renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET,
-                                              c.window_size.x, c.window_size.y);
-        }
-    }
-    SDL_RenderClear(sdl_renderer);
-#endif
-}
-
-
-void Graphics::display(Config &c) {
-#ifdef USE_OPENGL
-    
-#else
-    if (c.use_shaders)
-        Graphics::present(c, sdl_renderer, window, render_target, palette_tex, pid);
-    else
-        SDL_RenderPresent(sdl_renderer);
-#endif
-}
-
-
 void Graphics::destroy() {
 #ifdef USE_OPENGL
     
 #else
-    SDL_DestroyTexture(palette_tex);
-    SDL_DestroyTexture(render_target);
+    //SDL_DestroyTexture(palette_tex);
+    //SDL_DestroyTexture(render_target);
     
     SDL_DestroyRenderer(sdl_renderer);
     

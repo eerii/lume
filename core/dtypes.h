@@ -29,7 +29,7 @@ namespace Verse
     #ifdef USE_OPENGL
     typedef ui32 Tex;
     #else
-    typedef SDL_Texture* Tex;
+    typedef SDL_Texture Tex;
     #endif
 
     //VEC2 - 2D Vector

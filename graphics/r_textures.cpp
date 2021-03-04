@@ -8,9 +8,12 @@ using namespace Verse;
 
 #ifdef USE_OPENGL
 
-Tex Graphics::loadTexture(str path) {
+Tex* Graphics::loadTexture(str path) {
     log::info("Loading Texture...");
-    return 0;
+    
+    ui32* tex = new ui32();
+    
+    return tex;
 }
 
 #else
@@ -23,7 +26,7 @@ void Graphics::linkRendererToTexture(SDL_Renderer* r) {
     renderer = r;
 }
 
-Tex Graphics::loadTexture(str path) {
+Tex* Graphics::loadTexture(str path) {
     if (renderer == nullptr) {
         log::error("Renderer doesn't exist and you tried to load a texture");
         return nullptr;
