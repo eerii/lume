@@ -2,7 +2,13 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.10]** ~ Renderer _2021-03-03_
+### **[0.0.10]** ~ Renderer _2021-03-04_
+#### Added
+- Basic light variation
+#### Changed
+- Code cleanup
+- Moved imgui to deps
+- Moved controllers to ecs
 
 ---
 

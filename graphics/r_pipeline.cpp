@@ -39,7 +39,9 @@ namespace {
 void Graphics::init(Config &c) {
     
     //Can't use modern opengl with sdl renderer, might change to custom renderer in the future
-    //SDL_GL_SetAttribute( SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
+    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     
     //CREATE A WINDOW
     window = SDL_CreateWindow((c.name + " - Version " + c.version).c_str(),

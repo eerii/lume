@@ -4,6 +4,10 @@
 
 #include "s_light.h"
 #include "r_opengl.h"
+#include "time.h"
+
+#define LIGHT_PERIOD 5
+#define LIGHT_VARIATION 5
 
 using namespace Verse;
 
@@ -53,6 +57,9 @@ void System::Light::init(SDL_Renderer* renderer, Config &c) {
     //RECTS
     src = Rect(Vec2(0,0), c.window_size).toSDL();
     dst = Rect(Vec2(0,0), c.window_size).toSDL();
+    
+    //RANDOM SEED
+    srand((ui32)Time::current);
 }
 
 void System::Light::render(Scene &scene, Config &c) {
@@ -68,7 +75,7 @@ void System::Light::render(Scene &scene, Config &c) {
             if (tex != nullptr) //This is to render the light relative to the texture
                 light_sources[i] += tex->transform.pos * c.render_scale;
             
-            light_radius[i] = light->radius * c.render_scale;
+            light_radius[i] = (light->radius + sin(Time::current * 0.001 * LIGHT_PERIOD) * LIGHT_VARIATION) * c.render_scale;
             light_centres[i] = light->centre * light_radius[i];
         } else {
             light_entities.push_back(e);

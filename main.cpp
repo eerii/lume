@@ -69,7 +69,7 @@ int main(int argc, const char * argv[]) {
     Component::Light* light = scene.addComponent<Component::Light>(test);
     light->pos = texture->transform.size / 2;
     light->radius = 96;
-    light->centre = 0.5;
+    light->centre = 0.2;
     
     
     /*EntityID test2 = scene.createEntity("Ground");
