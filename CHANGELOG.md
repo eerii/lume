@@ -9,6 +9,7 @@
 - Code cleanup
 - Moved imgui to deps
 - Moved controllers to ecs
+- Moved all rendering to r_pipeline
 
 ---
 

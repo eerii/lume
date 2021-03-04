@@ -16,6 +16,7 @@ namespace Verse
         Vec2 window_size;
         Vec2 window_padding;
         int render_scale;
+        bool enable_gui;
         
         bool use_shaders;
         bool use_grayscale;

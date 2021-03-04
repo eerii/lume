@@ -4,7 +4,7 @@
 
 #include "events.h"
 #include "input.h"
-#include "window.h"
+#include "r_window.h"
 
 using namespace Verse;
 

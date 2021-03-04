@@ -21,7 +21,8 @@ namespace Verse::Game
     bool init(Config &c);
 
     bool update(Scene &scene);
-    void time_frame();
+    bool physicsUpdate(Scene &scene);
+    void timeFrame();
 
     void stop();
 }

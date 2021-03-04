@@ -10,8 +10,6 @@
 #include "gui.h"
 #include "s_actor.h"
 
-#define ENABLE_GUI
-
 using namespace Verse;
 
 namespace
@@ -56,44 +54,15 @@ bool Game::init(Config &c) {
 bool Game::update(Scene &scene) {
     bool running = true;
     
-    Game::time_frame();
+    timeFrame();
     
-    while (accumulator >= TIMESTEP) {
-        accumulator -= TIMESTEP;
-        
-        //Event Update
-        running &= Events::handleEvents(*config);
-        
-        //Gui Update
-#ifdef ENABLE_GUI
-        Gui::update(1.0f / 60.0f, *config);
-#endif
-        
-        //Entity Update
-        System::Actor::update(scene);
-        
-        //Input Update
-        Input::frame();
-    }
+    //PHYSICS UPDATE
+    running = physicsUpdate(scene);
     
-    //const float alpha = accumulator / TIMESTEP; //Used to linearly interpolate
+    //RENDER UPDATE
+    Graphics::render(scene, *config, fps);
     
-    //Render Update
-#ifdef ENABLE_GUI
-    Gui::prerender(scene, *config, fps);
-#endif
-    
-    Graphics::clear(*config);
-    
-    Graphics::render(scene, *config);
-    
-#ifdef ENABLE_GUI
-    Gui::render();
-#endif
-    
-    Graphics::display(*config);
-    
-    //Prevent the game from rendering faster than the refresh speed
+    //PREVENT RUNNING TOO FAST
     ui16 frame_ticks = (ui16)(time() - Time::current);
     if (frame_ticks < 1000.0 / (float)Graphics::getRefreshRate()) {
         SDL_Delay((1000.0 / (float)Graphics::getRefreshRate()) - frame_ticks);
@@ -105,7 +74,30 @@ bool Game::update(Scene &scene) {
     return running;
 }
 
-void Game::time_frame() {
+bool Game::physicsUpdate(Scene &scene) {
+    bool running = true;
+    
+    while (accumulator >= TIMESTEP) {
+        accumulator -= TIMESTEP;
+        
+        //GET EVENTS
+        running &= Events::handleEvents(*config);
+        
+        //UPDATE GUI
+        if(config->enable_gui)
+            Gui::update(1.0f / 60.0f, *config);
+        
+        //UPDATE SYSTEMS
+        System::Actor::update(scene);
+        
+        //PREPARE FOR NEXT INPUT
+        Input::frame();
+    }
+    
+    return running;
+}
+
+void Game::timeFrame() {
     Time::previous = Time::current;
     Time::current = time();
     Time::delta = Time::current - Time::previous;

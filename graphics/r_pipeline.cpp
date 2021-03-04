@@ -4,6 +4,7 @@
 
 #include "imgui.h"
 #include "imgui_sdl.h"
+#include "gui.h"
 
 #include "s_texture.h"
 #include "s_tilemap.h"
@@ -119,6 +120,40 @@ void Graphics::init(Config &c) {
 }
 
 
+void Graphics::render(Scene &scene, Config &c, ui16 fps) {
+    //PRERENDER GUI
+    prerender(scene, c, fps);
+    
+    //CLEAR
+    clear(c);
+    
+    //RENDER TEXTURES
+    System::Tilemap::render(scene, renderer, c);
+    System::Texture::render(scene, renderer, c);
+    System::Light::render(scene, c);
+    
+    //RENDER DEBUG
+    if (c.render_collision_boxes)
+        System::Collider::render(scene, renderer, c);
+    
+    //BACKGROUND
+    SDL_SetRenderDrawColor(renderer, c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
+    
+    //RENDER GUI
+    if (c.enable_gui)
+        Gui::render();
+    
+    //DISPLAY
+    display(c);
+}
+
+
+void Graphics::prerender(Scene &scene, Config &c, ui16 fps) {
+    if (c.enable_gui)
+        Gui::prerender(scene, c, fps);
+}
+
+
 void Graphics::clear(Config &c) {
     if (c.use_shaders) {
         SDL_SetRenderTarget(renderer, render_target);
@@ -130,18 +165,6 @@ void Graphics::clear(Config &c) {
         }
     }
     SDL_RenderClear(renderer);
-}
-
-
-void Graphics::render(Scene &scene, Config &c) {
-    System::Tilemap::render(scene, renderer, c);
-    System::Texture::render(scene, renderer, c);
-    System::Light::render(scene, c);
-    
-    if (c.render_collision_boxes)
-        System::Collider::render(scene, renderer, c);
-    
-    SDL_SetRenderDrawColor(renderer, c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
 }
 
 
