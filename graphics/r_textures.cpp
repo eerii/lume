@@ -3,6 +3,7 @@
 //all rights reserved uwu
 
 #include "r_textures.h"
+#include "r_renderer.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -11,10 +12,11 @@ using namespace Verse;
 
 #ifdef USE_OPENGL
 
-Tex* Graphics::loadTexture(str path) {
+Tex* Graphics::loadTexture(str path, ui32 &tex_id) {
     int w, h, ch;
-    ui8* tex = stbi_load(path.c_str(), &w, &h, &ch, 0);
-    //log::info("Image W: %d, H: %d, CH: %d", w, h, ch);
+    ui8* tex = stbi_load(path.c_str(), &w, &h, &ch, STBI_rgb_alpha);
+    
+    tex_id = (int)Graphics::Renderer::GL::create_texture(tex, w, h);
     
     return tex;
 }
@@ -29,7 +31,7 @@ void Graphics::linkRendererToTexture(SDL_Renderer* r) {
     renderer = r;
 }
 
-Tex* Graphics::loadTexture(str path) {
+Tex* Graphics::loadTexture(str path, ui32 &tex_id) {
     if (renderer == nullptr) {
         log::error("Renderer doesn't exist and you tried to load a texture");
         return nullptr;

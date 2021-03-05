@@ -3,6 +3,7 @@
 //all rights reserved uwu
 
 #include "s_texture.h"
+#include "r_renderer.h"
 
 using namespace Verse;
 
@@ -37,14 +38,17 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         Rect dst = Rect((tex->transform.pos + tex->offset) * c.render_scale, tex->transform.size * c.render_scale);
         
 #ifdef USE_OPENGL
-        //TODO: Render texture
+        Graphics::Renderer::GL::render_texture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1));
+        
 #else
+        
         SDL_Rect sdl_src = src.toSDL();
         SDL_Rect sdl_dst = dst.toSDL();
         
         SDL_RendererFlip flip = tex->is_reversed ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
         
         SDL_RenderCopyEx(renderer, tex->tex, &sdl_src, &sdl_dst, 0, NULL, flip);
+        
 #endif
     }
 }

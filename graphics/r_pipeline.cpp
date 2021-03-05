@@ -65,7 +65,8 @@ void Graphics::init(Config &c) {
     #endif
     
     //PALETTE
-    palette_tex = loadTexture("res/graphics/palette_multi.png");
+    ui32 palette_pointer = 0;
+    palette_tex = loadTexture("res/graphics/palette_multi.png", palette_pointer);
     
     //LIGHT
     System::Light::init(Renderer::SDL::getRenderer(), c);

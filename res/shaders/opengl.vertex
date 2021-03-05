@@ -1,11 +1,13 @@
-#version 330
+#version 410 core
 
-layout (location = 0) in vec2 pos;
-layout (location = 1) in vec3 vertex_color;
+layout (location = 0) in vec4 v_transform;
 
-out vec3 frag_color;
+out vec2 f_tex_coord;
+
+uniform mat4 model;
+uniform mat4 projection;
 
 void main() {
-    gl_Position = vec4(pos, 0.0, 1.0);
-    frag_color = vertex_color;
+    gl_Position = projection * model * vec4(v_transform.xy, 0.0, 1.0);
+    f_tex_coord = v_transform.zw;
 }

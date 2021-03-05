@@ -16,7 +16,7 @@
 
 namespace Verse::Graphics
 {
-    Tex* loadTexture(str path);
+    Tex* loadTexture(str path, ui32 &tex_id);
 
     #ifndef USE_OPENGL
     SDL_Surface* loadSurface(str path);

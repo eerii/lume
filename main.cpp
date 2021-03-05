@@ -59,7 +59,7 @@ int main(int argc, const char * argv[]) {
     collider->transform = Rect(32, 64, 9, 14);
     
     Component::Texture* texture = scene.addComponent<Component::Texture>(test);
-    texture->tex = Graphics::loadTexture("res/graphics/lume_idle.png");
+    texture->tex = Graphics::loadTexture("res/graphics/lume_idle.png", texture->tex_id);
     texture->transform = Rect(32, 64, 11, 14);
     texture->offset = Vec2(-1, 0);
     texture->animation.push_back(Vec2(0,2));
@@ -76,27 +76,38 @@ int main(int argc, const char * argv[]) {
     light->radius = 96;
     light->centre = 0.2;
     
-#ifdef USE_OPENGL
+
     EntityID test2 = scene.createEntity("Ground");
     
     Component::Collider* collider2 = scene.addComponent<Component::Collider>(test2);
     collider2->transform = Rect(40, 140, 8, 8);
     
     Component::Texture* texture2 = scene.addComponent<Component::Texture>(test2);
-    texture2->tex = Graphics::loadTexture("res/graphics/ground2.png");
+    texture2->tex = Graphics::loadTexture("res/graphics/ground2.png", texture2->tex_id);
     texture2->transform = Rect(40, 140, 8, 8);
-#else
+    
+    
+    EntityID test3 = scene.createEntity("Ground");
+    
+    Component::Collider* collider3 = scene.addComponent<Component::Collider>(test3);
+    collider3->transform = Rect(60, 120, 8, 8);
+    
+    Component::Texture* texture3 = scene.addComponent<Component::Texture>(test3);
+    texture3->tex = Graphics::loadTexture("res/graphics/ground2.png", texture3->tex_id);
+    texture3->transform = Rect(60, 120, 8, 8);
+
+    /*
     EntityID tile = scene.createEntity("Tilemap");
     
     Component::Tilemap* tilemap = scene.addComponent<Component::Tilemap>(tile);
     tilemap->tiles = System::Tilemap::load("res/levels/1.png");
-    tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png");
+    tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png", tilemap->tex);
     tilemap->tex_size = Vec2(8, 8);
     tilemap->pos = Vec2(0, 96);
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
-#endif
+*/
     
     while (running)
         running = Game::update(scene);
