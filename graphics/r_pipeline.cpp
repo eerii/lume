@@ -89,7 +89,6 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     Renderer::SDL::clear(c);
 #endif
     
-#ifndef USE_OPENGL
     //RENDER TEXTURES
     System::Tilemap::render(scene, Renderer::SDL::getRenderer(), c);
     System::Texture::render(scene, Renderer::SDL::getRenderer(), c);
@@ -105,7 +104,7 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     //RENDER GUI
     if (c.enable_gui)
         Gui::render();
-#endif
+
     
     //PRESENT
 #ifdef USE_OPENGL

@@ -8,10 +8,6 @@
 
 #ifdef __APPLE__ //MACOS
 
-    #define glGenVertexArrays glGenVertexArraysAPPLE
-    #define glBindVertexArray glBindVertexArrayAPPLE
-    #define glDeleteVertexArrays glDeleteVertexArraysAPPLE
-
     #define GL_SILENCE_DEPRECATION
 
     #include <OpenGL/OpenGL.h>

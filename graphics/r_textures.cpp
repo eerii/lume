@@ -14,7 +14,7 @@ using namespace Verse;
 Tex* Graphics::loadTexture(str path) {
     int w, h, ch;
     ui8* tex = stbi_load(path.c_str(), &w, &h, &ch, 0);
-    log::info("Image W: %d, H: %d, CH: %d", w, h, ch);
+    //log::info("Image W: %d, H: %d, CH: %d", w, h, ch);
     
     return tex;
 }

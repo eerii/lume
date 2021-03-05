@@ -6,6 +6,8 @@
 #### Added
 - Basic light variation
 - Conditional compiling for SDL or OpenGL
+- Basic OpenGL Renderer, VAO and VBO
+- Version in the title
 #### Changed
 - Code cleanup
 - Moved imgui to deps
