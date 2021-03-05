@@ -30,9 +30,6 @@ namespace {
     Tex* palette_tex;
     
     ui8 pid;
-
-    //Deprecated
-    SDL_Renderer *sdl_renderer;
 }
 
 void Graphics::init(Config &c) {
@@ -40,6 +37,7 @@ void Graphics::init(Config &c) {
     //MODERN OPENGL
     #ifdef USE_OPENGL
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     #ifndef __APPLE__
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
@@ -55,59 +53,22 @@ void Graphics::init(Config &c) {
     
     //RENDERER
     #ifdef USE_OPENGL
-    Renderer::createRenderer(pid);
+    Renderer::GL::create(c, window, pid);
     #else
-    sdl_renderer = Renderer::SDL::create(c, window, pid);
-    Graphics::linkRendererToTexture(sdl_renderer);
+    Renderer::SDL::create(c, window, pid);
     #endif
     
     //IMGUI
     ImGui::CreateContext();
     #ifndef USE_OPENGL
-    ImGuiSDL::Initialize(sdl_renderer, c.window_size.x, c.window_size.y);
+    ImGuiSDL::Initialize(Renderer::SDL::getRenderer(), c.window_size.x, c.window_size.y);
     #endif
     
     //PALETTE
     palette_tex = loadTexture("res/graphics/palette_multi.png");
     
     //LIGHT
-    System::Light::init(sdl_renderer, c);
-}
-
-
-void Graphics::render(Scene &scene, Config &c, ui16 fps) {
-    //PRERENDER GUI
-    prerender(scene, c, fps);
-    
-    //CLEAR
-#ifdef USE_OPENGL
-    
-#else
-    Renderer::SDL::clear(c, sdl_renderer);
-#endif
-    
-    //RENDER TEXTURES
-    System::Tilemap::render(scene, sdl_renderer, c);
-    System::Texture::render(scene, sdl_renderer, c);
-    System::Light::render(scene, c);
-    
-    //RENDER DEBUG
-    if (c.render_collision_boxes)
-        System::Collider::render(scene, sdl_renderer, c);
-    
-    //BACKGROUND
-    SDL_SetRenderDrawColor(sdl_renderer, c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
-    
-    //RENDER GUI
-    if (c.enable_gui)
-        Gui::render();
-    
-    //PRESENT
-#ifdef USE_OPENGL
-    
-#else
-    Renderer::SDL::present(c, sdl_renderer, window, palette_tex, pid);
-#endif
+    System::Light::init(Renderer::SDL::getRenderer(), c);
 }
 
 
@@ -117,17 +78,51 @@ void Graphics::prerender(Scene &scene, Config &c, ui16 fps) {
 }
 
 
+void Graphics::render(Scene &scene, Config &c, ui16 fps) {
+    //PRERENDER GUI
+    prerender(scene, c, fps);
+    
+    //CLEAR
+#ifdef USE_OPENGL
+    Renderer::GL::clear();
+#else
+    Renderer::SDL::clear(c);
+#endif
+    
+#ifndef USE_OPENGL
+    //RENDER TEXTURES
+    System::Tilemap::render(scene, Renderer::SDL::getRenderer(), c);
+    System::Texture::render(scene, Renderer::SDL::getRenderer(), c);
+    System::Light::render(scene, c);
+    
+    //RENDER DEBUG
+    if (c.render_collision_boxes)
+        System::Collider::render(scene, Renderer::SDL::getRenderer(), c);
+    
+    //BACKGROUND
+    SDL_SetRenderDrawColor(Renderer::SDL::getRenderer(), c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
+    
+    //RENDER GUI
+    if (c.enable_gui)
+        Gui::render();
+#endif
+    
+    //PRESENT
+#ifdef USE_OPENGL
+    Renderer::GL::present(window, pid);
+#else
+    Renderer::SDL::present(c, window, palette_tex, pid);
+#endif
+}
+
+
 void Graphics::destroy() {
 #ifdef USE_OPENGL
-    
+    Renderer::GL::destroy();
 #else
-    //SDL_DestroyTexture(palette_tex);
-    //SDL_DestroyTexture(render_target);
-    
-    SDL_DestroyRenderer(sdl_renderer);
-    
-    SDL_DestroyWindow(window);
+    Renderer::SDL::destroy(palette_tex);
 #endif
+    SDL_DestroyWindow(window);
 }
 
 

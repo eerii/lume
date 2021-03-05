@@ -58,11 +58,12 @@ ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
     glGetShaderiv(id, GL_COMPILE_STATUS, &shaderCompiled);
     if(shaderCompiled != GL_TRUE) {
         log::error("Shader Compilation Error, ID: %d", id);
-        int logLen;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLen);
-        if (logLen > 0) {
-            char *log = (char*)malloc(logLen);
-            glGetShaderInfoLog(id, logLen, &logLen, log);
+        
+        int log_len;
+        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_len);
+        if (log_len > 0) {
+            char *log = (char*)malloc(log_len);
+            glGetShaderInfoLog(id, log_len, &log_len, log);
             
             log::error("Shader compile log: %s", log);
             free(log);
@@ -101,15 +102,14 @@ ui8 Graphics::Shader::compileProgram(str vertex_file, str fragment_file) {
         glAttachShader(pid, vertex_shader);
         glAttachShader(pid, fragment_shader);
         glLinkProgram(pid);
-        glValidateProgram(pid);
-
-        int logLen;
-        glGetProgramiv(pid, GL_INFO_LOG_LENGTH, &logLen);
-        if(logLen > 0) {
-            char* log = (char*)malloc(logLen * sizeof(char));
-            glGetProgramInfoLog(pid, logLen, &logLen, log);
+        
+        int log_len;
+        glGetProgramiv(pid, GL_INFO_LOG_LENGTH, &log_len);
+        if(log_len > 0) {
+            char* log = (char*)malloc(log_len * sizeof(char));
+            glGetProgramInfoLog(pid, log_len, &log_len, log);
             
-            log::error("Program compile log: %s", log);
+            log::error("Program compile error: %s", log);
             free(log);
         }
     }
@@ -121,4 +121,18 @@ ui8 Graphics::Shader::compileProgram(str vertex_file, str fragment_file) {
         glDeleteShader(fragment_shader);
     
     return pid;
+}
+
+void Graphics::Shader::validateProgram(ui8 pid) {
+    glValidateProgram(pid);
+    
+    int log_len;
+    glGetProgramiv(pid, GL_INFO_LOG_LENGTH, &log_len);
+    if(log_len > 0) {
+        char* log = (char*)malloc(log_len * sizeof(char));
+        glGetProgramInfoLog(pid, log_len, &log_len, log);
+        
+        log::error("Program validation error: %s", log);
+        free(log);
+    }
 }

@@ -6,8 +6,12 @@
 
 #include "dtypes.h"
 #include "log.h"
+#include "config.h"
 
-namespace Verse::Graphics::Renderer
+namespace Verse::Graphics::Renderer::GL
 {
-    void createRenderer(ui8 &pid);
+    void create(Config &c, SDL_Window* window, ui8 &pid);
+    void clear();
+    void present(SDL_Window* window, ui8 &pid);
+    void destroy();
 }

@@ -15,6 +15,8 @@
 
 using namespace Verse;
 
+#ifndef USE_OPENGL
+
 namespace {
     unsigned int textures[2];
 
@@ -124,3 +126,5 @@ void Graphics::handlePaletteTransition(Config &c) {
         switch_palette_time = 0; transition_percent = 0.0;
     }
 }
+
+#endif

@@ -12,7 +12,7 @@
 #define BOTTOMLEFT 2
 #define BOTTOMRIGHT 3
 
-//#define USE_OPENGL
+#define USE_OPENGL
 
 namespace Verse
 {
@@ -27,7 +27,7 @@ namespace Verse
 
     //TEXTURES
     #ifdef USE_OPENGL
-    typedef ui32 Tex;
+    typedef ui8 Tex;
     #else
     typedef SDL_Texture Tex;
     #endif

@@ -4,14 +4,17 @@
 
 #include "r_textures.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 using namespace Verse;
 
 #ifdef USE_OPENGL
 
 Tex* Graphics::loadTexture(str path) {
-    log::info("Loading Texture...");
-    
-    ui32* tex = new ui32();
+    int w, h, ch;
+    ui8* tex = stbi_load(path.c_str(), &w, &h, &ch, 0);
+    log::info("Image W: %d, H: %d, CH: %d", w, h, ch);
     
     return tex;
 }
