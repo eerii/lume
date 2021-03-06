@@ -87,27 +87,16 @@ int main(int argc, const char * argv[]) {
     texture2->transform = Rect(40, 140, 8, 8);
     
     
-    EntityID test3 = scene.createEntity("Ground");
-    
-    Component::Collider* collider3 = scene.addComponent<Component::Collider>(test3);
-    collider3->transform = Rect(60, 120, 8, 8);
-    
-    Component::Texture* texture3 = scene.addComponent<Component::Texture>(test3);
-    texture3->tex = Graphics::loadTexture("res/graphics/ground2.png", texture3->tex_id);
-    texture3->transform = Rect(60, 120, 8, 8);
-
-    /*
     EntityID tile = scene.createEntity("Tilemap");
     
     Component::Tilemap* tilemap = scene.addComponent<Component::Tilemap>(tile);
     tilemap->tiles = System::Tilemap::load("res/levels/1.png");
-    tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png", tilemap->tex);
+    tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png", tilemap->tex_id);
     tilemap->tex_size = Vec2(8, 8);
     tilemap->pos = Vec2(0, 96);
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
-*/
     
     while (running)
         running = Game::update(scene);

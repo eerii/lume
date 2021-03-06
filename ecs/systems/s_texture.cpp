@@ -39,7 +39,6 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         
 #ifdef USE_OPENGL
         Graphics::Renderer::GL::render_texture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1));
-        
 #else
         
         SDL_Rect sdl_src = src.toSDL();

@@ -11,7 +11,9 @@ namespace Verse::Component
 {
     struct Tilemap {
         std::vector<std::vector<ui8>> tiles;
-        SDL_Texture* tex;
+        Tex* tex;
+        ui32 tex_id;
+        
         Vec2 tex_size;
         Vec2 pos;
     };

@@ -5,6 +5,8 @@
 #include <math.h>
 
 #include "s_tilemap.h"
+#include "r_renderer.h"
+#include "stb_image.h"
 
 using namespace Verse;
 
@@ -12,29 +14,35 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(scene)) {
         Component::Tilemap* tmap = scene.getComponent<Component::Tilemap>(e);
         
-        SDL_Rect src;
-        src.x = 0;
-        src.y = 0;
-        src.w = tmap->tex_size.x;
-        src.h = tmap->tex_size.y;
+        Rect src;
+        src.pos.x = 0;
+        src.pos.y = 0;
+        src.size.x = tmap->tex_size.x;
+        src.size.y = tmap->tex_size.y;
         
-        SDL_Rect dst;
-        dst.x = tmap->pos.x * c.render_scale;
-        dst.y = tmap->pos.y * c.render_scale;
-        dst.w = tmap->tex_size.x * c.render_scale;
-        dst.h = tmap->tex_size.y * c.render_scale;
+        Rect dst;
+        dst.pos.x = tmap->pos.x * c.render_scale;
+        dst.pos.y = tmap->pos.y * c.render_scale;
+        dst.size.x = tmap->tex_size.x * c.render_scale;
+        dst.size.y = tmap->tex_size.y * c.render_scale;
         
         for (int i = 0; i < tmap->tiles.size(); i++) {
             for (int j = 0; j < tmap->tiles[i].size(); j++) {
                 if (tmap->tiles[i][j] != 0) {
-                    src.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
-                    SDL_RenderCopy(renderer, tmap->tex, &src, &dst);
+                    src.pos.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
+#ifdef USE_OPENGL
+                    Graphics::Renderer::GL::render_texture(tmap->tex_id, src, dst, 0);
+#else
+                    SDL_Rect src_sdl = src.toSDL();
+                    SDL_Rect dst_sdl = dst.toSDL();
+                    SDL_RenderCopy(renderer, tmap->tex, &src_sdl, &dst_sdl);
+#endif
                 }
                 
-                dst.x += tmap->tex_size.x * c.render_scale;
+                dst.pos.x += tmap->tex_size.x * c.render_scale;
             }
-            dst.x = tmap->pos.x * c.render_scale;
-            dst.y += tmap->tex_size.y * c.render_scale;
+            dst.pos.x = tmap->pos.x * c.render_scale;
+            dst.pos.y += tmap->tex_size.y * c.render_scale;
         }
     }
 }
@@ -43,7 +51,30 @@ std::vector<std::vector<ui8>> System::Tilemap::load(str path) {
     std::vector<std::vector<ui8>> tiles = {{}};
     
 #ifdef USE_OPENGL
-    //TODO: Load Tilemap
+    int w, h, ch;
+    ui8* map = stbi_load(path.c_str(), &w, &h, &ch, STBI_rgb_alpha);
+    int pitch = w * sizeof(ui32); //RGBA pitch
+    
+    if (map == nullptr) {
+        log::error("The tilemap has no pixels");
+        return tiles;
+    }
+    
+    for (int j = 0; j < h; j++) {
+        tiles.push_back({});
+        for (int i = 0; i < w; i++) {
+            ui8 *color = (ui8*)map + j * pitch + i * 4;
+            
+            if (color[3] == 0) {
+                tiles[j].push_back(0);
+                continue;
+            }
+            
+            //HANDLE MULTIPLE TILES HERE
+            //ui8 luminance = round((c[0] + c[1] + c[2]) / 3);
+            tiles[j].push_back(1);
+        }
+    }
 #else
     SDL_Surface* map = Graphics::loadSurface(path);
     
