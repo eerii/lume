@@ -30,8 +30,6 @@ namespace {
     int refresh_rate = 60;
 
     Tex* palette_tex;
-    
-    ui8 pid;
 }
 
 void Graphics::init(Config &c) {
@@ -55,9 +53,9 @@ void Graphics::init(Config &c) {
     
     //RENDERER
     #ifdef USE_OPENGL
-    Renderer::GL::create(c, window, pid);
+    Renderer::GL::create(c, window);
     #else
-    Renderer::SDL::create(c, window, pid);
+    Renderer::SDL::create(c, window);
     #endif
     
     //IMGUI TODO: Moved into renderer create
@@ -75,15 +73,9 @@ void Graphics::init(Config &c) {
 }
 
 
-void Graphics::prerender(Scene &scene, Config &c, ui16 fps) {
-    if (c.enable_gui)
-        Gui::prerender(scene, c, fps, window);
-}
-
-
 void Graphics::render(Scene &scene, Config &c, ui16 fps) {
-    //PRERENDER GUI
-    prerender(scene, c, fps);
+    
+    
     
     //CLEAR
 #ifdef USE_OPENGL
@@ -91,6 +83,10 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
 #else
     Renderer::SDL::clear(c);
 #endif
+    
+    //PRERENDER GUI
+    if (c.enable_gui)
+        Gui::prerender(scene, c, fps, window);
     
     //RENDER TEXTURES
     System::Tilemap::render(scene, Renderer::SDL::getRenderer(), c);
@@ -104,16 +100,20 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     //BACKGROUND
     SDL_SetRenderDrawColor(Renderer::SDL::getRenderer(), c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
     
+    //RENDER FRAMEBUFFER
+#ifdef USE_OPENGL
+    Renderer::GL::render();
+#endif
+    
     //RENDER GUI
     if (c.enable_gui)
         Gui::render();
-
     
     //PRESENT
 #ifdef USE_OPENGL
-    Renderer::GL::present(window, pid);
+    Renderer::GL::present(window);
 #else
-    Renderer::SDL::present(c, window, palette_tex, pid);
+    Renderer::SDL::present(c, window, palette_tex);
 #endif
 }
 

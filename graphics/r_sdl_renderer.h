@@ -10,10 +10,10 @@
 
 namespace Verse::Graphics::Renderer::SDL
 {
-    void create(Config &c, SDL_Window* window, ui8 &pid);
+    void create(Config &c, SDL_Window* window);
     SDL_Renderer* getRenderer();
 
     void clear(Config &c);
-    void present(Config &c, SDL_Window* window, SDL_Texture* palette_tex, ui8 &pid);
+    void present(Config &c, SDL_Window* window, SDL_Texture* palette_tex);
     void destroy(SDL_Texture* palette_tex);
 }

@@ -20,6 +20,10 @@ using namespace Graphics;
 namespace {
     SDL_GLContext context;
 
+    ui8 pid[2];
+
+    ui32 fbo;
+    ui32 fb_tex;
     ui32 vao;
     ui32 vbo;
 
@@ -30,12 +34,19 @@ namespace {
          1.0,  0.0,  1.0,  0.0,
     };
 
+    float fb_vertices[] = {
+        -1.0,  1.0,  0.0,  1.0,
+         1.0,  1.0,  1.0,  1.0,
+        -1.0, -1.0,  0.0,  0.0,
+         1.0, -1.0,  1.0,  0.0,
+    };
+
     glm::mat4 projection;
     ui8 projection_loc;
     ui8 model_loc;
 }
 
-void Graphics::Renderer::GL::create(Config &c, SDL_Window* window, ui8 &pid) {
+void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     //CONTEXT
     context = SDL_GL_CreateContext(window);
     if (context == NULL) {
@@ -77,23 +88,45 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window, ui8 &pid) {
     ImGui_ImplOpenGL3_Init();
     
     //SHADERS
-    //TODO: Port shaders
-    pid = Graphics::Shader::compileProgram("res/shaders/opengl.vertex", "res/shaders/opengl.frag");
-    //Graphics::Shader::validateProgram(pid);
-    log::graphics("Program ID: %d", pid);
+    pid[0] = Graphics::Shader::compileProgram("res/shaders/render.vertex", "res/shaders/render.frag");
+    log::graphics("Program (Render) ID: %d", pid[0]);
+    pid[1] = Graphics::Shader::compileProgram("res/shaders/post.vertex", "res/shaders/post.frag");
+    log::graphics("Program (Post) ID: %d", pid[1]);
     log::graphics("---");
     
-    //VAO
+    //FRAMEBUFFER
+    glGenFramebuffers(1, &fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    
+    glGenTextures(1, &fb_tex);
+    glBindTexture(GL_TEXTURE_2D, fb_tex);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c.window_size.x, c.window_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //TODO: Update with window
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_tex, 0);
+    
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+        log::error("Error creating Framebuffer: %d", glGetError());
+        SDL_Quit();
+        exit(-1);
+    }
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    //GENERATE VERTEX
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     
+    //ATTRIBUTES
     //0 - v_transform
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
-    //VALIDATE PROGRAM
-    Graphics::Shader::validateProgram(pid);
-    glUseProgram(pid);
+    //VALIDATE PROGRAMS
+    for (ui8 p : pid) {
+        Graphics::Shader::validateProgram(p);
+    }
     
     //VBO
     glGenBuffers(1, &vbo);
@@ -102,8 +135,8 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window, ui8 &pid) {
     
     //PROJECTION MATRIX
     projection = glm::ortho(0.0f, (float)c.window_size.x, (float)c.window_size.y, 0.0f);
-    projection_loc = glGetUniformLocation(pid, "projection");
-    model_loc = glGetUniformLocation(pid, "model");
+    projection_loc = glGetUniformLocation(pid[0], "projection");
+    model_loc = glGetUniformLocation(pid[0], "model");
     
     //BLEND ALPHA
     glEnable(GL_BLEND);
@@ -131,6 +164,9 @@ ui32 Graphics::Renderer::GL::create_texture(Tex* tex, int w, int h) {
 }
 
 void Graphics::Renderer::GL::render_texture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames) {
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glUseProgram(pid[0]);
+    
     if (frames > 1) {
         vertices[4*0 + 2] = (float)src.pos.x / (float)(src.size.x * (frames + 1));
         vertices[4*1 + 2] = vertices[4*0 + 2] + (float)src.size.x / (float)(src.size.x * (frames + 1));
@@ -160,20 +196,33 @@ void Graphics::Renderer::GL::render_texture(ui32 &tex_id, Rect &src, Rect &dst, 
     glEnableVertexAttribArray(0);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Graphics::Renderer::GL::clear() {
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glClearColor(0.1, 0.1, 0.2, 1.0); //Change for background color
     glClear(GL_COLOR_BUFFER_BIT);
-    
-    //Resize Window
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Graphics::Renderer::GL::present(SDL_Window* window, ui8 &pid) {
+void Graphics::Renderer::GL::render() {
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(fb_vertices), fb_vertices, GL_STATIC_DRAW);
     
-    //glBindTexture(GL_TEXTURE_2D, textures[0]);
-    //glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glUseProgram(pid[1]);
     
+    glBindTexture(GL_TEXTURE_2D, fb_tex);
+    
+    glBindVertexArray(vao);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+}
+
+void Graphics::Renderer::GL::present(SDL_Window* window) {
     SDL_GL_SwapWindow(window);
 }
 

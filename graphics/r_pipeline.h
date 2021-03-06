@@ -21,7 +21,6 @@ namespace Verse::Graphics
     void init(Config &c);
 
     void render(Scene &scene, Config &c, ui16 fps);
-    void prerender(Scene &scene, Config &c, ui16 fps);
     void clear(Config &c);
     void display(Config &c);
 

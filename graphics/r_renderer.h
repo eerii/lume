@@ -10,12 +10,13 @@
 
 namespace Verse::Graphics::Renderer::GL
 {
-    void create(Config &c, SDL_Window* window, ui8 &pid);
+    void create(Config &c, SDL_Window* window);
 
     ui32 create_texture(Tex* tex, int w, int h);
     void render_texture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames);
 
     void clear();
-    void present(SDL_Window* window, ui8 &pid);
+    void render();
+    void present(SDL_Window* window);
     void destroy();
 }

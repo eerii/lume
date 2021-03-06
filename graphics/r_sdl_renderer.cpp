@@ -15,6 +15,8 @@ namespace {
     SDL_Renderer* renderer;
     SDL_Texture* render_target;
     Vec2 previous_window_size;
+
+    ui8 pid;
 }
 #endif
 
