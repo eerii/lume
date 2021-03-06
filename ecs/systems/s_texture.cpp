@@ -35,10 +35,10 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
             src = Rect(Vec2(), tex->transform.size);
         }
         
-        Rect dst = Rect((tex->transform.pos + tex->offset) * c.render_scale, tex->transform.size * c.render_scale);
+        Rect dst = Rect((tex->transform.pos + tex->offset), tex->transform.size);
         
 #ifdef USE_OPENGL
-        Graphics::Renderer::GL::render_texture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1));
+        Graphics::Renderer::GL::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c);
 #else
         
         SDL_Rect sdl_src = src.toSDL();

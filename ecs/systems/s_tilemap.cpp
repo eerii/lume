@@ -21,17 +21,17 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         src.size.y = tmap->tex_size.y;
         
         Rect dst;
-        dst.pos.x = tmap->pos.x * c.render_scale;
-        dst.pos.y = tmap->pos.y * c.render_scale;
-        dst.size.x = tmap->tex_size.x * c.render_scale;
-        dst.size.y = tmap->tex_size.y * c.render_scale;
+        dst.pos.x = tmap->pos.x;
+        dst.pos.y = tmap->pos.y;
+        dst.size.x = tmap->tex_size.x;
+        dst.size.y = tmap->tex_size.y;
         
         for (int i = 0; i < tmap->tiles.size(); i++) {
             for (int j = 0; j < tmap->tiles[i].size(); j++) {
                 if (tmap->tiles[i][j] != 0) {
                     src.pos.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
 #ifdef USE_OPENGL
-                    Graphics::Renderer::GL::render_texture(tmap->tex_id, src, dst, 0);
+                    Graphics::Renderer::GL::renderTexture(tmap->tex_id, src, dst, 0, c);
 #else
                     SDL_Rect src_sdl = src.toSDL();
                     SDL_Rect dst_sdl = dst.toSDL();
@@ -39,10 +39,10 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
 #endif
                 }
                 
-                dst.pos.x += tmap->tex_size.x * c.render_scale;
+                dst.pos.x += tmap->tex_size.x;
             }
-            dst.pos.x = tmap->pos.x * c.render_scale;
-            dst.pos.y += tmap->tex_size.y * c.render_scale;
+            dst.pos.x = tmap->pos.x;
+            dst.pos.y += tmap->tex_size.y;
         }
     }
 }

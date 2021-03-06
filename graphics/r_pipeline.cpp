@@ -79,7 +79,7 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     
     //CLEAR
 #ifdef USE_OPENGL
-    Renderer::GL::clear();
+    Renderer::GL::clear(c);
 #else
     Renderer::SDL::clear(c);
 #endif
@@ -102,7 +102,7 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     
     //RENDER FRAMEBUFFER
 #ifdef USE_OPENGL
-    Renderer::GL::render();
+    Renderer::GL::render(c);
 #endif
     
     //RENDER GUI

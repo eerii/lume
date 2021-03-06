@@ -11,8 +11,12 @@
 #include "r_textures.h"
 
 #include "gui.h"
+#include "time.h"
+#include "stb_image.h"
 
 #ifdef USE_OPENGL
+
+#define TRANSITION_TIME 500
 
 using namespace Verse;
 using namespace Graphics;
@@ -35,15 +39,23 @@ namespace {
     };
 
     float fb_vertices[] = {
-        -1.0,  1.0,  0.0,  1.0,
-         1.0,  1.0,  1.0,  1.0,
-        -1.0, -1.0,  0.0,  0.0,
-         1.0, -1.0,  1.0,  0.0,
+        -1.0,  1.0,  0.0,  0.0,
+         1.0,  1.0,  1.0,  0.0,
+        -1.0, -1.0,  0.0,  1.0,
+         1.0, -1.0,  1.0,  1.0,
     };
 
     glm::mat4 projection;
     ui8 projection_loc;
     ui8 model_loc;
+    ui8 fb_view_loc;
+
+    ui32 palette_tex;
+    ui16 previous_palette = 0;
+    ui64 switch_palette_time = 0;
+    float transition_percent = 0.0;
+
+    Vec2 previous_window_size;
 }
 
 void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
@@ -101,9 +113,9 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glGenTextures(1, &fb_tex);
     glBindTexture(GL_TEXTURE_2D, fb_tex);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c.window_size.x, c.window_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); //TODO: Update with window
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c.resolution.x, c.resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_tex, 0);
     
@@ -134,13 +146,19 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
     //PROJECTION MATRIX
-    projection = glm::ortho(0.0f, (float)c.window_size.x, (float)c.window_size.y, 0.0f);
+    projection = glm::ortho(0.0f, (float)(c.resolution.x * c.render_scale), (float)(c.resolution.y * c.render_scale), 0.0f);
     projection_loc = glGetUniformLocation(pid[0], "projection");
     model_loc = glGetUniformLocation(pid[0], "model");
+    fb_view_loc = glGetUniformLocation(pid[1], "view");
     
     //BLEND ALPHA
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    //PALETTE TEX
+    int p_w, p_h, p_ch;
+    ui8* p_tex = stbi_load("res/graphics/palette_multi.png", &p_w, &p_h, &p_ch, STBI_rgb_alpha);
+    palette_tex = (int)Graphics::Renderer::GL::createTexture(p_tex, p_w, p_h);
     
     //CATCH ERRORS
     GLenum e;
@@ -149,7 +167,7 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     }
 }
 
-ui32 Graphics::Renderer::GL::create_texture(Tex* tex, int w, int h) {
+ui32 Graphics::Renderer::GL::createTexture(Tex* tex, int w, int h) {
     ui32 tex_id;
     
     glGenTextures(1, &tex_id);
@@ -163,7 +181,7 @@ ui32 Graphics::Renderer::GL::create_texture(Tex* tex, int w, int h) {
     return tex_id;
 }
 
-void Graphics::Renderer::GL::render_texture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames) {
+void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames, Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glUseProgram(pid[0]);
     
@@ -183,6 +201,7 @@ void Graphics::Renderer::GL::render_texture(ui32 &tex_id, Rect &src, Rect &dst, 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
     glm::mat4 model = glm::mat4(1.0f);
+    
     model = glm::translate(model, glm::vec3(dst.pos.x, dst.pos.y, 0.0f));
     model = glm::scale(model, glm::vec3(dst.size.x, dst.size.y, 1.0f));
     
@@ -199,25 +218,63 @@ void Graphics::Renderer::GL::render_texture(ui32 &tex_id, Rect &src, Rect &dst, 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Graphics::Renderer::GL::clear() {
+void Graphics::Renderer::GL::clear(Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glClearColor(0.1, 0.1, 0.2, 1.0); //Change for background color
+    
+    if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
+        previous_window_size = c.window_size;
+        
+        /*glBindTexture(GL_TEXTURE_2D, fb_tex);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c.resolution.x, c.resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_tex, 0);*/
+        
+        projection = glm::ortho(0.0f, (float)(c.resolution.x * c.render_scale), 0.0f, (float)(c.resolution.y * c.render_scale));
+    }
+    
+    glClearColor(0.1, 0.1, 0.2, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Graphics::Renderer::GL::render() {
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(fb_vertices), fb_vertices, GL_STATIC_DRAW);
-    
+void Graphics::Renderer::GL::render(Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glUseProgram(pid[1]);
     
+    //PALETTE
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, palette_tex);
+    glUniform1i(glGetUniformLocation(pid[1], "palette"), 1);
+    
+    handlePaletteTransition(c);
+    glUniform1f(glGetUniformLocation(pid[1], "palette_index"), ((float)c.palette_index / (float)c.num_palettes));
+    glUniform1f(glGetUniformLocation(pid[1], "previous_palette_index"), ((float)previous_palette / (float)c.num_palettes) + 0.001);
+    glUniform1f(glGetUniformLocation(pid[1], "transition_percent"), transition_percent);
+    glUniform1i(glGetUniformLocation(pid[1], "use_grayscale"), c.use_grayscale);
+    
+    //FB TEXTURE
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, fb_tex);
+    glUniform1i(glGetUniformLocation(pid[1], "tex"), 0);
+    
+    glUniform1i(glGetUniformLocation(pid[1], "is_background"), 0);
+    
+    //VERTEX DATA
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(fb_vertices), fb_vertices, GL_STATIC_DRAW);
     
     glBindVertexArray(vao);
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    
+    //TRANSLATE VIEW
+    glm::mat4 view = glm::mat4(1.0f);
+    //view = glm::scale(view, glm::vec3(0.5, 0.5, 1.0));
+    glUniformMatrix4fv(fb_view_loc, 1, GL_FALSE, glm::value_ptr(view));
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
@@ -236,6 +293,25 @@ void Graphics::Renderer::GL::destroy() {
     
     //SDL
     SDL_GL_DeleteContext(context);
+}
+
+void Graphics::Renderer::GL::handlePaletteTransition(Config &c) {
+    if (previous_palette != c.palette_index) {
+        if (switch_palette_time == 0) {
+            switch_palette_time = Time::current;
+        } else {
+            int delay = int(Time::current - switch_palette_time);
+            
+            if (delay < TRANSITION_TIME) {
+                transition_percent = (float)delay / (float)TRANSITION_TIME;
+            } else {
+                switch_palette_time = 0; transition_percent = 0.0;
+                previous_palette = c.palette_index;
+            }
+        }
+    } else if (switch_palette_time != 0 or transition_percent != 0.0) {
+        switch_palette_time = 0; transition_percent = 0.0;
+    }
 }
 
 #endif
