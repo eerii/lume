@@ -26,21 +26,20 @@ void Gui::update(float delta, Config &c) {
     imgui_io.MouseWheel = static_cast<float>(Input::mouseWheel());
 }
 
-void Gui::prerender(Scene &scene, Config &c, ui16 &fps) {
-#ifdef USE_OPENGL
-    
-#else
+void Gui::prerender(Scene &scene, Config &c, ui16 &fps, SDL_Window* window) {
+    ImGui_ImplOpenGL3_NewFrame();
+    ImGui_ImplSDL2_NewFrame(window);
     ImGui::NewFrame();
     
     Gui::entities(scene, c);
     Gui::actors(scene);
     Gui::performance(fps);
-#endif
 }
 
 void Gui::render() {
 #ifdef USE_OPENGL
-    
+    ImGui::Render();
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #else
     ImGui::Render();
     ImGuiSDL::Render(ImGui::GetDrawData());

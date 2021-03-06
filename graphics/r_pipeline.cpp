@@ -3,7 +3,9 @@
 //all rights reserved uwu
 
 #include "imgui.h"
+#ifndef USE_OPENGL
 #include "imgui_sdl.h"
+#endif
 #include "gui.h"
 
 #include "s_texture.h"
@@ -58,9 +60,9 @@ void Graphics::init(Config &c) {
     Renderer::SDL::create(c, window, pid);
     #endif
     
-    //IMGUI
-    ImGui::CreateContext();
+    //IMGUI TODO: Moved into renderer create
     #ifndef USE_OPENGL
+    ImGui::CreateContext();
     ImGuiSDL::Initialize(Renderer::SDL::getRenderer(), c.window_size.x, c.window_size.y);
     #endif
     
@@ -75,7 +77,7 @@ void Graphics::init(Config &c) {
 
 void Graphics::prerender(Scene &scene, Config &c, ui16 fps) {
     if (c.enable_gui)
-        Gui::prerender(scene, c, fps);
+        Gui::prerender(scene, c, fps, window);
 }
 
 

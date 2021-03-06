@@ -10,6 +10,8 @@
 #include "r_shader.h"
 #include "r_textures.h"
 
+#include "gui.h"
+
 #ifdef USE_OPENGL
 
 using namespace Verse;
@@ -67,6 +69,12 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window, ui8 &pid) {
     log::graphics("OpenGL Version:  %s", glGetString(GL_VERSION));
     log::graphics("GLSL Version:    %s", glGetString(GL_SHADING_LANGUAGE_VERSION));
     log::graphics("---");
+    
+    //IMGUI
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui_ImplSDL2_InitForOpenGL(window, context);
+    ImGui_ImplOpenGL3_Init();
     
     //SHADERS
     //TODO: Port shaders
@@ -171,6 +179,11 @@ void Graphics::Renderer::GL::present(SDL_Window* window, ui8 &pid) {
 
 void Graphics::Renderer::GL::destroy() {
     //OPENGL
+    
+    //IMGUI
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
     
     //SDL
     SDL_GL_DeleteContext(context);
