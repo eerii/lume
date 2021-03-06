@@ -5,8 +5,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#include <math.h>
-
 #include "dtypes.h"
 #include "log.h"
 
@@ -76,7 +74,7 @@ int main(int argc, const char * argv[]) {
     light->radius = 96;
     light->centre = 0.2;
     
-
+    
     /*EntityID test2 = scene.createEntity("Ground");
     
     Component::Collider* collider2 = scene.addComponent<Component::Collider>(test2);

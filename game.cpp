@@ -16,6 +16,9 @@ namespace
 {
     Config* config;
     ui32 accumulator;
+
+    ui16 fps_time;
+    ui16 frames;
     ui16 fps;
 }
 
@@ -64,11 +67,17 @@ bool Game::update(Scene &scene) {
     
     //PREVENT RUNNING TOO FAST
     ui16 frame_ticks = (ui16)(time() - Time::current);
-    if (frame_ticks < 1000.0 / (float)Graphics::getRefreshRate()) {
+    if (frame_ticks <= 1000.0 / (float)Graphics::getRefreshRate()) {
         SDL_Delay((1000.0 / (float)Graphics::getRefreshRate()) - frame_ticks);
-        fps = Graphics::getRefreshRate();
-    } else {
-        fps = round(1000.0 / (float)(time() - Time::current));
+    }
+    
+    //FPS
+    frames++;
+    fps_time += (ui16)(time() - Time::current);
+    if (fps_time > 200) {
+        fps = round((float)frames / (float)(fps_time * 0.001f));
+        frames = 0;
+        fps_time = 0;
     }
     
     return running;

@@ -2,7 +2,7 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.10]** ~ Renderer _2021-03-04_
+### **[0.0.10]** ~ Renderer _2021-03-06_
 #### Added
 - Basic light variation
 - Conditional compiling for SDL or OpenGL
@@ -10,12 +10,14 @@
 - Version in the title
 - Texture rendering
 - Animation spritesheet support
+- imGui OpenGL
 #### Changed
 - Code cleanup
 - Moved imgui to deps
 - Moved controllers to ecs
 - Moved all rendering to r_pipeline
 - Separeted rendering between SDL and OpenGL
+- Improved FPS count
 #### Deprecated
 - SDL_Renderer
 
