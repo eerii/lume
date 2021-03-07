@@ -45,10 +45,11 @@ namespace {
          1.0,  0.0,  1.0,  1.0,
     };
 
-    glm::mat4 projection;
-    ui8 projection_loc;
-    ui8 model_loc;
-    ui8 mvp_loc;
+    glm::mat4 mat_proj;
+    glm::mat4 fb_mat_proj, fb_mat_view;
+    glm::mat4 fb_mat_model, fb_mat_model_bg;
+    ui8 mat_loc;
+    ui8 fb_mat_loc;
 
     ui32 palette_tex;
     ui16 previous_palette = 0;
@@ -108,7 +109,7 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     log::graphics("Program (Post) ID: %d", pid[1]);
     log::graphics("---");
     
-    //GAME FRAMEBUFFER
+    //FRAMEBUFFER
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     
@@ -146,11 +147,10 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    //PROJECTION MATRIX
-    projection = glm::ortho(0.0f, (float)(c.resolution.x), 0.0f, (float)(c.resolution.y));
-    projection_loc = glGetUniformLocation(pid[0], "projection");
-    model_loc = glGetUniformLocation(pid[0], "model");
-    mvp_loc = glGetUniformLocation(pid[1], "mvp");
+    //MATRIX LOCATIONS
+    mat_proj = glm::ortho(0.0f, (float)(c.resolution.x), 0.0f, (float)(c.resolution.y));
+    mat_loc = glGetUniformLocation(pid[0], "mvp");
+    fb_mat_loc = glGetUniformLocation(pid[1], "mvp");
     
     //BLEND ALPHA
     glEnable(GL_BLEND);
@@ -201,13 +201,14 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
-    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 mat_model = glm::mat4(1.0f);
     
-    model = glm::translate(model, glm::vec3(stretch_factor.x * (dst.pos.x / c.render_scale), stretch_factor.y * (dst.pos.y / c.render_scale), 0.0f));
-    model = glm::scale(model, glm::vec3(stretch_factor.x * (dst.size.x / c.render_scale), stretch_factor.y * (dst.size.y / c.render_scale), 1.0f));
+    mat_model = glm::translate(mat_model, glm::vec3(stretch_factor.x * (dst.pos.x / c.render_scale),
+                                                    stretch_factor.y * (dst.pos.y / c.render_scale), 0.0f));
+    mat_model = glm::scale(mat_model, glm::vec3(stretch_factor.x * (dst.size.x / c.render_scale),
+                                                stretch_factor.y * (dst.size.y / c.render_scale), 1.0f));
     
-    glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(mat_proj * mat_model));
     
     glBindTexture(GL_TEXTURE_2D, tex_id);
     
@@ -230,8 +231,15 @@ void Graphics::Renderer::GL::clear(Config &c) {
     
     if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
         previous_window_size = c.window_size;
+        
         stretch_factor = Vec2((c.resolution.x * c.render_scale)/c.window_size.x, (c.resolution.y * c.render_scale)/c.window_size.y);
         light_distortion = c.resolution.x / c.resolution.y;
+        
+        fb_mat_model_bg = glm::scale(glm::mat4(1.0f), glm::vec3((c.window_size.x), (c.window_size.y), 1.0f));
+        fb_mat_model = glm::scale(glm::mat4(1.0f), glm::vec3((c.resolution.x * c.render_scale), (c.resolution.y * c.render_scale), 1.0f));
+        fb_mat_view = glm::translate(glm::mat4(1.0f), glm::vec3(c.window_padding.x, c.window_padding.y, 0.0f));
+        fb_mat_proj = glm::ortho(0.0f, (float)(c.window_size.x), 0.0f, (float)(c.window_size.y));
+        
         glViewport( 0, 0, c.window_size.x, c.window_size.y );
     }
     
@@ -272,20 +280,14 @@ void Graphics::Renderer::GL::render(Config &c) {
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
-    //MATRICES TODO: move
-    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3((c.window_size.x), (c.window_size.y), 1.0f));
-    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(c.window_padding.x, c.window_padding.y, 0.0f));
-    glm::mat4 proj = glm::ortho(0.0f, (float)(c.window_size.x), 0.0f, (float)(c.window_size.y));
-    
     //BACKGROUND
     glUniform1i(glGetUniformLocation(pid[1], "is_background"), true);
-    glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, glm::value_ptr(proj * model));
+    glUniformMatrix4fv(fb_mat_loc, 1, GL_FALSE, glm::value_ptr(fb_mat_proj * fb_mat_model_bg));
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     //LEVEL
     glUniform1i(glGetUniformLocation(pid[1], "is_background"), false);
-    model = glm::scale(glm::mat4(1.0f), glm::vec3((c.resolution.x * c.render_scale), (c.resolution.y * c.render_scale), 1.0f));
-    glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, glm::value_ptr(proj * view * model));
+    glUniformMatrix4fv(fb_mat_loc, 1, GL_FALSE, glm::value_ptr(fb_mat_proj * fb_mat_view * fb_mat_model));
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     
     
