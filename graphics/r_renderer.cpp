@@ -26,8 +26,7 @@ namespace {
 
     ui8 pid[2];
 
-    ui32 fbo;
-    ui32 fb_tex;
+    ui32 fbo, fb_tex;
     ui32 vao;
     ui32 vbo;
 
@@ -39,16 +38,16 @@ namespace {
     };
 
     float fb_vertices[] = {
-        -1.0,  1.0,  0.0,  0.0,
+         0.0,  1.0,  0.0,  0.0,
          1.0,  1.0,  1.0,  0.0,
-        -1.0, -1.0,  0.0,  1.0,
-         1.0, -1.0,  1.0,  1.0,
+         0.0,  0.0,  0.0,  1.0,
+         1.0,  0.0,  1.0,  1.0,
     };
 
     glm::mat4 projection;
     ui8 projection_loc;
     ui8 model_loc;
-    ui8 fb_view_loc;
+    ui8 mvp_loc;
 
     ui32 palette_tex;
     ui16 previous_palette = 0;
@@ -56,6 +55,7 @@ namespace {
     float transition_percent = 0.0;
 
     Vec2 previous_window_size;
+    Vec2 stretch_factor;
 }
 
 void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
@@ -106,7 +106,7 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     log::graphics("Program (Post) ID: %d", pid[1]);
     log::graphics("---");
     
-    //FRAMEBUFFER
+    //GAME FRAMEBUFFER
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     
@@ -120,11 +120,10 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_tex, 0);
     
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        log::error("Error creating Framebuffer: %d", glGetError());
+        log::error("Error creating Game Framebuffer: %d", glGetError());
         SDL_Quit();
         exit(-1);
     }
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     //GENERATE VERTEX
     glGenVertexArrays(1, &vao);
@@ -146,10 +145,10 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     
     //PROJECTION MATRIX
-    projection = glm::ortho(0.0f, (float)(c.resolution.x * c.render_scale), (float)(c.resolution.y * c.render_scale), 0.0f);
+    projection = glm::ortho(0.0f, (float)(c.resolution.x), 0.0f, (float)(c.resolution.y));
     projection_loc = glGetUniformLocation(pid[0], "projection");
     model_loc = glGetUniformLocation(pid[0], "model");
-    fb_view_loc = glGetUniformLocation(pid[1], "view");
+    mvp_loc = glGetUniformLocation(pid[1], "mvp");
     
     //BLEND ALPHA
     glEnable(GL_BLEND);
@@ -202,8 +201,8 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
     
     glm::mat4 model = glm::mat4(1.0f);
     
-    model = glm::translate(model, glm::vec3(dst.pos.x, dst.pos.y, 0.0f));
-    model = glm::scale(model, glm::vec3(dst.size.x, dst.size.y, 1.0f));
+    model = glm::translate(model, glm::vec3(stretch_factor.x * (dst.pos.x / c.render_scale), stretch_factor.y * (dst.pos.y / c.render_scale), 0.0f));
+    model = glm::scale(model, glm::vec3(stretch_factor.x * (dst.size.x / c.render_scale), stretch_factor.y * (dst.size.y / c.render_scale), 1.0f));
     
     glUniformMatrix4fv(model_loc, 1, GL_FALSE, glm::value_ptr(model));
     glUniformMatrix4fv(projection_loc, 1, GL_FALSE, glm::value_ptr(projection));
@@ -220,28 +219,24 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
 
 void Graphics::Renderer::GL::clear(Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glClearColor(0.1, 0.1, 0.2, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT);
     
     if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
         previous_window_size = c.window_size;
-        
-        /*glBindTexture(GL_TEXTURE_2D, fb_tex);
-        
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, c.resolution.x, c.resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fb_tex, 0);*/
-        
-        projection = glm::ortho(0.0f, (float)(c.resolution.x * c.render_scale), 0.0f, (float)(c.resolution.y * c.render_scale));
+        stretch_factor = Vec2((c.resolution.x * c.render_scale)/c.window_size.x, (c.resolution.y * c.render_scale)/c.window_size.y);
+        glViewport( 0, 0, c.window_size.x, c.window_size.y );
     }
-    
-    glClearColor(0.1, 0.1, 0.2, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Graphics::Renderer::GL::render(Config &c) {
+    //RENDER TO WINDOW
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glUseProgram(pid[1]);
     
@@ -261,8 +256,6 @@ void Graphics::Renderer::GL::render(Config &c) {
     glBindTexture(GL_TEXTURE_2D, fb_tex);
     glUniform1i(glGetUniformLocation(pid[1], "tex"), 0);
     
-    glUniform1i(glGetUniformLocation(pid[1], "is_background"), 0);
-    
     //VERTEX DATA
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(fb_vertices), fb_vertices, GL_STATIC_DRAW);
@@ -271,12 +264,23 @@ void Graphics::Renderer::GL::render(Config &c) {
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
-    //TRANSLATE VIEW
-    glm::mat4 view = glm::mat4(1.0f);
-    //view = glm::scale(view, glm::vec3(0.5, 0.5, 1.0));
-    glUniformMatrix4fv(fb_view_loc, 1, GL_FALSE, glm::value_ptr(view));
+    //MATRICES
+    glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3((c.window_size.x), (c.window_size.y), 1.0f));
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(c.window_padding.x, c.window_padding.y, 0.0f));
+    glm::mat4 proj = glm::ortho(0.0f, (float)(c.window_size.x), 0.0f, (float)(c.window_size.y));
     
+    //BACKGROUND
+    glUniform1i(glGetUniformLocation(pid[1], "is_background"), true);
+    glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, glm::value_ptr(proj * model));
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    //LEVEL
+    glUniform1i(glGetUniformLocation(pid[1], "is_background"), false);
+    model = glm::scale(glm::mat4(1.0f), glm::vec3((c.resolution.x * c.render_scale), (c.resolution.y * c.render_scale), 1.0f));
+    glUniformMatrix4fv(mvp_loc, 1, GL_FALSE, glm::value_ptr(proj * view * model));
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    
+    
 }
 
 void Graphics::Renderer::GL::present(SDL_Window* window) {

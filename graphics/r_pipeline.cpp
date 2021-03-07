@@ -74,9 +74,6 @@ void Graphics::init(Config &c) {
 
 
 void Graphics::render(Scene &scene, Config &c, ui16 fps) {
-    
-    
-    
     //CLEAR
 #ifdef USE_OPENGL
     Renderer::GL::clear(c);

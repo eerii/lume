@@ -20,7 +20,7 @@ void main() {
     float luminance = (color.x + color.y + color.z) / 3.0;
     
     if (is_background) {
-        luminance = 0.0;
+        luminance = 0.001;
         color.a = 0.5;
     }
     
