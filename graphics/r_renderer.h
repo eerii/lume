@@ -19,6 +19,4 @@ namespace Verse::Graphics::Renderer::GL
     void render(Config &c);
     void present(SDL_Window* window);
     void destroy();
-
-    void handlePaletteTransition(Config &c);
 }

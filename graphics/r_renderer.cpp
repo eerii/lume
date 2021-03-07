@@ -9,6 +9,7 @@
 #include "r_opengl.h"
 #include "r_shader.h"
 #include "r_textures.h"
+#include "r_palette.h"
 
 #include "gui.h"
 #include "time.h"
@@ -16,8 +17,6 @@
 #include "s_light.h"
 
 #ifdef USE_OPENGL
-
-#define TRANSITION_TIME 500
 
 using namespace Verse;
 using namespace Graphics;
@@ -52,9 +51,6 @@ namespace {
     ui8 fb_mat_loc;
 
     ui32 palette_tex;
-    ui16 previous_palette = 0;
-    ui64 switch_palette_time = 0;
-    float transition_percent = 0.0;
 
     Vec2 previous_window_size;
     Vec2 stretch_factor;
@@ -252,19 +248,12 @@ void Graphics::Renderer::GL::render(Config &c) {
     glUseProgram(pid[1]);
     
     //PALETTE
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, palette_tex);
-    glUniform1i(glGetUniformLocation(pid[1], "palette"), 1);
-    
-    handlePaletteTransition(c);
-    glUniform1f(glGetUniformLocation(pid[1], "palette_index"), ((float)c.palette_index / (float)c.num_palettes));
-    glUniform1f(glGetUniformLocation(pid[1], "previous_palette_index"), ((float)previous_palette / (float)c.num_palettes) + 0.001);
-    glUniform1f(glGetUniformLocation(pid[1], "transition_percent"), transition_percent);
-    glUniform1i(glGetUniformLocation(pid[1], "use_grayscale"), c.use_grayscale);
+    Graphics::Palette::render(c, palette_tex, pid[1]);
     
     //LIGTH
     std::vector<glm::vec4> light_sources = System::Light::getLight();
     glUniform4fv(glGetUniformLocation(pid[1], "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_sources.data()));
+    glUniform1i(glGetUniformLocation(pid[1], "light_size"), (int)(light_sources.size()));
     glUniform1f(glGetUniformLocation(pid[1], "light_distortion"), light_distortion);
     
     //FB TEXTURE
@@ -307,25 +296,6 @@ void Graphics::Renderer::GL::destroy() {
     
     //SDL
     SDL_GL_DeleteContext(context);
-}
-
-void Graphics::Renderer::GL::handlePaletteTransition(Config &c) {
-    if (previous_palette != c.palette_index) {
-        if (switch_palette_time == 0) {
-            switch_palette_time = Time::current;
-        } else {
-            int delay = int(Time::current - switch_palette_time);
-            
-            if (delay < TRANSITION_TIME) {
-                transition_percent = (float)delay / (float)TRANSITION_TIME;
-            } else {
-                switch_palette_time = 0; transition_percent = 0.0;
-                previous_palette = c.palette_index;
-            }
-        }
-    } else if (switch_palette_time != 0 or transition_percent != 0.0) {
-        switch_palette_time = 0; transition_percent = 0.0;
-    }
 }
 
 #endif

@@ -74,6 +74,17 @@ int main(int argc, const char * argv[]) {
     light->radius = 96;
     
     
+    EntityID test1 = scene.createEntity("Luz");
+    Component::Light* light2 = scene.addComponent<Component::Light>(test1);
+    light2->pos = Vec2(120, 120);
+    light2->radius = 48;
+    
+    EntityID test2 = scene.createEntity("Luz");
+    Component::Light* light3 = scene.addComponent<Component::Light>(test2);
+    light3->pos = Vec2(200, 160);
+    light3->radius = 48;
+    
+    
     /*EntityID test2 = scene.createEntity("Ground");
     
     Component::Collider* collider2 = scene.addComponent<Component::Collider>(test2);

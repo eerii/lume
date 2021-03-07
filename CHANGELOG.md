@@ -12,6 +12,8 @@
 - Animation spritesheet support
 - imGui OpenGL
 - Render lights again
+- Multiple lights
+- Smooth min light blending
 #### Changed
 - Code cleanup
 - Moved imgui to deps
