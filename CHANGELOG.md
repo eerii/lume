@@ -11,6 +11,7 @@
 - Texture rendering
 - Animation spritesheet support
 - imGui OpenGL
+- Render lights again
 #### Changed
 - Code cleanup
 - Moved imgui to deps

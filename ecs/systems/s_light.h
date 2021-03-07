@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "dtypes.h"
 #include "log.h"
 #include "ecs.h"
@@ -14,6 +16,6 @@ namespace Verse::System::Light
 {
     void init(SDL_Renderer* renderer, Config &c);
     void render(Scene &scene, Config &c);
-    void passToShader(ui8 pid, Config &c);
+    std::vector<glm::vec4> getLight();
     void clean();
 }

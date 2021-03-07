@@ -13,6 +13,7 @@
 #include "gui.h"
 #include "time.h"
 #include "stb_image.h"
+#include "s_light.h"
 
 #ifdef USE_OPENGL
 
@@ -56,6 +57,7 @@ namespace {
 
     Vec2 previous_window_size;
     Vec2 stretch_factor;
+    float light_distortion;
 }
 
 void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
@@ -229,6 +231,7 @@ void Graphics::Renderer::GL::clear(Config &c) {
     if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
         previous_window_size = c.window_size;
         stretch_factor = Vec2((c.resolution.x * c.render_scale)/c.window_size.x, (c.resolution.y * c.render_scale)/c.window_size.y);
+        light_distortion = c.resolution.x / c.resolution.y;
         glViewport( 0, 0, c.window_size.x, c.window_size.y );
     }
     
@@ -251,6 +254,11 @@ void Graphics::Renderer::GL::render(Config &c) {
     glUniform1f(glGetUniformLocation(pid[1], "transition_percent"), transition_percent);
     glUniform1i(glGetUniformLocation(pid[1], "use_grayscale"), c.use_grayscale);
     
+    //LIGTH
+    std::vector<glm::vec4> light_sources = System::Light::getLight();
+    glUniform4fv(glGetUniformLocation(pid[1], "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_sources.data()));
+    glUniform1f(glGetUniformLocation(pid[1], "light_distortion"), light_distortion);
+    
     //FB TEXTURE
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, fb_tex);
@@ -264,7 +272,7 @@ void Graphics::Renderer::GL::render(Config &c) {
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
-    //MATRICES
+    //MATRICES TODO: move
     glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3((c.window_size.x), (c.window_size.y), 1.0f));
     glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(c.window_padding.x, c.window_padding.y, 0.0f));
     glm::mat4 proj = glm::ortho(0.0f, (float)(c.window_size.x), 0.0f, (float)(c.window_size.y));

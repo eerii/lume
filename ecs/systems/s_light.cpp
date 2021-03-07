@@ -8,6 +8,7 @@
 
 #define LIGHT_PERIOD 5
 #define LIGHT_VARIATION 5
+#define LIGHT_CENTER_RADIUS 0.2
 
 using namespace Verse;
 
@@ -19,9 +20,7 @@ namespace {
     SDL_Rect dst;
 
     std::vector<EntityID> light_entities;
-    std::vector<Vec2> light_sources;
-    std::vector<float> light_radius;
-    std::vector<float> light_centres;
+    std::vector<glm::vec4> light_sources;
 }
 
 void System::Light::init(SDL_Renderer* renderer, Config &c) {
@@ -71,25 +70,27 @@ void System::Light::render(Scene &scene, Config &c) {
         if (it != light_entities.end()) {
             long i = it - light_entities.begin();
             
-            light_sources[i] = light->pos * c.render_scale;
-            if (tex != nullptr) //This is to render the light relative to the texture
-                light_sources[i] += tex->transform.pos * c.render_scale;
+            light_sources[i][0] = light->pos.x;
+            light_sources[i][1] = light->pos.y;
+            if (tex != nullptr) { //This is to render the light relative to the texture
+                light_sources[i][0] += tex->transform.pos.x;
+                light_sources[i][1] += tex->transform.pos.y;
+            }
             
-            light_radius[i] = (light->radius + sin(Time::current * 0.001 * LIGHT_PERIOD) * LIGHT_VARIATION) * c.render_scale;
-            light_centres[i] = light->centre * light_radius[i];
+            light_sources[i][0] /= c.resolution.x;
+            light_sources[i][1] /= c.resolution.y;
+            
+            light_sources[i][2] = (light->radius + sin(Time::current * 0.001 * LIGHT_PERIOD) * LIGHT_VARIATION) / c.resolution.y;
+            light_sources[i][3] = light_sources[i][2] * LIGHT_CENTER_RADIUS;
         } else {
             light_entities.push_back(e);
-            light_sources.push_back(light->pos);
-            light_radius.push_back(light->radius * c.render_scale);
-            light_centres.push_back(light->centre);
+            light_sources.push_back({light->pos.x, light->pos.y, light->radius, light->radius * LIGHT_CENTER_RADIUS});
         }
     }
 }
 
-void System::Light::passToShader(ui8 pid, Config &c) {
-    glUniform2fv(glGetUniformLocation(pid, "light_source"), (int)light_sources.size(), reinterpret_cast<GLfloat *>(light_sources.data()));
-    glUniform1fv(glGetUniformLocation(pid, "light_radius"), (int)light_radius.size(), reinterpret_cast<GLfloat *>(light_radius.data()));
-    glUniform1fv(glGetUniformLocation(pid, "light_centre"), (int)light_centres.size(), reinterpret_cast<GLfloat *>(light_centres.data()));
+std::vector<glm::vec4> System::Light::getLight() {
+    return light_sources;
 }
 
 void System::Light::clean() {
