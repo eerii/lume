@@ -151,9 +151,7 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     //PALETTE TEX
-    int p_w, p_h, p_ch;
-    ui8* p_tex = stbi_load("res/graphics/palette_multi.png", &p_w, &p_h, &p_ch, STBI_rgb_alpha);
-    palette_tex = (int)Graphics::Renderer::GL::createTexture(p_tex, p_w, p_h);
+    Graphics::loadTexture("res/graphics/palette_multi.png", palette_tex);
     
     //CATCH ERRORS
     GLenum e;
@@ -223,11 +221,11 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
 
 void Graphics::Renderer::GL::clear(Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-    glClearColor(0.1, 0.1, 0.2, 1.0);
+    glClearColor(c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
     
     if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {

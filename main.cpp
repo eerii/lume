@@ -35,7 +35,7 @@ int main(int argc, const char * argv[]) {
         .use_grayscale = false,
         .palette_index = 0,
         .num_palettes = 4,
-        .background_color = {0, 0, 0, 255},
+        .background_color = {0.0, 0.0, 0.0, 1.0},
         .render_collision_boxes = false
     };
     
@@ -53,7 +53,7 @@ int main(int argc, const char * argv[]) {
     collider->transform = Rect(32, 64, 9, 14);
     
     Component::Texture* texture = scene.addComponent<Component::Texture>(test);
-    texture->tex = Graphics::loadTexture("res/graphics/lume_idle.png", texture->tex_id);
+    Graphics::loadTexture("res/graphics/lume_idle.png", texture);
     texture->transform = Rect(32, 64, 11, 14);
     texture->offset = Vec2(-1, 0);
     texture->animation.push_back(Vec2(0,2));
@@ -95,7 +95,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Tilemap* tilemap = scene.addComponent<Component::Tilemap>(tile);
     tilemap->tiles = System::Tilemap::load("res/levels/1.png");
-    tilemap->tex = Graphics::loadTexture("res/graphics/ground2.png", tilemap->tex_id);
+    Graphics::loadTexture("res/graphics/ground2.png", tilemap);
     tilemap->tex_size = Vec2(8, 8);
     tilemap->pos = Vec2(0, 96);
     

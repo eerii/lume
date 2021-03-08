@@ -26,8 +26,6 @@ using namespace Graphics;
 namespace {
     SDL_Window *window;
     int refresh_rate = 60;
-
-    ui8* palette_tex;
 }
 
 void Graphics::init(Config &c) {
@@ -49,10 +47,6 @@ void Graphics::init(Config &c) {
     
     //RENDERER
     Renderer::GL::create(c, window);
-    
-    //PALETTE
-    ui32 palette_pointer = 0;
-    palette_tex = loadTexture("res/graphics/palette_multi.png", palette_pointer);
 }
 
 

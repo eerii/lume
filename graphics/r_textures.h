@@ -4,17 +4,18 @@
 
 #pragma once
 
-#ifdef USE_OPENGL
 #include "stb_image.h"
-#else
-#include <SDL2/SDL_image.h>
-#endif
 
 #include "dtypes.h"
 #include "log.h"
 #include "config.h"
 
+#include "c_texture.h"
+#include "c_tilemap.h"
+
 namespace Verse::Graphics
 {
-    ui8* loadTexture(str path, ui32 &tex_id);
+    void loadTexture(str path, Component::Texture* tex);
+    void loadTexture(str path, Component::Tilemap* tex);
+    void loadTexture(str path, ui32 &tex_id);
 }
