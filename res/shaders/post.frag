@@ -42,18 +42,18 @@ void main() {
         float dst_to_light = sqrt(to_light.x * to_light.x + to_light.y * to_light.y);
         
         float light_at_point = (dst_to_light - light[0].w) / (light[0].z - light[0].w);
-        light_accumulator = (dst_to_light > light[i].w) ? smooth_min(light_at_point, light_accumulator, SMOOTHNESS) : 0.001;
-        if(light_accumulator < 0.001)
-            light_accumulator = 0.001;
+        light_accumulator = (dst_to_light > light[i].w) ? smooth_min(light_at_point, light_accumulator, SMOOTHNESS) : 0.0;
+        if(light_accumulator < 0.0)
+            light_accumulator = 0.0;
     }
     
     luminance *= 1.0 - light_accumulator;
     
-    if (luminance < 0.001)
-        luminance = 0.001;
+    if (luminance < 0.0)
+        luminance = 0.0;
     
     if (is_background) {
-        luminance = 0.001;
+        luminance = 0.0;
         color.a = 0.5;
     }
     
@@ -62,9 +62,9 @@ void main() {
     if (use_grayscale) {
         i_color = luminance * vec4(1.0, 1.0, 1.0, 1.0);
     } else {
-        i_color = texture(palette, vec2(luminance - 0.001, palette_index));
+        i_color = texture(palette, vec2(luminance * 0.999, palette_index));
         if (previous_palette_index != palette_index) {
-            vec4 p_color = texture(palette, vec2(luminance - 0.001, previous_palette_index));
+            vec4 p_color = texture(palette, vec2(luminance * 0.999, previous_palette_index));
             i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
         }
     }
