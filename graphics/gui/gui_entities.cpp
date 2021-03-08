@@ -8,7 +8,7 @@
 
 using namespace Verse;
 
-void Gui::entities(Scene &scene, Config &c) {
+void Gui::entities(Scene &scene) {
     ImGui::Begin("Entity Manager");
     
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_PadOuterX | ImGuiTableFlags_RowBg;
@@ -36,10 +36,6 @@ void Gui::entities(Scene &scene, Config &c) {
             ImGui::Text("%s", scene.mask[index].to_string().c_str());
         }
         ImGui::EndTable();
-        
-        ImGui::Checkbox("Display collision boxes", &c.render_collision_boxes);
-        ImGui::Checkbox("Use grayscale", &c.use_grayscale);
-        ImGui::SliderInt("Palette", &c.palette_index, 0, c.num_palettes - 1);
     }
     
     ImGui::End();

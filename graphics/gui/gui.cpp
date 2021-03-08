@@ -8,6 +8,7 @@
 #include "gui_entities.h"
 #include "gui_actors.h"
 #include "gui_performance.h"
+#include "gui_settings.h"
 
 using namespace Verse;
 
@@ -31,9 +32,10 @@ void Gui::prerender(Scene &scene, Config &c, ui16 &fps, SDL_Window* window) {
     ImGui_ImplSDL2_NewFrame(window);
     ImGui::NewFrame();
     
-    Gui::entities(scene, c);
+    Gui::entities(scene);
     Gui::actors(scene);
     Gui::performance(fps);
+    Gui::settings(c);
 }
 
 void Gui::render() {
