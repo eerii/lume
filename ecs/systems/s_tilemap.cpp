@@ -31,7 +31,7 @@ void System::Tilemap::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
                 if (tmap->tiles[i][j] != 0) {
                     src.pos.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
 #ifdef USE_OPENGL
-                    Graphics::Renderer::GL::renderTexture(tmap->tex_id, src, dst, 0, c);
+                    Graphics::Renderer::GL::renderTexture(tmap->tex_id, src, dst, 0, c, false);
 #else
                     SDL_Rect src_sdl = src.toSDL();
                     SDL_Rect dst_sdl = dst.toSDL();

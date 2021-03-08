@@ -38,7 +38,7 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         Rect dst = Rect((tex->transform.pos + tex->offset), tex->transform.size);
         
 #ifdef USE_OPENGL
-        Graphics::Renderer::GL::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c);
+        Graphics::Renderer::GL::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c, tex->is_reversed);
 #else
         
         SDL_Rect sdl_src = src.toSDL();

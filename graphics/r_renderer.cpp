@@ -178,7 +178,7 @@ ui32 Graphics::Renderer::GL::createTexture(Tex* tex, int w, int h) {
     return tex_id;
 }
 
-void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames, Config &c) {
+void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames, Config &c, bool flip) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glUseProgram(pid[0]);
     
@@ -187,11 +187,13 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
         vertices[4*1 + 2] = vertices[4*0 + 2] + (float)src.size.x / (float)(src.size.x * (frames + 1));
         vertices[4*2 + 2] = vertices[4*0 + 2];
         vertices[4*3 + 2] = vertices[4*1 + 2];
-    } else {
-        vertices[4*0 + 2] = 0.0;
-        vertices[4*1 + 2] = 1.0;
-        vertices[4*2 + 2] = 0.0;
-        vertices[4*3 + 2] = 1.0;
+    }
+    
+    if (flip) {
+        vertices[4*0 + 2] = vertices[4*1 + 2];
+        vertices[4*1 + 2] = vertices[4*2 + 2];
+        vertices[4*2 + 2] = vertices[4*0 + 2];
+        vertices[4*3 + 2] = vertices[4*1 + 2];
     }
     
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -214,6 +216,11 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    vertices[4*0 + 2] = 0.0;
+    vertices[4*1 + 2] = 1.0;
+    vertices[4*2 + 2] = 0.0;
+    vertices[4*3 + 2] = 1.0;
 }
 
 void Graphics::Renderer::GL::clear(Config &c) {

@@ -2,7 +2,7 @@
 
 ## **0.1** ~ Basics
 
-### **[0.0.10]** ~ Renderer _2021-03-06_
+### **[0.0.10]** ~ Renderer _2021-03-08_
 #### Added
 - Basic light variation
 - Conditional compiling for SDL or OpenGL
@@ -14,6 +14,7 @@
 - Render lights again
 - Multiple lights
 - Smooth min light blending
+- Flip sprite
 #### Changed
 - Code cleanup
 - Moved imgui to deps
