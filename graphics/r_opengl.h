@@ -11,12 +11,7 @@
     #define GL_SILENCE_DEPRECATION
 
     #include <OpenGL/OpenGL.h>
-
-    #ifdef USE_OPENGL
-        #include <OpenGL/gl3.h>
-    #else
-        #include <OpenGL/gl.h>
-    #endif //!USE_OPENGL
+    #include <OpenGL/gl3.h>
 
 #else //OTHERS (Not tested)
 

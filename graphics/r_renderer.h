@@ -12,7 +12,7 @@ namespace Verse::Graphics::Renderer::GL
 {
     void create(Config &c, SDL_Window* window);
 
-    ui32 createTexture(Tex* tex, int w, int h);
+    ui32 createTexture(ui8* tex, int w, int h);
     void renderTexture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames, Config &c, bool flip);
 
     void clear(Config &c);

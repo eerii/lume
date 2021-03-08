@@ -11,12 +11,8 @@
 
 #include "imgui.h"
 
-#ifdef USE_OPENGL
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
-#else
-#include "imgui_sdl.h"
-#endif
 
 #include "scene.h"
 #include "config.h"

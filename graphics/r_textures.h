@@ -16,10 +16,5 @@
 
 namespace Verse::Graphics
 {
-    Tex* loadTexture(str path, ui32 &tex_id);
-
-    #ifndef USE_OPENGL
-    SDL_Surface* loadSurface(str path);
-    void linkRendererToTexture(SDL_Renderer* r); //Deprecate in favour of custom renderer
-    #endif
+    ui8* loadTexture(str path, ui32 &tex_id);
 }

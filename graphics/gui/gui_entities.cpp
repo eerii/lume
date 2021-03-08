@@ -38,7 +38,6 @@ void Gui::entities(Scene &scene, Config &c) {
         ImGui::EndTable();
         
         ImGui::Checkbox("Display collision boxes", &c.render_collision_boxes);
-        ImGui::Checkbox("Use shaders", &c.use_shaders);
         ImGui::Checkbox("Use grayscale", &c.use_grayscale);
         ImGui::SliderInt("Palette", &c.palette_index, 0, c.num_palettes - 1);
     }

@@ -25,13 +25,6 @@ namespace Verse
     //STRING
     typedef std::string str;
 
-    //TEXTURES
-    #ifdef USE_OPENGL
-    typedef ui8 Tex;
-    #else
-    typedef SDL_Texture Tex;
-    #endif
-
     //VEC2 - 2D Vector
     struct Vec2 {
         float x, y;

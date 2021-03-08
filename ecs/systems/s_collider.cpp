@@ -85,11 +85,12 @@ bool System::Collider::checkCollisions(EntityID eid, Scene &scene) {
 }
 
 
-void System::Collider::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
-    for (EntityID e : SceneView<Component::Texture>(scene)) {
+void System::Collider::render(Scene &scene, Config &c) {
+    /*for (EntityID e : SceneView<Component::Texture>(scene)) {
         Component::Collider* collider = scene.getComponent<Component::Collider>(e);
-        SDL_Rect rect = Rect(collider->transform.pos * c.render_scale, collider->transform.size * c.render_scale).toSDL();
+        Rect rect = Rect(collider->transform.pos * c.render_scale, collider->transform.size * c.render_scale);
         
+        //TODO: Change
         if (collider->is_colliding) {
             SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
         } else {
@@ -97,5 +98,5 @@ void System::Collider::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         }
         
         SDL_RenderDrawRect(renderer, &rect);
-    }
+    }*/
 }

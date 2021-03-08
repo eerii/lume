@@ -14,8 +14,6 @@
 
 namespace Verse::System::Light
 {
-    void init(SDL_Renderer* renderer, Config &c);
     void render(Scene &scene, Config &c);
     std::vector<glm::vec4> getLight();
-    void clean();
 }

@@ -5,11 +5,7 @@
 #include "r_window.h"
 #include "imgui.h"
 
-#ifdef USE_OPENGL
 #define W_FLAGS SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | SDL_WINDOW_OPENGL
-#else
-#define W_FLAGS SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
-#endif
 
 using namespace Verse;
 

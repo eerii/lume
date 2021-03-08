@@ -16,8 +16,6 @@
 #include "stb_image.h"
 #include "s_light.h"
 
-#ifdef USE_OPENGL
-
 using namespace Verse;
 using namespace Graphics;
 
@@ -164,7 +162,7 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     }
 }
 
-ui32 Graphics::Renderer::GL::createTexture(Tex* tex, int w, int h) {
+ui32 Graphics::Renderer::GL::createTexture(ui8* tex, int w, int h) {
     ui32 tex_id;
     
     glGenTextures(1, &tex_id);
@@ -304,5 +302,3 @@ void Graphics::Renderer::GL::destroy() {
     //SDL
     SDL_GL_DeleteContext(context);
 }
-
-#endif

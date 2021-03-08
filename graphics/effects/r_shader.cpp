@@ -45,8 +45,6 @@ bool Graphics::Shader::initGLExtensions() {
 #endif
 
 ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
-    //log::graphics("Compiling Shader...");
-    
     //CREATE SHADER FROM SOURCE
     ui8 id = glCreateShader(shaderType);
     glShaderSource(id, 1, &source, NULL);
@@ -78,8 +76,6 @@ ui8 Graphics::Shader::compileShader(const char* source, ui32 shaderType) {
 }
 
 ui8 Graphics::Shader::compileProgram(str vertex_file, str fragment_file) {
-    //log::graphics("Compiling Program...");
-    
     ui8 pid = 0;
     ui8 vertex_shader, fragment_shader;
 

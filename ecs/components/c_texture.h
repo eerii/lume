@@ -4,15 +4,16 @@
 
 #pragma once
 
-#include <SDL2/SDL.h>
 #include <vector>
+
 #include "dtypes.h"
 
 namespace Verse::Component
 {
     struct Texture {
-        Tex* tex;
+        ui8* tex;
         ui32 tex_id;
+        
         Rect transform;
         
         Vec2 offset = Vec2(0,0);

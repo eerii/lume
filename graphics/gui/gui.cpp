@@ -37,11 +37,6 @@ void Gui::prerender(Scene &scene, Config &c, ui16 &fps, SDL_Window* window) {
 }
 
 void Gui::render() {
-#ifdef USE_OPENGL
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-#else
-    ImGui::Render();
-    ImGuiSDL::Render(ImGui::GetDrawData());
-#endif
 }

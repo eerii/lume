@@ -12,7 +12,7 @@ namespace {
     int frame_count = 0;
 }
 
-void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
+void System::Texture::render(Scene &scene, Config &c) {
     if (frame_count < animation_speed)
         frame_count++;
     
@@ -37,17 +37,6 @@ void System::Texture::render(Scene &scene, SDL_Renderer* renderer, Config &c) {
         
         Rect dst = Rect((tex->transform.pos + tex->offset), tex->transform.size);
         
-#ifdef USE_OPENGL
         Graphics::Renderer::GL::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c, tex->is_reversed);
-#else
-        
-        SDL_Rect sdl_src = src.toSDL();
-        SDL_Rect sdl_dst = dst.toSDL();
-        
-        SDL_RendererFlip flip = tex->is_reversed ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-        
-        SDL_RenderCopyEx(renderer, tex->tex, &sdl_src, &sdl_dst, 0, NULL, flip);
-        
-#endif
     }
 }

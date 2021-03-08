@@ -14,5 +14,5 @@
 
 namespace Verse::System::Texture
 {
-    void render(Scene &scene, SDL_Renderer* renderer, Config &c);
+    void render(Scene &scene, Config &c);
 }

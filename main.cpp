@@ -25,11 +25,7 @@ using namespace Verse;
 int main(int argc, const char * argv[]) {
     
     Config config = {
-        #ifdef USE_OPENGL
-        .name = "Proxecto Lume [OpenGL]",
-        #else
-        .name = "Proxecto Lume [SDL]",
-        #endif
+        .name = "Proxecto Lume",
         .version = "0.0.10",
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),

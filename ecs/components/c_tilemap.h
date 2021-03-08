@@ -4,15 +4,17 @@
 
 #pragma once
 
-#include <SDL2/SDL.h>
+#include <vector>
+
 #include "dtypes.h"
 
 namespace Verse::Component
 {
     struct Tilemap {
-        std::vector<std::vector<ui8>> tiles;
-        Tex* tex;
+        ui8* tex;
         ui32 tex_id;
+        
+        std::vector<std::vector<ui8>> tiles;
         
         Vec2 tex_size;
         Vec2 pos;
