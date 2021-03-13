@@ -158,7 +158,7 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     //PALETTE TEX
-    Graphics::loadTexture("res/graphics/palette_multi.png", palette_tex);
+    Graphics::Texture::loadTexture("res/graphics/palette_multi.png", palette_tex);
     
     //DITHER
     dither_mat /= 16.0;

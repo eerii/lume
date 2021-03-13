@@ -2,6 +2,7 @@
 
 #define MAX_LIGHTS 32
 #define SMOOTHNESS 0.5
+#define DITHERING_THRESHOLD 0.85
 
 in vec2 f_tex_coord;
 
@@ -58,13 +59,13 @@ void main() {
         }
     }
     
-    luminance *= 1.0 - light_accumulator;
-    
     if (use_dithering) {
-        float dithering_threshold = (1.0 - light_accumulator * 8 > 0.2) ?
-                                    1.0 - light_accumulator * 4 :
-                                    0.2 * (1.0 - light_accumulator * 2);
+        float dithering_threshold = (1.0 - light_accumulator > DITHERING_THRESHOLD) ?
+                                    (1.0 - light_accumulator - DITHERING_THRESHOLD) * (1.0 / (1.0 - DITHERING_THRESHOLD)) : 0.0;
+        
         luminance = (dithering_threshold > light_dithering) ? luminance : 0.0;
+    } else {
+        luminance *= 1.0 - light_accumulator;
     }
     
     if (luminance < 0.0)

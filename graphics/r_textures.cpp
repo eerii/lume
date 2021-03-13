@@ -10,21 +10,21 @@
 
 using namespace Verse;
 
-void Graphics::loadTexture(str path, Component::Texture* tex) {
+void Graphics::Texture::loadTexture(str path, Component::Texture* tex) {
     int w, h, ch;
     tex->tex = stbi_load(path.c_str(), &w, &h, &ch, STBI_rgb_alpha);
     
     tex->tex_id = (int)Graphics::Renderer::GL::createTexture(tex->tex, w, h);
 }
 
-void Graphics::loadTexture(str path, Component::Tilemap* tex) {
+void Graphics::Texture::loadTexture(str path, Component::Tilemap* tex) {
     int w, h, ch;
     tex->tex = stbi_load(path.c_str(), &w, &h, &ch, STBI_rgb_alpha);
     
     tex->tex_id = (int)Graphics::Renderer::GL::createTexture(tex->tex, w, h);
 }
 
-void Graphics::loadTexture(str path, ui32 &tex_id) {
+void Graphics::Texture::loadTexture(str path, ui32 &tex_id) {
     int w, h, ch;
     ui8* tex = stbi_load(path.c_str(), &w, &h, &ch, STBI_rgb_alpha);
     

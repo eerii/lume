@@ -31,7 +31,7 @@ int main(int argc, const char * argv[]) {
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .enable_gui = true,
-        .use_dithering = true,
+        .use_dithering = false,
         .use_grayscale = false,
         .palette_index = 0,
         .num_palettes = 4,
@@ -53,7 +53,7 @@ int main(int argc, const char * argv[]) {
     collider->transform = Rect(32, 64, 9, 14);
     
     Component::Texture* texture = scene.addComponent<Component::Texture>(test);
-    Graphics::loadTexture("res/graphics/lume_idle.png", texture);
+    Graphics::Texture::loadTexture("res/graphics/lume_idle.png", texture);
     texture->transform = Rect(32, 64, 11, 14);
     texture->offset = Vec2(-1, 0);
     texture->animation.push_back(Vec2(0,2));
@@ -67,7 +67,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Light* light = scene.addComponent<Component::Light>(test);
     light->pos = texture->transform.size / 2;
-    light->radius = 96;
+    light->radius = 128;
     
     
     EntityID test1 = scene.createEntity("Luz");
@@ -87,7 +87,7 @@ int main(int argc, const char * argv[]) {
     collider2->transform = Rect(192, 72, 8, 8);
     
     Component::Texture* texture2 = scene.addComponent<Component::Texture>(test3);
-    Graphics::loadTexture("res/graphics/ground2.png", texture2);
+    Graphics::Texture::loadTexture("res/graphics/ground2.png", texture2);
     texture2->transform = Rect(192, 72, 8, 8);
     
     
@@ -95,7 +95,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
     bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
-    Graphics::loadTexture("res/graphics/background.png", bg_tilemap);
+    Graphics::Texture::loadTexture("res/graphics/background.png", bg_tilemap);
     bg_tilemap->tex_size = Vec2(8, 8);
     bg_tilemap->pos = Vec2(0, 0);
     
@@ -104,7 +104,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Tilemap* tilemap = scene.addComponent<Component::Tilemap>(tile);
     tilemap->tiles = System::Tilemap::load("res/levels/1.png");
-    Graphics::loadTexture("res/graphics/ground2.png", tilemap);
+    Graphics::Texture::loadTexture("res/graphics/ground2.png", tilemap);
     tilemap->tex_size = Vec2(8, 8);
     tilemap->pos = Vec2(0, 96);
     

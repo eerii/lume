@@ -13,7 +13,7 @@
 #include "c_texture.h"
 #include "c_tilemap.h"
 
-namespace Verse::Graphics
+namespace Verse::Graphics::Texture
 {
     void loadTexture(str path, Component::Texture* tex);
     void loadTexture(str path, Component::Tilemap* tex);
