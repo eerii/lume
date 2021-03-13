@@ -9,5 +9,6 @@
 
 namespace Verse::Graphics::Camera
 {
-
+    void bind(Vec2 *c);
+    void move(int &x, int &y);
 }

@@ -10,6 +10,7 @@
 #include "r_shader.h"
 #include "r_textures.h"
 #include "r_palette.h"
+#include "r_camera.h"
 
 #include "gui.h"
 #include "time.h"
@@ -41,6 +42,9 @@ namespace {
          0.0,  0.0,  0.0,  1.0,
          1.0,  0.0,  1.0,  1.0,
     };
+
+    Vec2 camera = Vec2(128, 90);
+    glm::mat4 mat_camera_view;
 
     glm::mat4 mat_proj;
     glm::mat4 fb_mat_proj, fb_mat_view;
@@ -163,6 +167,9 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     //DITHER
     dither_mat /= 16.0;
     
+    //CAMERA
+    Camera::bind(&camera);
+    
     //CATCH ERRORS
     GLenum e;
     while ((e = glGetError()) != GL_NO_ERROR) {
@@ -212,7 +219,7 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
     mat_model = glm::scale(mat_model, glm::vec3(stretch_factor.x * (dst.size.x / c.render_scale),
                                                 stretch_factor.y * (dst.size.y / c.render_scale), 1.0f));
     
-    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(mat_proj * mat_model));
+    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(mat_proj * mat_camera_view * mat_model));
     
     glBindTexture(GL_TEXTURE_2D, tex_id);
     
@@ -237,6 +244,9 @@ void Graphics::Renderer::GL::clear(Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glClearColor(c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    mat_camera_view = glm::translate(glm::mat4(1.0f), glm::vec3((camera.x - 0.5 * c.resolution.x) / c.render_scale,
+                                                                (camera.y - 0.5 * c.resolution.y) / c.render_scale, 0.0f));
     
     if (previous_window_size.x != c.window_size.x or previous_window_size.y != c.window_size.y) {
         previous_window_size = c.window_size;
@@ -265,6 +275,10 @@ void Graphics::Renderer::GL::render(Config &c) {
     
     //LIGTH
     std::vector<glm::vec4> light_sources = System::Light::getLight();
+    for (int i = 0; i < light_sources.size(); i++) {
+        light_sources[i].x += camera.x / c.resolution.x - 0.5;
+        light_sources[i].y += camera.y / c.resolution.y - 0.5;
+    }
     glUniform4fv(glGetUniformLocation(pid[1], "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_sources.data()));
     glUniform1i(glGetUniformLocation(pid[1], "light_size"), (int)(light_sources.size()));
     glUniform1f(glGetUniformLocation(pid[1], "light_distortion"), light_distortion);

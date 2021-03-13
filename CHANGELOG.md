@@ -2,6 +2,10 @@
 
 ## **0.1** ~ Basics
 
+###  **[0.0.12]** ~ Camera _2021-03-13_
+#### Added
+- Basic camera
+
 ###  **[0.0.11]** ~ Dithering _2021-03-13_
 #### Added
 - Light dithering
