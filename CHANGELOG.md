@@ -4,8 +4,9 @@
 
 ###  **[0.0.11]** ~ Dithering _2021-03-13_
 #### Added
-- Light Dithering
+- Light dithering
 - Background
+- Toggle dithering
 
 ### **[0.0.10]** ~ Renderer _2021-03-08_
 #### Added

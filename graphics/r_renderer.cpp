@@ -270,7 +270,13 @@ void Graphics::Renderer::GL::render(Config &c) {
     glUniform1f(glGetUniformLocation(pid[1], "light_distortion"), light_distortion);
     
     //DITHER
-    glUniformMatrix4fv(glGetUniformLocation(pid[1], "dither_mat"), 1, GL_FALSE, glm::value_ptr(dither_mat));
+    if (c.use_dithering) {
+        glUniformMatrix4fv(glGetUniformLocation(pid[1], "dither_mat"), 1, GL_FALSE, glm::value_ptr(dither_mat));
+        glUniform1i(glGetUniformLocation(pid[1], "use_dithering"), true);
+    }
+    else {
+        glUniform1i(glGetUniformLocation(pid[1], "use_dithering"), false);
+    }
     
     //FB TEXTURE
     glActiveTexture(GL_TEXTURE0);

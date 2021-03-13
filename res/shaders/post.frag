@@ -21,6 +21,7 @@ uniform int light_size;
 uniform float light_distortion;
 
 //Dither
+uniform bool use_dithering;
 uniform mat4 dither_mat;
 
 //Settings
@@ -50,9 +51,7 @@ void main() {
         if (light_accumulator < 0.0)
             light_accumulator = 0.0;
         
-        if (dst_to_light < light[i].w) {
-            //light_dithering = -1.0;
-        } else if (light_dithering >= 0.0) {
+        if (use_dithering) {
             int d_x = int(floor(mod(gl_FragCoord.x, 4.0)));
             int d_y = int(floor(mod(gl_FragCoord.y, 4.0)));
             light_dithering = dither_mat[d_x][d_y];
@@ -60,10 +59,13 @@ void main() {
     }
     
     luminance *= 1.0 - light_accumulator;
-    float dithering_threshold = (1.0 - light_accumulator * 8 > 0.2) ?
-                                1.0 - light_accumulator * 4 :
-                                0.2 * (1.0 - light_accumulator * 2);
-    luminance = (dithering_threshold > light_dithering) ? luminance : 0.0;
+    
+    if (use_dithering) {
+        float dithering_threshold = (1.0 - light_accumulator * 8 > 0.2) ?
+                                    1.0 - light_accumulator * 4 :
+                                    0.2 * (1.0 - light_accumulator * 2);
+        luminance = (dithering_threshold > light_dithering) ? luminance : 0.0;
+    }
     
     if (luminance < 0.0)
         luminance = 0.0;

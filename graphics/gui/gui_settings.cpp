@@ -10,7 +10,7 @@ using namespace Verse;
 void Gui::settings(Config &c) {
     ImGui::Begin("Config");
     
-    ImGui::Checkbox("Display collision boxes", &c.render_collision_boxes);
+    ImGui::Checkbox("Use dithering", &c.use_dithering);
     ImGui::Checkbox("Use grayscale", &c.use_grayscale);
     ImGui::SliderInt("Palette", &c.palette_index, 0, c.num_palettes - 1);
     

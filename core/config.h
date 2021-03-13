@@ -18,7 +18,7 @@ namespace Verse
         int render_scale;
         bool enable_gui;
         
-        bool use_shaders;
+        bool use_dithering;
         bool use_grayscale;
         int palette_index;
         int num_palettes;
