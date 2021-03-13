@@ -2,6 +2,11 @@
 
 ## **0.1** ~ Basics
 
+###  **[0.0.11]** ~ Dithering _2021-03-13_
+#### Added
+- Light Dithering
+- Background
+
 ### **[0.0.10]** ~ Renderer _2021-03-08_
 #### Added
 - Basic light variation

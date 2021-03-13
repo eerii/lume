@@ -4,7 +4,7 @@
 
 #include "s_collider.h"
 #include "s_tilemap.h"
-#include "r_pipeline.h"
+#include "r_renderer.h"
 
 using namespace Verse;
 
@@ -90,13 +90,12 @@ void System::Collider::render(Scene &scene, Config &c) {
         Component::Collider* collider = scene.getComponent<Component::Collider>(e);
         Rect rect = Rect(collider->transform.pos * c.render_scale, collider->transform.size * c.render_scale);
         
-        //TODO: Change
         if (collider->is_colliding) {
-            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            
         } else {
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            
         }
         
-        SDL_RenderDrawRect(renderer, &rect);
+        //Draw rect
     }*/
 }

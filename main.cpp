@@ -81,14 +81,23 @@ int main(int argc, const char * argv[]) {
     light3->radius = 48;
     
     
-    /*EntityID test2 = scene.createEntity("Ground");
+    EntityID test3 = scene.createEntity("Ground");
     
-    Component::Collider* collider2 = scene.addComponent<Component::Collider>(test2);
-    collider2->transform = Rect(40, 140, 8, 8);
+    Component::Collider* collider2 = scene.addComponent<Component::Collider>(test3);
+    collider2->transform = Rect(192, 72, 8, 8);
     
-    Component::Texture* texture2 = scene.addComponent<Component::Texture>(test2);
-    texture2->tex = Graphics::loadTexture("res/graphics/ground2.png", texture2->tex_id);
-    texture2->transform = Rect(40, 140, 8, 8);*/
+    Component::Texture* texture2 = scene.addComponent<Component::Texture>(test3);
+    Graphics::loadTexture("res/graphics/ground2.png", texture2);
+    texture2->transform = Rect(192, 72, 8, 8);
+    
+    
+    EntityID bg = scene.createEntity("Background");
+    
+    Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
+    bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
+    Graphics::loadTexture("res/graphics/background.png", bg_tilemap);
+    bg_tilemap->tex_size = Vec2(8, 8);
+    bg_tilemap->pos = Vec2(0, 0);
     
     
     EntityID tile = scene.createEntity("Tilemap");
@@ -101,6 +110,9 @@ int main(int argc, const char * argv[]) {
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
+    
+    
+    
     
     
     while (running)

@@ -49,6 +49,13 @@ namespace {
     ui8 fb_mat_loc;
 
     ui32 palette_tex;
+    glm::mat4 dither_mat = glm::mat4(
+    {
+        0.0,   8.0,   2.0,   10.0,
+        12.0,  4.0,   14.0,  6.0,
+        3.0,   11.0,  1.0,   9.0,
+        15.0,  7.0,   13.0,  5.0
+    });
 
     Vec2 previous_window_size;
     Vec2 stretch_factor;
@@ -152,6 +159,9 @@ void Graphics::Renderer::GL::create(Config &c, SDL_Window* window) {
     
     //PALETTE TEX
     Graphics::loadTexture("res/graphics/palette_multi.png", palette_tex);
+    
+    //DITHER
+    dither_mat /= 16.0;
     
     //CATCH ERRORS
     GLenum e;
@@ -258,6 +268,9 @@ void Graphics::Renderer::GL::render(Config &c) {
     glUniform4fv(glGetUniformLocation(pid[1], "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_sources.data()));
     glUniform1i(glGetUniformLocation(pid[1], "light_size"), (int)(light_sources.size()));
     glUniform1f(glGetUniformLocation(pid[1], "light_distortion"), light_distortion);
+    
+    //DITHER
+    glUniformMatrix4fv(glGetUniformLocation(pid[1], "dither_mat"), 1, GL_FALSE, glm::value_ptr(dither_mat));
     
     //FB TEXTURE
     glActiveTexture(GL_TEXTURE0);
