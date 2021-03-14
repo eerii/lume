@@ -12,6 +12,6 @@
 
 namespace Verse::Controller::Player
 {
-    bool controller(Config &c, Scene &scene, EntityID eid);
+    bool controller(Scene &scene, EntityID eid);
     void jump();
 }

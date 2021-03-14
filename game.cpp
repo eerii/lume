@@ -97,7 +97,7 @@ bool Game::physicsUpdate(Scene &scene) {
             Gui::update(1.0f / 60.0f, *config);
         
         //UPDATE SYSTEMS
-        System::Actor::update(scene);
+        System::Actor::update(*config, scene);
         
         //PREPARE FOR NEXT INPUT
         Input::frame();

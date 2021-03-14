@@ -12,6 +12,6 @@
 
 namespace Verse::System::Actor
 {
-    void update(Scene &scene);
-    void move(Scene &scene, EntityID eid);
+    void update(Config &c, Scene &scene);
+    void move(Config &c, Scene &scene, EntityID eid);
 }
