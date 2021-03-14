@@ -12,6 +12,7 @@
 #include "c_actor.h"
 #include "c_tilemap.h"
 #include "c_light.h"
+#include "c_camera.h"
 
 #define INVALID_ENTITY Entity::createID(EntityIndex(-1), 0)
 

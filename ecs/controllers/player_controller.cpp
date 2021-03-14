@@ -6,6 +6,7 @@
 #include "game.h"
 #include "input.h"
 #include "time.h"
+#include "s_camera.h"
 
 #define EPSILON 10
 
@@ -24,7 +25,7 @@ namespace {
     bool previously_on_ground = false;
 }
 
-bool Controller::Player::controller(Scene &scene, EntityID eid) {
+bool Controller::Player::controller(Config &c, Scene &scene, EntityID eid) {
     actor = scene.getComponent<Component::Actor>(eid);
     
     //MOVE X
@@ -42,6 +43,7 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         else
             actor->vel.x = 0;
     }
+    
     
     //JUMP
     if (Input::pressed(Input::Key::Space)) {
@@ -85,11 +87,17 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
             jump_time = 0;
     }
     
+    
     //RESPAWN
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
     if (collider->transform.pos.y > 500) {
         collider->transform.pos = Vec2(32, 64); //TODO: Change for a propper spawn
     }
+    
+    
+    //CAMERA
+    System::Camera::move(c, collider->transform.pos);
+    
     
     return actor->vel != Vec2(0,0);
 }

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "dtypes.h"
 #include "log.h"
 #include "config.h"
@@ -16,6 +18,7 @@ namespace Verse::Graphics::Renderer::GL
     void renderTexture(ui32 &tex_id, Rect &src, Rect &dst, ui16 frames, Config &c, bool flip);
 
     void clear(Config &c);
+    void useCamera(glm::mat4 *mat, Vec2 *pos);
     void render(Config &c);
     void present(SDL_Window* window);
     void destroy();

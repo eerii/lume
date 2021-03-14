@@ -18,6 +18,8 @@ namespace Verse
         int render_scale;
         bool enable_gui;
         
+        Vec2 camera_focus_size;
+        
         bool use_dithering;
         bool use_grayscale;
         int palette_index;

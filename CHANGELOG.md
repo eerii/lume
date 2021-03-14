@@ -5,6 +5,7 @@
 ###  **[0.0.12]** ~ Camera _2021-03-13_
 #### Added
 - Basic camera
+- Barebones camera follow
 
 ###  **[0.0.11]** ~ Dithering _2021-03-13_
 #### Added

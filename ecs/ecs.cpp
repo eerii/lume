@@ -25,5 +25,6 @@ void Component::registerComponents() {
     logComponentID(Actor);
     logComponentID(Tilemap);
     logComponentID(Light);
+    logComponentID(Camera);
 }
 //-------------------------------------

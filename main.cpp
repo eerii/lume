@@ -18,6 +18,7 @@
 
 #include "s_collider.h"
 #include "s_tilemap.h"
+#include "s_camera.h"
 #include "player_controller.h"
 
 using namespace Verse;
@@ -31,6 +32,7 @@ int main(int argc, const char * argv[]) {
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .enable_gui = true,
+        .camera_focus_size = Vec2(10,10),
         .use_dithering = false,
         .use_grayscale = false,
         .palette_index = 0,
@@ -59,7 +61,7 @@ int main(int argc, const char * argv[]) {
     texture->animation.push_back(Vec2(0,2));
     
     Component::Actor* actor = scene.addComponent<Component::Actor>(test);
-    actor->controller = [test, &scene]() -> bool {return Controller::Player::controller(scene, Entity::getIndex(test));};
+    actor->controller = [&config, &scene, test]() -> bool {return Controller::Player::controller(config, scene, Entity::getIndex(test));};
     actor->max_move_speed = 100;
     actor->max_fall_speed = 250;
     actor->acc_ground = 1000;
@@ -68,6 +70,10 @@ int main(int argc, const char * argv[]) {
     Component::Light* light = scene.addComponent<Component::Light>(test);
     light->pos = texture->transform.size / 2;
     light->radius = 128;
+    
+    Component::Camera* camera = scene.addComponent<Component::Camera>(test);
+    System::Camera::init(camera, Vec2(20, 90), Vec2(config.camera_focus_size.x, config.camera_focus_size.y));
+    System::Camera::setActive(camera);
     
     
     EntityID test1 = scene.createEntity("Luz");

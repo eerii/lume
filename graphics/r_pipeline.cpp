@@ -58,6 +58,9 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     if (c.enable_gui)
         Gui::prerender(scene, c, fps, window);
     
+    //CAMERA UPDATE
+    //System::Camera::move();
+    
     //RENDER TEXTURES
     System::Tilemap::render(scene, c);
     System::Texture::render(scene, c);

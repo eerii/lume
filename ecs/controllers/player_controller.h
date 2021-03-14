@@ -6,11 +6,12 @@
 
 #include "dtypes.h"
 #include "log.h"
+#include "config.h"
 
 #include "scene.h"
 
 namespace Verse::Controller::Player
 {
-    bool controller(Scene &scene, EntityID eid);
+    bool controller(Config &c, Scene &scene, EntityID eid);
     void jump();
 }
