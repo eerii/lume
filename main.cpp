@@ -20,6 +20,7 @@
 #include "s_tilemap.h"
 #include "s_camera.h"
 #include "player_controller.h"
+#include "free_controller.h"
 
 using namespace Verse;
 
@@ -32,7 +33,7 @@ int main(int argc, const char * argv[]) {
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .enable_gui = true,
-        .camera_focus_size = Vec2(100, 30),
+        .camera_focus_size = Vec2(30, 30),
         .use_dithering = false,
         .use_grayscale = false,
         .palette_index = 0,
@@ -61,7 +62,9 @@ int main(int argc, const char * argv[]) {
     texture->animation.push_back(Vec2(0,2));
     
     Component::Actor* actor = scene.addComponent<Component::Actor>(test);
+    //actor->controller = [&scene, test]() -> bool {return Controller::Free::controller(scene, Entity::getIndex(test));};
     actor->controller = [&scene, test]() -> bool {return Controller::Player::controller(scene, Entity::getIndex(test));};
+    //actor->has_gravity = false;
     actor->max_move_speed = 100;
     actor->max_fall_speed = 250;
     actor->acc_ground = 1000;
