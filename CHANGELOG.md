@@ -9,6 +9,7 @@
 - Lookahead X
 ### Changed
 - Fixed dithering
+- Fixed light position when resizing
 
 ###  **[0.0.11]** ~ Dithering _2021-03-13_
 #### Added
