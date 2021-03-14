@@ -59,13 +59,18 @@ void main() {
         }
     }
     
+    float light_at_point = 1.0 - light_accumulator;
+    
     if (use_dithering) {
-        float dithering_threshold = (1.0 - light_accumulator > DITHERING_THRESHOLD) ?
-                                    (1.0 - light_accumulator - DITHERING_THRESHOLD) * (1.0 / (1.0 - DITHERING_THRESHOLD)) : 0.0;
+        float dithering_threshold = (light_at_point > DITHERING_THRESHOLD) ?
+                                    (light_at_point - DITHERING_THRESHOLD) * (1.0 / (1.0 - DITHERING_THRESHOLD)) : 0.0;
         
-        luminance = (dithering_threshold > light_dithering) ? luminance : 0.0;
+        luminance = (dithering_threshold > light_dithering) ? luminance :
+                        ((dithering_threshold - 0.6 + light_at_point > light_dithering) ?
+                         (luminance - 0.25)  : 0.0);
+        
     } else {
-        luminance *= 1.0 - light_accumulator;
+        luminance *= light_at_point;
     }
     
     if (luminance < 0.0)

@@ -9,6 +9,7 @@
 #include "events.h"
 #include "gui.h"
 #include "s_actor.h"
+#include "s_camera.h"
 
 using namespace Verse;
 
@@ -98,6 +99,7 @@ bool Game::physicsUpdate(Scene &scene) {
         
         //UPDATE SYSTEMS
         System::Actor::update(*config, scene);
+        System::Camera::update(*config, scene);
         
         //PREPARE FOR NEXT INPUT
         Input::frame();

@@ -5,7 +5,6 @@
 #include "game.h"
 #include "s_actor.h"
 #include "s_collider.h"
-#include "s_camera.h"
 
 using namespace Verse;
 
@@ -92,8 +91,4 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         
         texture->transform.pos = collider->transform.pos;
     }
-    
-    //Camera
-    if (scene.getComponent<Component::Camera>(eid) != nullptr)
-        System::Camera::move(c, collider->transform.pos + collider->transform.size / 2.0f);
 }
