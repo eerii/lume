@@ -10,6 +10,7 @@
 ### Changed
 - Fixed dithering
 - Fixed light position when resizing
+- Tilemap Performance Optimization!
 
 ###  **[0.0.11]** ~ Dithering _2021-03-13_
 #### Added

@@ -10,6 +10,7 @@
 #include "gui.h"
 #include "s_actor.h"
 #include "s_camera.h"
+#include "s_tilemap.h"
 
 using namespace Verse;
 

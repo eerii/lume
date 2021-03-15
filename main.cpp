@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]) {
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .enable_gui = true,
-        .camera_focus_size = Vec2(72, 30),
+        .camera_focus_size = Vec2(72, 90),
         .use_dithering = true,
         .use_grayscale = false,
         .palette_index = 0,
@@ -72,7 +72,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Light* light = scene.addComponent<Component::Light>(test);
     light->pos = texture->transform.size / 2;
-    light->radius = 128;
+    light->radius = 144;
     
     Component::Camera* camera = scene.addComponent<Component::Camera>(test);
     System::Camera::init(camera, Vec2(20, 90), Vec2(config.camera_focus_size.x, config.camera_focus_size.y));
@@ -100,13 +100,13 @@ int main(int argc, const char * argv[]) {
     texture2->transform = Rect(192, 72, 8, 8);
     
     
-    EntityID bg = scene.createEntity("Background");
-    
+    /*EntityID bg = scene.createEntity("Background");
+
     Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
     bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
     Graphics::Texture::loadTexture("res/graphics/background.png", bg_tilemap);
     bg_tilemap->tex_size = Vec2(8, 8);
-    bg_tilemap->pos = Vec2(0, 0);
+    bg_tilemap->pos = Vec2(-56, -32);*/
     
     
     EntityID tile = scene.createEntity("Tilemap");
@@ -119,9 +119,6 @@ int main(int argc, const char * argv[]) {
     
     Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
-    
-    
-    
     
     
     while (running)

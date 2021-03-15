@@ -5,6 +5,8 @@
 #pragma once
 
 #include <vector>
+#include <array>
+#include <glm/glm.hpp>
 
 #include "dtypes.h"
 
@@ -18,5 +20,7 @@ namespace Verse::Component
         
         Vec2 tex_size;
         Vec2 pos;
+        
+        std::vector<std::array<float, 24>> vert;
     };
 }

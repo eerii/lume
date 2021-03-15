@@ -8,7 +8,7 @@
 
 #define LIGHT_PERIOD 5
 #define LIGHT_VARIATION 5
-#define LIGHT_CENTER_RADIUS 0.2
+#define LIGHT_CENTER_RADIUS 0.25
 
 using namespace Verse;
 

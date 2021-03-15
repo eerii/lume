@@ -14,6 +14,7 @@
 #include "time.h"
 #include "stb_image.h"
 #include "s_light.h"
+#include "s_tilemap.h"
 
 using namespace Verse;
 using namespace Graphics;
@@ -202,10 +203,7 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
         vertices[4*1 + 2] = vertices[4*2 + 2];
         vertices[4*2 + 2] = vertices[4*0 + 2];
         vertices[4*3 + 2] = vertices[4*1 + 2];
-    }
-    
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    }    
     
     glm::mat4 mat_model = glm::mat4(1.0f);
     
@@ -216,14 +214,12 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
     
     glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(mat_proj * *mat_camera * mat_model));
     
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
     glBindTexture(GL_TEXTURE_2D, tex_id);
     
-    glBindVertexArray(vao);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-    
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     vertices[4*0 + 2] = 0.0;
     vertices[4*1 + 2] = 1.0;
@@ -231,7 +227,30 @@ void Graphics::Renderer::GL::renderTexture(ui32 &tex_id, Rect &src, Rect &dst, u
     vertices[4*3 + 2] = 1.0;
 }
 
-void Graphics::Renderer::GL::clear(Config &c) {
+void Graphics::Renderer::GL::prepareTilemap(Rect &dst, Config &c, std::array<float, 24> &vertices) {
+    for (int i = 0; i < 6; i++) {
+        vertices[4*i + 0] = (i % 2 == 1) ? stretch_factor.x * (dst.size.x / c.render_scale) : 0.0;
+        vertices[4*i + 0] += stretch_factor.x * (dst.pos.x / c.render_scale);
+        vertices[4*i + 1] = (i < 2 or i == 3) ? stretch_factor.y * (dst.size.y / c.render_scale) : 0.0;
+        vertices[4*i + 1] += stretch_factor.y * (dst.pos.y / c.render_scale);
+    }
+}
+
+void Graphics::Renderer::GL::renderTilemap(ui32 &tex_id, float *vertices, int size) {
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+    glUseProgram(pid[0]);
+    
+    glUniformMatrix4fv(mat_loc, 1, GL_FALSE, glm::value_ptr(mat_proj * *mat_camera));
+    
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 24 * size, vertices, GL_STATIC_DRAW);
+    
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 6 * size);
+}
+
+void Graphics::Renderer::GL::clear(Scene &scene, Config &c) {
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glClearColor(c.background_color[0], c.background_color[1], c.background_color[2], c.background_color[3]);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -252,9 +271,9 @@ void Graphics::Renderer::GL::clear(Config &c) {
         fb_mat_proj = glm::ortho(0.0f, (float)(c.window_size.x), 0.0f, (float)(c.window_size.y));
         
         glViewport( 0, 0, c.window_size.x, c.window_size.y );
+        
+        System::Tilemap::init(scene, c);
     }
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Graphics::Renderer::GL::useCamera(glm::mat4 *mat, Vec2 *pos) {

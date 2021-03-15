@@ -52,7 +52,7 @@ void Graphics::init(Config &c) {
 
 void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     //CLEAR
-    Renderer::GL::clear(c);
+    Renderer::GL::clear(scene, c);
     
     //PRERENDER GUI
     if (c.enable_gui)
