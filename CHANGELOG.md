@@ -7,6 +7,7 @@
 - Basic camera
 - Barebones camera follow
 - Lookahead X
+- Camera bounds
 ### Changed
 - Fixed dithering
 - Fixed light position when resizing

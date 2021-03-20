@@ -76,7 +76,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Camera* camera = scene.addComponent<Component::Camera>(test);
     System::Camera::init(camera, Vec2(20, 90), Vec2(config.camera_focus_size.x, config.camera_focus_size.y));
-    System::Camera::setActive(camera);
+    System::Camera::setActive(camera, Rect(128, 90, 256, 180));
     
     
     EntityID test1 = scene.createEntity("Luz");
@@ -101,12 +101,12 @@ int main(int argc, const char * argv[]) {
     
     
     /*EntityID bg = scene.createEntity("Background");
-
-    Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
-    bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
-    Graphics::Texture::loadTexture("res/graphics/background.png", bg_tilemap);
-    bg_tilemap->tex_size = Vec2(8, 8);
-    bg_tilemap->pos = Vec2(-56, -32);*/
+     
+     Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
+     bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
+     Graphics::Texture::loadTexture("res/graphics/background.png", bg_tilemap);
+     bg_tilemap->tex_size = Vec2(8, 8);
+     bg_tilemap->pos = Vec2(-56, -32);*/
     
     
     EntityID tile = scene.createEntity("Tilemap");

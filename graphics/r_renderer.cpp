@@ -294,8 +294,8 @@ void Graphics::Renderer::GL::render(Config &c) {
     Vec2 light_correction = Vec2(c.window_size.x / (c.window_size.x - (c.window_padding.x * 2)),
                                  c.window_size.y / (c.window_size.y - (c.window_padding.y * 2)));
     for (int i = 0; i < light_sources.size(); i++) {
-        light_sources[i].x += ((camera_centre->x / c.resolution.x) - 0.5) * light_correction.x;
-        light_sources[i].y += ((camera_centre->y / c.resolution.y) - 0.5) * light_correction.y;
+        light_sources[i].x += (0.5 - (camera_centre->x / c.resolution.x)) * light_correction.x;
+        light_sources[i].y += (0.5 - (camera_centre->y / c.resolution.y)) * light_correction.y;
     }
     glUniform4fv(glGetUniformLocation(pid[1], "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_sources.data()));
     glUniform1i(glGetUniformLocation(pid[1], "light_size"), (int)(light_sources.size()));
