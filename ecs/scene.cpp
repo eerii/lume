@@ -36,3 +36,12 @@ void Scene::removeEntity(EntityID eid) {
 std::string Scene::getName(EntityID eid) {
     return entity_names[Entity::getIndex(eid)];
 }
+
+void Scene::setSize(Vec2 scene_size) {
+    size = scene_size;
+}
+
+void Scene::addConnectedScene(Scene *scene, Vec2 pos) {
+    connected_scenes.push_back(scene);
+    pos_connected_scenes.push_back(pos);
+}

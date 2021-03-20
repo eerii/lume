@@ -20,8 +20,10 @@ namespace Verse::Game
 {
     bool init(Config &c);
 
-    bool update(Scene &scene);
-    bool physicsUpdate(Scene &scene);
+    void setActiveScene(Scene* active_scene);
+
+    bool update();
+    bool physicsUpdate();
     void timeFrame();
 
     void stop();

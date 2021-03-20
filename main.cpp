@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     Component::registerComponents();
     
     Scene scene;
-    
+    scene.setSize(Vec2(256, 128));
     
     EntityID test = scene.createEntity("Player");
     
@@ -76,7 +76,7 @@ int main(int argc, const char * argv[]) {
     
     Component::Camera* camera = scene.addComponent<Component::Camera>(test);
     System::Camera::init(camera, Vec2(20, 90), Vec2(config.camera_focus_size.x, config.camera_focus_size.y));
-    System::Camera::setActive(camera, Rect(128, 90, 256, 180));
+    System::Camera::setActive(camera, scene);
     
     
     EntityID test1 = scene.createEntity("Luz");
@@ -121,8 +121,11 @@ int main(int argc, const char * argv[]) {
     tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
     
     
+    Game::setActiveScene(&scene);
+    
+    
     while (running)
-        running = Game::update(scene);
+        running = Game::update();
     
     
     Game::stop();

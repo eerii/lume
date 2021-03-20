@@ -16,6 +16,8 @@ using namespace Verse;
 
 namespace
 {
+    Scene* scene;
+
     Config* config;
     ui32 accumulator;
 
@@ -56,16 +58,20 @@ bool Game::init(Config &c) {
     return true;
 }
 
-bool Game::update(Scene &scene) {
+void Game::setActiveScene(Scene *active_scene) {
+    scene = active_scene;
+}
+
+bool Game::update() {
     bool running = true;
     
     timeFrame();
     
     //PHYSICS UPDATE
-    running = physicsUpdate(scene);
+    running = physicsUpdate();
     
     //RENDER UPDATE
-    Graphics::render(scene, *config, fps);
+    Graphics::render(*scene, *config, fps);
     
     //PREVENT RUNNING TOO FAST
     ui16 frame_ticks = (ui16)(time() - Time::current);
@@ -85,7 +91,7 @@ bool Game::update(Scene &scene) {
     return running;
 }
 
-bool Game::physicsUpdate(Scene &scene) {
+bool Game::physicsUpdate() {
     bool running = true;
     
     while (accumulator >= TIMESTEP) {
@@ -99,8 +105,8 @@ bool Game::physicsUpdate(Scene &scene) {
             Gui::update(1.0f / 60.0f, *config);
         
         //UPDATE SYSTEMS
-        System::Actor::update(*config, scene);
-        System::Camera::update(*config, scene);
+        System::Actor::update(*config, *scene);
+        System::Camera::update(*config, *scene);
         
         //PREPARE FOR NEXT INPUT
         Input::frame();

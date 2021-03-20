@@ -46,6 +46,11 @@ void System::Camera::setActive(Component::Camera *camera, Rect cam_bounds) {
     bounds = cam_bounds;
 }
 
+void System::Camera::setActive(Component::Camera *camera, Scene &scene) {
+    setActive(camera);
+    bounds = Rect(scene.size * 0.5f, scene.size);
+}
+
 void System::Camera::update(Config &c, Scene &scene) {
     for (EntityID e : SceneView<Component::Camera>(scene)) {
         Component::Camera* camera = scene.getComponent<Component::Camera>(e);
