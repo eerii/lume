@@ -28,7 +28,7 @@ int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.0.12",
+        .version = "0.1.0",
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,

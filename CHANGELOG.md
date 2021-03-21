@@ -1,6 +1,22 @@
 # Changelog 📝
 
+## **0.2** ~ Light
+
+###  **[0.1.0]** ~ Brainstorm _2021-03-21_
+
+The core of the app is done! We got most of the essential systems working, a player, a camera, a level, collissions, rendering everything... Now we can start focusing on features of the game itself.
+
+The first step to take will be to organize all the thoughts and put them into paper, deciding on the main movement and interaction mechanics to be implemented. We then will start creating those abilities and the ligth mechanics, while also making levels happen. Art needs to be a priority as well, and we need at least placeholders for the animations and the levels.
+
+---
+---
+---
+
 ## **0.1** ~ Basics
+
+#### 2021-03-21
+
+---
 
 ###  **[0.0.12]** ~ Camera _2021-03-13_
 #### Added
@@ -13,11 +29,15 @@
 - Fixed light position when resizing
 - Tilemap Performance Optimization!
 
+---
+
 ###  **[0.0.11]** ~ Dithering _2021-03-13_
 #### Added
 - Light dithering
 - Background
 - Toggle dithering
+
+---
 
 ### **[0.0.10]** ~ Renderer _2021-03-08_
 #### Added
