@@ -8,9 +8,8 @@
 #include "file.h"
 #include "events.h"
 #include "gui.h"
-#include "s_actor.h"
-#include "s_camera.h"
-#include "s_tilemap.h"
+
+#include "system_list.h"
 
 using namespace Verse;
 
@@ -45,10 +44,6 @@ bool Game::init(Config &c) {
     log::debug("SDL v%d.%d.%d", version.major, version.minor, version.patch);
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS | SDL_INIT_JOYSTICK | SDL_INIT_GAMECONTROLLER) != 0) {
         log::error("SDL_Init has failed!!", SDL_GetError());
-        return false;
-    }
-    if (!(IMG_Init(IMG_INIT_PNG))) {
-        log::error("IMG_Init has failed!!", SDL_GetError());
         return false;
     }
     
@@ -105,8 +100,7 @@ bool Game::physicsUpdate() {
             Gui::update(1.0f / 60.0f, *config);
         
         //UPDATE SYSTEMS
-        System::Actor::update(*config, *scene);
-        System::Camera::update(*config, *scene);
+        PHYSICS_UPDATE_SYSTEMS
         
         //PREPARE FOR NEXT INPUT
         Input::frame();

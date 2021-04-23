@@ -10,12 +10,15 @@
 #include "log.h"
 #include "config.h"
 
-#include "c_texture.h"
-#include "c_tilemap.h"
+#include "component_list.h"
 
 namespace Verse::Graphics::Texture
 {
-    void loadTexture(str path, Component::Texture* tex);
-    void loadTexture(str path, Component::Tilemap* tex);
     void loadTexture(str path, ui32 &tex_id);
+#ifdef TEXTURE
+    void loadTexture(str path, Component::Texture* tex);
+#endif
+#ifdef TILEMAP
+    void loadTexture(str path, Component::Tilemap* tex);
+#endif
 }

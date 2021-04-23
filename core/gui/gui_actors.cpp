@@ -10,6 +10,8 @@
 using namespace Verse;
 
 void Gui::actors(Scene &scene) {
+#ifdef ACTOR
+#ifdef COLLIDER
     ImGui::Begin("Actors");
     
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_PadOuterX | ImGuiTableFlags_RowBg;
@@ -48,4 +50,6 @@ void Gui::actors(Scene &scene) {
     }
     
     ImGui::End();
+#endif
+#endif
 }

@@ -8,10 +8,7 @@
 #endif
 #include "gui.h"
 
-#include "s_texture.h"
-#include "s_tilemap.h"
-#include "s_collider.h"
-#include "s_light.h"
+#include "system_list.h"
 
 #include "r_pipeline.h"
 #include "r_window.h"
@@ -58,14 +55,8 @@ void Graphics::render(Scene &scene, Config &c, ui16 fps) {
     if (c.enable_gui)
         Gui::prerender(scene, c, fps, window);
     
-    //RENDER TEXTURES
-    System::Tilemap::render(scene, c);
-    System::Texture::render(scene, c);
-    System::Light::render(scene, c);
-    
-    //RENDER DEBUG
-    if (c.render_collision_boxes)
-        System::Collider::render(scene, c);
+    //RENDER SYSTEMS
+    RENDER_SYSTEMS
     
     //RENDER FRAMEBUFFER
     Renderer::GL::render(c);

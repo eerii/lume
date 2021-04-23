@@ -4,7 +4,6 @@
 
 #include "ecs.h"
 
-#define SHOW_DEBUG_LOG false
 #define logComponentID(x) log::debug("%s ID: %d", #x, Component::getID<Component::x>())
 
 using namespace Verse;
@@ -20,11 +19,6 @@ ComponentID Component::getID() {
 }
 
 void Component::registerComponents() {
-    logComponentID(Collider);
-    logComponentID(Texture);
-    logComponentID(Actor);
-    logComponentID(Tilemap);
-    logComponentID(Light);
-    logComponentID(Camera);
+    COMPONENTS
 }
 //-------------------------------------

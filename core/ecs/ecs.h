@@ -7,12 +7,10 @@
 #include "dtypes.h"
 #include "log.h"
 
-#include "c_collider.h"
-#include "c_texture.h"
-#include "c_actor.h"
-#include "c_tilemap.h"
-#include "c_light.h"
-#include "c_camera.h"
+#include "component_list.h"
+#ifndef COMPONENTS
+#define COMPONENTS log::error("No components defined, quitting..."); SDL_Quit();
+#endif
 
 #define INVALID_ENTITY Entity::createID(EntityIndex(-1), 0)
 

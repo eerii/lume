@@ -13,8 +13,10 @@
 #include "gui.h"
 #include "time.h"
 #include "stb_image.h"
-#include "s_light.h"
-#include "s_tilemap.h"
+
+#include "system_list.h"
+
+//TODO: ABSTRACT RENDERER
 
 using namespace Verse;
 using namespace Graphics;
@@ -272,7 +274,9 @@ void Graphics::Renderer::GL::clear(Scene &scene, Config &c) {
         
         glViewport( 0, 0, c.window_size.x, c.window_size.y );
         
+#ifdef TILEMAP
         System::Tilemap::init(scene, c);
+#endif
     }
 }
 
@@ -290,6 +294,7 @@ void Graphics::Renderer::GL::render(Config &c) {
     Graphics::Palette::render(c, palette_tex, pid[1]);
     
     //LIGTH
+#ifdef LIGHT
     std::vector<glm::vec4> light_sources = System::Light::getLight();
     Vec2 light_correction = Vec2(c.window_size.x / (c.window_size.x - (c.window_padding.x * 2)),
                                  c.window_size.y / (c.window_size.y - (c.window_padding.y * 2)));
@@ -300,6 +305,7 @@ void Graphics::Renderer::GL::render(Config &c) {
     glUniform4fv(glGetUniformLocation(pid[1], "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_sources.data()));
     glUniform1i(glGetUniformLocation(pid[1], "light_size"), (int)(light_sources.size()));
     glUniform1f(glGetUniformLocation(pid[1], "light_distortion"), light_distortion);
+#endif
     
     //DITHER
     if (c.use_dithering) {
