@@ -1,0 +1,10 @@
+#version 410 core
+
+layout (location = 0) in vec3 v_transform_3D;
+
+uniform mat4 mvp;
+
+void main() {
+    gl_Position = mvp * vec4(v_transform_3D.xyz, 1.0);
+}
+

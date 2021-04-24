@@ -14,6 +14,7 @@
 #include "r_textures.h"
 
 #include "player_controller.h"
+#include "free_controller.h"
 
 namespace Verse
 {

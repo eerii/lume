@@ -29,6 +29,7 @@ int main(int argc, const char * argv[]) {
         .camera_focus_size = Vec2(72, 90),
         .use_dithering = true,
         .use_grayscale = false,
+        .use_light = true,
         .palette_index = 0,
         .num_palettes = 4,
         .background_color = {0.0, 0.0, 0.0, 1.0},
