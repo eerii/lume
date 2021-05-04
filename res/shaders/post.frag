@@ -17,14 +17,10 @@ uniform float previous_palette_index;
 uniform float transition_percent;
 
 //Light
-uniform vec4 light[16];
+uniform vec4 light[MAX_LIGHTS];
 uniform int light_size;
 uniform float light_distortion;
 uniform bool use_light;
-
-//Dither
-uniform mat4 dither_mat;
-uniform bool use_dithering;
 
 //Settings
 uniform bool is_background;
@@ -36,15 +32,20 @@ float smooth_min(float a, float b, float k) {
 }
 
 void main() {
+    //Sample color from texture
     color = texture(tex, f_tex_coord);
     
+    //Luminance
     float luminance = (color.x + color.y + color.z) / 3.0;
     
+    //Light
     if (use_light) {
         float light_accumulator = 1.0;
         float light_dithering = 0.0;
         
         for (int i = 0; i < light_size; i++) {
+            if (light[i].w <= 0)
+                break;
             vec2 to_light = abs(light[i].xy - f_tex_coord);
             to_light.x *= light_distortion;
             float dst_to_light = sqrt(to_light.x * to_light.x + to_light.y * to_light.y);
@@ -53,38 +54,17 @@ void main() {
             light_accumulator = (dst_to_light > light[i].w) ? smooth_min(light_at_point, light_accumulator, SMOOTHNESS) : 0.0;
             if (light_accumulator < 0.0)
                 light_accumulator = 0.0;
-            
-            if (use_dithering) {
-                int d_x = int(floor(mod(gl_FragCoord.x, 4.0)));
-                int d_y = int(floor(mod(gl_FragCoord.y, 4.0)));
-                light_dithering = dither_mat[d_x][d_y];
-            }
         }
         
         float light_at_point = 1.0 - light_accumulator;
         
-        if (use_dithering) {
-            float dithering_threshold = (light_at_point > DITHERING_THRESHOLD) ?
-                                        (light_at_point - DITHERING_THRESHOLD) * (1.0 / (1.0 - DITHERING_THRESHOLD)) : 0.0;
-            
-            luminance = (dithering_threshold > light_dithering) ? luminance :
-                            ((dithering_threshold - 0.6 + light_at_point > light_dithering) ?
-                             (luminance - 0.25)  : 0.0);
-            
-        } else {
-            luminance *= light_at_point;
-        }
+        luminance *= light_at_point;
         
         if (luminance < 0.0)
             luminance = 0.0;
-        
-        if (is_background) {
-            luminance = 0.0;
-            color.a = 0.5;
-        }
     }
     
-    
+    //Palette
     if (palette_index > -1.0f) {
         vec4 i_color;
     

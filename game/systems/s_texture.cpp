@@ -37,6 +37,6 @@ void System::Texture::render(Scene &scene, Config &c) {
         
         Rect dst = Rect((tex->transform.pos + tex->offset), tex->transform.size);
         
-        Graphics::Renderer::GL::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c, tex->is_reversed);
+        Graphics::Renderer::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c, tex->is_reversed);
     }
 }

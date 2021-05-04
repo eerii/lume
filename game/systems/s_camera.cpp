@@ -16,6 +16,7 @@ using namespace Verse;
 
 namespace {
     glm::mat4 mat_active_camera;
+    glm::mat4 mat_extra_camera;
     Component::Camera *cam; //Active Camera
     Rect bounds;
 
@@ -36,7 +37,7 @@ void System::Camera::init(Component::Camera* camera, Vec2 pos, Vec2 size) {
 }
 
 void System::Camera::setActive(Component::Camera *camera) {
-    Graphics::Renderer::GL::useCamera(&mat_active_camera, &camera->centre);
+    Graphics::Renderer::bindCamera(&mat_active_camera, &mat_extra_camera, &camera->centre);
     cam = camera;
     bounds = Rect(0,0,0,0);
 }
@@ -89,8 +90,11 @@ void System::Camera::move(Config &c, Vec2 pos, int input) {
     
     cam->centre = focus_pos;
     
-    mat_active_camera = glm::translate(glm::mat4(1.0f), glm::vec3((0.5f * c.resolution.x - cam->centre.x) / c.render_scale,
-                                                                  (0.5f * c.resolution.y - cam->centre.y) / c.render_scale, 0.0f));
+    Vec2 pixel_perfect_move = Vec2(floor(0.5f * c.resolution.x - cam->centre.x), floor(0.5f * c.resolution.y - cam->centre.y));
+    Vec2 extra_move = (((c.resolution * 0.5f) - cam->centre) - pixel_perfect_move) * c.render_scale;
+    
+    mat_active_camera = glm::translate(glm::mat4(1.0f), glm::vec3(pixel_perfect_move.x, pixel_perfect_move.y, 0.0f));
+    mat_extra_camera = glm::translate(glm::mat4(1.0f), glm::vec3(extra_move.x, extra_move.y, 0.0f));
 }
 
 void System::Camera::updatePoints(Config &c, Vec2 &pos) {

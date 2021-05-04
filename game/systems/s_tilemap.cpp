@@ -79,7 +79,7 @@ void System::Tilemap::createVertices(Component::Tilemap *tmap, Config &c) {
                     1.0,  0.0,  1.0,  0.0,
                 };
                 tmap->vert.push_back(v);
-                Graphics::Renderer::GL::prepareTilemap(dst, c, tmap->vert[k]);
+                Graphics::Renderer::prepareTilemap(dst, c, tmap->vert[k]);
                 k++;
             }
             dst.pos.x += tmap->tex_size.x;
@@ -93,7 +93,7 @@ void System::Tilemap::render(Scene &scene, Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(scene)) {
         Component::Tilemap* tmap = scene.getComponent<Component::Tilemap>(e);
         
-        Graphics::Renderer::GL::renderTilemap(tmap->tex_id, reinterpret_cast<float*>(tmap->vert.data()), (int)tmap->vert.size());
+        Graphics::Renderer::renderTilemap(tmap->tex_id, reinterpret_cast<float*>(tmap->vert.data()), (int)tmap->vert.size(), c);
     }
 }
 

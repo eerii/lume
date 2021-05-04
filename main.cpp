@@ -27,7 +27,6 @@ int main(int argc, const char * argv[]) {
         .render_scale = 4,
         .enable_gui = true,
         .camera_focus_size = Vec2(72, 90),
-        .use_dithering = true,
         .use_grayscale = false,
         .use_light = true,
         .palette_index = 0,

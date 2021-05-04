@@ -19,7 +19,7 @@
 namespace Verse
 {
     void init(Scene &scene, Config &config) {
-        scene.setSize(Vec2(256, 128));
+        scene.setSize(Vec2(256, 180));
         
         EntityID test = scene.createEntity("Player");
         
@@ -40,7 +40,7 @@ namespace Verse
         actor->friction_ground = 0.25;
         
         Component::Light* light = scene.addComponent<Component::Light>(test);
-        light->pos = texture->transform.size / 2;
+        light->pos = Vec2(3, 7);
         light->radius = 144;
         
         Component::Camera* camera = scene.addComponent<Component::Camera>(test);
