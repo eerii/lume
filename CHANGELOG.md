@@ -2,6 +2,18 @@
 
 ## **0.2** ~ Light
 
+### **[0.1.2]** ~ New rendering pipeline _2021-04-04_
+#### Changed
+- Completely redesigned rendering pipeline. Now it renders in low res, applies post processing and camera movement, then upscales it and add the remaining camera move (smooth cam but keeping it pixel perfect). Finally it places it in the middle of the screen and adds the background
+- New and more clear mvp
+- Separated the shaders into several pieces
+
+### **[0.1.1]** ~ Fresa _2021-04-04_
+#### Added
+- 3D preliminary rendering
+#### Changed
+- Separated engine for more games
+
 ###  **[0.1.0]** ~ Brainstorm _2021-03-21_
 
 The core of the app is done! We got most of the essential systems working, a player, a camera, a level, collissions, rendering everything... Now we can start focusing on features of the game itself.
