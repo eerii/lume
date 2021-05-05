@@ -7,6 +7,7 @@
 - YAML Serialization
 - Load, write, destroy YAML files
 - Edit/remove particular entries
+- Append with specific typings
 
 ### **[0.1.2]** ~ New rendering pipeline _2021-04-04_
 #### Changed
