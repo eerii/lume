@@ -69,13 +69,13 @@ namespace Verse
         texture2->transform = Rect(192, 72, 8, 8);
         
         
-        /*EntityID bg = scene.createEntity("Background");
+        EntityID bg = scene.createEntity("Background");
          
-         Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
-         bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
-         Graphics::Texture::loadTexture("res/graphics/background.png", bg_tilemap);
-         bg_tilemap->tex_size = Vec2(8, 8);
-         bg_tilemap->pos = Vec2(-56, -32);*/
+        Component::Tilemap* bg_tilemap = scene.addComponent<Component::Tilemap>(bg);
+        bg_tilemap->tiles = System::Tilemap::load("res/levels/bg.png");
+        Graphics::Texture::loadTexture("res/graphics/background.png", bg_tilemap);
+        bg_tilemap->tex_size = Vec2(8, 8);
+        bg_tilemap->pos = Vec2(-56, -32);
         
         
         EntityID tile = scene.createEntity("Tilemap");

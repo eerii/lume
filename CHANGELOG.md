@@ -2,6 +2,12 @@
 
 ## **0.2** ~ Light
 
+### **[0.1.3]** ~ New rendering pipeline _2021-04-05_
+#### Added
+- YAML Serialization
+- Load, write, destroy YAML files
+- Edit/remove particular entries
+
 ### **[0.1.2]** ~ New rendering pipeline _2021-04-04_
 #### Changed
 - Completely redesigned rendering pipeline. Now it renders in low res, applies post processing and camera movement, then upscales it and add the remaining camera move (smooth cam but keeping it pixel perfect). Finally it places it in the middle of the screen and adds the background

@@ -11,6 +11,8 @@
 #include "scene.h"
 #include "config.h"
 
+#include "serialization.h"
+
 //These are the functions of the game
 #include "init.h"
 

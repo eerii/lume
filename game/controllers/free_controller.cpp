@@ -12,18 +12,18 @@ bool Controller::Free::controller(Scene &scene, EntityID eid) {
     
     Component::Actor* actor = scene.getComponent<Component::Actor>(eid);
     
-    if (Input::down(Input::Key::Left))
+    if (Input::down(Input::Key::J))
         actor->vel.x = -actor->max_move_speed;
-    if (Input::down(Input::Key::Right))
+    if (Input::down(Input::Key::L))
         actor->vel.x = actor->max_move_speed;
-    if (Input::down(Input::Key::Up))
+    if (Input::down(Input::Key::I))
         actor->vel.y = -actor->max_move_speed;
-    if (Input::down(Input::Key::Down))
+    if (Input::down(Input::Key::K))
         actor->vel.y = actor->max_move_speed;
     
-    if (!Input::down(Input::Key::Left) && !Input::down(Input::Key::Right))
+    if (!Input::down(Input::Key::J) && !Input::down(Input::Key::L))
         actor->vel.x = 0;
-    if (!Input::down(Input::Key::Up) && !Input::down(Input::Key::Down))
+    if (!Input::down(Input::Key::I) && !Input::down(Input::Key::K))
         actor->vel.y = 0;
     
     return actor->vel != Vec2(0,0);
