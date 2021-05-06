@@ -37,6 +37,8 @@ int main(int argc, const char * argv[]) {
         .render_collision_boxes = false
     };
     
+    Serialization::initYAML();
+    
     bool running = Game::init(config);
     
     Component::registerComponents();

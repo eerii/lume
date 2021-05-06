@@ -10,8 +10,8 @@
 namespace Verse::Component
 {
     struct Actor {
-        Vec2 vel;
-        Vec2 remainder;
+        Vec2f vel;
+        Vec2f remainder;
         
         int max_move_speed;
         int max_fall_speed;

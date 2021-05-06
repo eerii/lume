@@ -9,7 +9,7 @@
 namespace Verse::Component
 {
     struct Collider {
-        Rect transform;
+        Rect2 transform;
         bool is_colliding;
     };
 }

@@ -39,10 +39,10 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(EntityID eid, Scen
 bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Component::Collider* tile_col, Component::Tilemap* tilemap) {
     bool is_colliding_with_tile = false;
     
-    Vec2 rel_pos = test_col->transform.pos - tile_col->transform.pos;
+    Vec2 rel_pos = test_col->transform.pos() - tile_col->transform.pos();
     Vec2 upleft = Vec2(floor(rel_pos.x / tilemap->tex_size.x), floor(rel_pos.y / tilemap->tex_size.y));
-    Vec2 downright = Vec2(floor((rel_pos.x + test_col->transform.size.x - 1) / tilemap->tex_size.x),
-                          floor((rel_pos.y + test_col->transform.size.y - 1) / tilemap->tex_size.y));
+    Vec2 downright = Vec2(floor((rel_pos.x + test_col->transform.w - 1) / tilemap->tex_size.x),
+                          floor((rel_pos.y + test_col->transform.h - 1) / tilemap->tex_size.y));
     
     for (int i = upleft.x; i <= downright.x; i++) {
         if (i < 0 or i >= tilemap->tiles[0].size())

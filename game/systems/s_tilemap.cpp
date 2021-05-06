@@ -53,23 +53,23 @@ void System::Tilemap::init(Scene &scene, Config &c) {
 void System::Tilemap::createVertices(Component::Tilemap *tmap, Config &c) {
     tmap->vert = {};
     
-    Rect src;
-    src.pos.x = 0;
-    src.pos.y = 0;
-    src.size.x = tmap->tex_size.x;
-    src.size.y = tmap->tex_size.y;
+    Rect2 src;
+    src.x = 0;
+    src.y = 0;
+    src.w = tmap->tex_size.x;
+    src.h = tmap->tex_size.y;
     
-    Rect dst;
-    dst.pos.x = tmap->pos.x;
-    dst.pos.y = tmap->pos.y;
-    dst.size.x = tmap->tex_size.x;
-    dst.size.y = tmap->tex_size.y;
+    Rect2 dst;
+    dst.x = tmap->pos.x;
+    dst.y = tmap->pos.y;
+    dst.w = tmap->tex_size.x;
+    dst.h = tmap->tex_size.y;
     
     int k = 0;
     for (int i = 0; i < tmap->tiles.size(); i++) {
         for (int j = 0; j < tmap->tiles[i].size(); j++) {
             if (tmap->tiles[i][j] != 0) {
-                src.pos.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
+                src.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
                 std::array<float, 24> v = {
                     0.0,  1.0,  0.0,  1.0,
                     1.0,  1.0,  1.0,  1.0,
@@ -82,10 +82,10 @@ void System::Tilemap::createVertices(Component::Tilemap *tmap, Config &c) {
                 Graphics::Renderer::prepareTilemap(dst, c, tmap->vert[k]);
                 k++;
             }
-            dst.pos.x += tmap->tex_size.x;
+            dst.x += tmap->tex_size.x;
         }
-        dst.pos.x = tmap->pos.x;
-        dst.pos.y += tmap->tex_size.y;
+        dst.x = tmap->pos.x;
+        dst.y += tmap->tex_size.y;
     }
 }
 
@@ -100,8 +100,8 @@ void System::Tilemap::render(Scene &scene, Config &c) {
 Vec2 System::Tilemap::calculateSize(Component::Tilemap* tmap) {
     Vec2 size;
     
-    size.x = tmap->tiles[0].size() * tmap->tex_size.x;
-    size.y = tmap->tiles.size() * tmap->tex_size.y;
+    size.x = (int)(tmap->tiles[0].size() * tmap->tex_size.x);
+    size.y = (int)(tmap->tiles.size() * tmap->tex_size.y);
     
     return size;
 }

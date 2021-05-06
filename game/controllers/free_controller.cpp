@@ -26,5 +26,5 @@ bool Controller::Free::controller(Scene &scene, EntityID eid) {
     if (!Input::down(Input::Key::I) && !Input::down(Input::Key::K))
         actor->vel.y = 0;
     
-    return actor->vel != Vec2(0,0);
+    return actor->vel != Vec2f(0,0);
 }

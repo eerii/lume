@@ -24,11 +24,11 @@ namespace Verse
         EntityID test = scene.createEntity("Player");
         
         Component::Collider* collider = scene.addComponent<Component::Collider>(test);
-        collider->transform = Rect(32, 64, 9, 14);
+        collider->transform = Rect2(32, 64, 9, 14);
         
         Component::Texture* texture = scene.addComponent<Component::Texture>(test);
         Graphics::Texture::loadTexture("res/graphics/lume_idle.png", texture);
-        texture->transform = Rect(32, 64, 11, 14);
+        texture->transform = Rect2(32, 64, 11, 14);
         texture->offset = Vec2(-1, 0);
         texture->animation.push_back(Vec2(0,2));
         
@@ -44,7 +44,7 @@ namespace Verse
         light->radius = 144;
         
         Component::Camera* camera = scene.addComponent<Component::Camera>(test);
-        System::Camera::init(camera, Vec2(20, 90), Vec2(config.camera_focus_size.x, config.camera_focus_size.y));
+        System::Camera::init(camera, Vec2f(20, 90), config.camera_focus_size.to_float());
         System::Camera::setActive(camera, scene);
         
         
@@ -62,11 +62,11 @@ namespace Verse
         EntityID test3 = scene.createEntity("Ground");
         
         Component::Collider* collider2 = scene.addComponent<Component::Collider>(test3);
-        collider2->transform = Rect(192, 72, 8, 8);
+        collider2->transform = Rect2(192, 72, 8, 8);
         
         Component::Texture* texture2 = scene.addComponent<Component::Texture>(test3);
         Graphics::Texture::loadTexture("res/graphics/ground2.png", texture2);
-        texture2->transform = Rect(192, 72, 8, 8);
+        texture2->transform = Rect2(192, 72, 8, 8);
         
         
         EntityID bg = scene.createEntity("Background");
@@ -87,6 +87,6 @@ namespace Verse
         tilemap->pos = Vec2(0, 96);
         
         Component::Collider* tile_collider = scene.addComponent<Component::Collider>(tile);
-        tile_collider->transform = Rect(tilemap->pos, System::Tilemap::calculateSize(tilemap));
+        tile_collider->transform = Rect2(tilemap->pos, System::Tilemap::calculateSize(tilemap));
     }
 }

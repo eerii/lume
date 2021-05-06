@@ -2,12 +2,15 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.3]** ~ New rendering pipeline _2021-04-05_
+### **[0.1.3]** ~ Serialization _2021-04-06_
 #### Added
 - YAML Serialization
 - Load, write, destroy YAML files
 - Edit/remove particular entries
 - Append with specific typings
+#### Changed
+- Different Vec2 and Vec2f, Rect2 and Rect2f (For precission and cleanness matters)
+- Rect2 now uses x, y, w, h instead of pos and size
 
 ### **[0.1.2]** ~ New rendering pipeline _2021-04-04_
 #### Changed

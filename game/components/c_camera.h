@@ -9,8 +9,8 @@
 namespace Verse::Component
 {
     struct Camera {
-        Vec2 centre;
-        Vec2 vel;
+        Vec2f centre;
+        Vec2f vel;
         float l,r,t,b;
     };
 }

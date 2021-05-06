@@ -19,7 +19,7 @@ void System::Texture::render(Scene &scene, Config &c) {
     for (EntityID e : SceneView<Component::Texture>(scene)) {
         Component::Texture* tex = scene.getComponent<Component::Texture>(e);
         
-        Rect src;
+        Rect2 src;
         
         if (tex->animation.size() > 0) {
             if (frame_count >= animation_speed or frame_count == -1) {
@@ -30,12 +30,12 @@ void System::Texture::render(Scene &scene, Config &c) {
                     tex->current_animation = tex->animation[0].x;
                 }
             }
-            src = Rect(Vec2((tex->transform.size.x * tex->current_animation), 0), tex->transform.size);
+            src = Rect2(Vec2((tex->transform.w * tex->current_animation), 0), tex->transform.size());
         } else {
-            src = Rect(Vec2(), tex->transform.size);
+            src = Rect2(Vec2(), tex->transform.size());
         }
         
-        Rect dst = Rect((tex->transform.pos + tex->offset), tex->transform.size);
+        Rect2 dst = Rect2((tex->transform.pos() + tex->offset), tex->transform.size());
         
         Graphics::Renderer::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c, tex->is_reversed);
     }

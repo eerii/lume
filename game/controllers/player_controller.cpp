@@ -89,12 +89,12 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     
     //RESPAWN
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
-    if (collider->transform.pos.y > 500) {
-        collider->transform.pos = Vec2(32, 64); //TODO: Change for a propper spawn
+    if (collider->transform.y > 500) {
+        collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
     }
     
     
-    return actor->vel != Vec2(0,0);
+    return actor->vel != Vec2f(0,0);
 }
 
 void Controller::Player::jump() {

@@ -29,8 +29,8 @@ void System::Light::render(Scene &scene, Config &c) {
             light_sources[i][0] = light->pos.x;
             light_sources[i][1] = light->pos.y;
             if (tex != nullptr) { //This is to render the light relative to the texture
-                light_sources[i][0] += tex->transform.pos.x;
-                light_sources[i][1] += tex->transform.pos.y;
+                light_sources[i][0] += tex->transform.x;
+                light_sources[i][1] += tex->transform.y;
             }
             
             light_sources[i].x /= c.resolution.x;

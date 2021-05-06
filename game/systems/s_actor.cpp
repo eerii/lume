@@ -34,9 +34,9 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
     if (actor->vel.y > actor->max_fall_speed)
         actor->vel.y = actor->max_fall_speed;
     
-    if (actor->vel != Vec2(0,0)) {
-        Vec2 total = actor->remainder + actor->vel * DELTA;
-        Vec2 to_move = Vec2((int)total.x, (int)total.y);
+    if (actor->vel != Vec2f(0,0)) {
+        Vec2f total = actor->remainder + actor->vel * DELTA;
+        Vec2f to_move = Vec2f((int)total.x, (int)total.y);
         actor->remainder = total - to_move;
         
         //MoveX
@@ -44,11 +44,11 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         if (to_move.x != 0)
             texture->is_reversed = sx == -1;
         while (to_move.x != 0) {
-            collider->transform.pos += Vec2::i * sx;
+            collider->transform += Vec2::i * sx;
             
             bool isColliding = System::Collider::checkCollisions(eid, scene);
             if (isColliding) {
-                collider->transform.pos -= Vec2::i * sx;
+                collider->transform -= Vec2::i * sx;
                 
                 to_move.x = 0;
                 actor->remainder.x = 0;
@@ -58,11 +58,11 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
                 
                 //Check on ground
                 if (to_move.y == 0) {
-                    collider->transform.pos += Vec2::j;
+                    collider->transform += Vec2::j;
                     bool isColliding = System::Collider::checkCollisions(eid, scene);
                     if (!isColliding)
                         actor->is_on_ground = false;
-                    collider->transform.pos -= Vec2::j;
+                    collider->transform -= Vec2::j;
                 }
             }
         }
@@ -70,11 +70,11 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         //MoveY
         int sy = sign(to_move.y);
         while (to_move.y != 0) {
-            collider->transform.pos += Vec2::j * sy;
+            collider->transform += Vec2::j * sy;
             
             bool isColliding = System::Collider::checkCollisions(eid, scene);
             if (isColliding) {
-                collider->transform.pos -= Vec2::j * sy;
+                collider->transform -= Vec2::j * sy;
                 
                 to_move.y = 0;
                 actor->remainder.y = 0;
@@ -89,6 +89,6 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
             }
         }
         
-        texture->transform.pos = collider->transform.pos;
+        texture->transform = collider->transform.pos();
     }
 }

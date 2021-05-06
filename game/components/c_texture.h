@@ -14,7 +14,7 @@ namespace Verse::Component
         ui8* tex;
         ui32 tex_id;
         
-        Rect transform;
+        Rect2 transform;
         
         Vec2 offset = Vec2(0,0);
         bool is_reversed = false;
