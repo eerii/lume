@@ -10,6 +10,7 @@ using namespace Verse;
 namespace {
     int animation_speed = Graphics::getRefreshRate() / 3; //3 FPS
     int frame_count = 0;
+    str curr_key = "";
 }
 
 void System::Texture::render(Scene &scene, Config &c) {
@@ -25,6 +26,8 @@ void System::Texture::render(Scene &scene, Config &c) {
         
         Component::Animation* anim = scene.getComponent<Component::Animation>(e);
         if (anim != nullptr) {
+            if (curr_key == "")
+                curr_key = anim->curr_key;
             if (frame_count >= animation_speed or frame_count == -1) {
                 frame_count = -1;
                 if (anim->curr_frame < anim->frames[anim->curr_key].size() - 1) {
@@ -33,7 +36,12 @@ void System::Texture::render(Scene &scene, Config &c) {
                     anim->curr_frame = 0;
                 }
             }
-            src = Rect2(Vec2((tex->transform.w * anim->frames[anim->curr_key][anim->curr_frame]), 0), tex->transform.size());
+            if (curr_key != anim->curr_key) {
+                curr_key = anim->curr_key;
+                anim->curr_frame = 0;
+                frame_count = -1;
+            }
+            src = Rect2(Vec2((tex->transform.w * anim->frames[curr_key][anim->curr_frame]), 0), tex->transform.size());
             Graphics::Renderer::renderTexture(tex->tex_id, src, dst, anim->size, c, tex->is_reversed);
         } else {
             src = Rect2(Vec2(), tex->transform.size());

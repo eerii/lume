@@ -32,14 +32,9 @@ namespace Verse
         texture->offset = Vec2(-1, 0);
         
         Component::Animation* animation = scene.addComponent<Component::Animation>(test);
-        animation->frames["idle"] = {0, 1, 2, 3};
-        animation->frames["idle_slow"] = {4, 5, 6};
+        animation->frames["idle"] = {0, 5, 2};
         animation->frames["walk"] = {7,8,9,10,11,12};
-        animation->frames["jump_start"] = {14};
-        animation->frames["jump_up"] = {15,16};
-        animation->frames["jump_peak"] = {18};
-        animation->frames["jump_down"] = {19,20,15,16};
-        animation->frames["jump_end"] = {22};
+        animation->frames["jump_down"] = {15,16};
         animation->curr_key = "idle";
         animation->size = 26; //calculate_size
         
