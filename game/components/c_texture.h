@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <vector>
-
 #include "dtypes.h"
 
 namespace Verse::Component
@@ -18,8 +16,5 @@ namespace Verse::Component
         
         Vec2 offset = Vec2(0,0);
         bool is_reversed = false;
-        
-        std::vector<Vec2> animation;
-        int current_animation;
     };
 }

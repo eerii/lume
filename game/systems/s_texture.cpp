@@ -19,24 +19,25 @@ void System::Texture::render(Scene &scene, Config &c) {
     for (EntityID e : SceneView<Component::Texture>(scene)) {
         Component::Texture* tex = scene.getComponent<Component::Texture>(e);
         
-        Rect2 src;
-        
-        if (tex->animation.size() > 0) {
-            if (frame_count >= animation_speed or frame_count == -1) {
-                frame_count = -1;
-                if (tex->current_animation < tex->animation[0].y and tex->current_animation >= tex->animation[0].x) {
-                    tex->current_animation++;
-                } else {
-                    tex->current_animation = tex->animation[0].x;
-                }
-            }
-            src = Rect2(Vec2((tex->transform.w * tex->current_animation), 0), tex->transform.size());
-        } else {
-            src = Rect2(Vec2(), tex->transform.size());
-        }
-        
         Rect2 dst = Rect2((tex->transform.pos() + tex->offset), tex->transform.size());
         
-        Graphics::Renderer::renderTexture(tex->tex_id, src, dst, (ui16)(tex->animation.size() + 1), c, tex->is_reversed);
+        Rect2 src;
+        
+        Component::Animation* anim = scene.getComponent<Component::Animation>(e);
+        if (anim != nullptr) {
+            if (frame_count >= animation_speed or frame_count == -1) {
+                frame_count = -1;
+                if (anim->curr_frame < anim->frames[anim->curr_key].size() - 1) {
+                    anim->curr_frame++;
+                } else {
+                    anim->curr_frame = 0;
+                }
+            }
+            src = Rect2(Vec2((tex->transform.w * anim->frames[anim->curr_key][anim->curr_frame]), 0), tex->transform.size());
+            Graphics::Renderer::renderTexture(tex->tex_id, src, dst, anim->size, c, tex->is_reversed);
+        } else {
+            src = Rect2(Vec2(), tex->transform.size());
+            Graphics::Renderer::renderTexture(tex->tex_id, src, dst, 1, c, tex->is_reversed);
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace {
     int jump_coyote = 100;
 
     Component::Actor* actor;
+    Component::Animation* anim;
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
     bool on_jump = false;
@@ -26,12 +27,19 @@ namespace {
 
 bool Controller::Player::controller(Scene &scene, EntityID eid) {
     actor = scene.getComponent<Component::Actor>(eid);
+    anim = scene.getComponent<Component::Animation>(eid);
     
     //MOVE X
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
         actor->vel.x -= actor->acc_ground * DELTA;
     if (Input::down(Input::Key::Right) or Input::down(Input::Key::D))
         actor->vel.x += actor->acc_ground * DELTA;
+    
+    if (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
+        anim->curr_key = "walk";
+    } else {
+        anim->curr_key = "idle";
+    }
     
     if (abs(actor->vel.x) > actor->max_move_speed)
         actor->vel.x = sign(actor->vel.x) * actor->max_move_speed;
@@ -84,6 +92,11 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         
         if (diff > jump_grace)
             jump_time = 0;
+    }
+    
+    //Jump Animation
+    if (on_jump) {
+        anim->curr_key = "jump_down";
     }
     
     

@@ -27,10 +27,21 @@ namespace Verse
         collider->transform = Rect2(32, 64, 9, 14);
         
         Component::Texture* texture = scene.addComponent<Component::Texture>(test);
-        Graphics::Texture::loadTexture("res/graphics/lume_idle.png", texture);
+        Graphics::Texture::loadTexture("res/graphics/lume.png", texture);
         texture->transform = Rect2(32, 64, 11, 14);
         texture->offset = Vec2(-1, 0);
-        texture->animation.push_back(Vec2(0,2));
+        
+        Component::Animation* animation = scene.addComponent<Component::Animation>(test);
+        animation->frames["idle"] = {0, 1, 2, 3};
+        animation->frames["idle_slow"] = {4, 5, 6};
+        animation->frames["walk"] = {7,8,9,10,11,12};
+        animation->frames["jump_start"] = {14};
+        animation->frames["jump_up"] = {15,16};
+        animation->frames["jump_peak"] = {18};
+        animation->frames["jump_down"] = {19,20,15,16};
+        animation->frames["jump_end"] = {22};
+        animation->curr_key = "idle";
+        animation->size = 26; //calculate_size
         
         Component::Actor* actor = scene.addComponent<Component::Actor>(test);
         actor->controller = [&scene, test]() -> bool {return Controller::Player::controller(scene, Entity::getIndex(test));};

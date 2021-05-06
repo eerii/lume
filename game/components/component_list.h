@@ -10,9 +10,11 @@
 #include "c_tilemap.h"
 #include "c_light.h"
 #include "c_camera.h"
+#include "c_animation.h"
 
 #define COMPONENTS logComponentID(Collider); \
                    logComponentID(Texture); \
+                   logComponentID(Animation); \
                    logComponentID(Actor); \
                    logComponentID(Tilemap); \
                    logComponentID(Light); \
