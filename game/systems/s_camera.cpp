@@ -18,38 +18,23 @@ namespace {
     glm::mat4 mat_active_camera;
     glm::mat4 mat_extra_camera;
     Component::Camera *cam; //Active Camera
-    Rect2 bounds;
 
     Vec2 focus_pos;
-    float look_ahead = 32;
-    float la_speed = 1;
     float curr_la, target_la;
     bool is_la_stopped;
 }
 
-void System::Camera::init(Component::Camera* camera, Vec2f pos, Vec2f size) {
-    camera->centre = pos;
+void System::Camera::init(Component::Camera* camera) {
     camera->vel = Vec2f(0,0);
-    camera->l = pos.x - (size.x / 2.0);
-    camera->r = pos.x + (size.x / 2.0);
-    camera->t = pos.y - (size.y / 2.0);
-    camera->b = pos.y + (size.y / 2.0);
+    camera->l = camera->pos.x - ((float)camera->focus_size.x / 2.0f);
+    camera->r = camera->pos.x + ((float)camera->focus_size.x / 2.0f);
+    camera->t = camera->pos.y - ((float)camera->focus_size.y / 2.0f);
+    camera->b = camera->pos.y + ((float)camera->focus_size.y / 2.0f);
 }
 
 void System::Camera::setActive(Component::Camera *camera) {
-    Graphics::Renderer::bindCamera(&mat_active_camera, &mat_extra_camera, &camera->centre);
+    Graphics::Renderer::bindCamera(&mat_active_camera, &mat_extra_camera, &camera->pos);
     cam = camera;
-    bounds = Rect2(0,0,0,0);
-}
-
-void System::Camera::setActive(Component::Camera *camera, Rect2 cam_bounds) {
-    setActive(camera);
-    bounds = cam_bounds;
-}
-
-void System::Camera::setActive(Component::Camera *camera, Scene &scene) {
-    setActive(camera);
-    bounds = Rect2(scene.size * 0.5f, scene.size);
 }
 
 void System::Camera::update(Config &c, Scene &scene) {
@@ -74,24 +59,24 @@ void System::Camera::move(Config &c, Vec2f pos, int input) {
     if (not is_la_stopped) {
         if (input == 0) {
             is_la_stopped = true;
-            target_la = curr_la + (sign(cam->vel.x) * look_ahead - curr_la) * 0.25;
+            target_la = curr_la + (sign(cam->vel.x) * cam->look_ahead - curr_la) * 0.25;
         } else if (cam->vel.x != 0) {
-            target_la = sign(cam->vel.x) * look_ahead;
+            target_la = sign(cam->vel.x) * cam->look_ahead;
         }
     }
     
     if (abs(target_la - curr_la) > EPSILON) {
-        curr_la += la_speed * sign(cam->vel.x) * ((target_la - curr_la) / target_la);
+        curr_la += cam->la_speed * sign(cam->vel.x) * ((target_la - curr_la) / target_la);
     }
     
     focus_pos.x += curr_la;
     
     checkBounds(c);
     
-    cam->centre = focus_pos.to_float();
+    cam->pos = focus_pos.to_float();
     
-    Vec2 pixel_perfect_move = Vec2(floor(0.5f * c.resolution.x - cam->centre.x), floor(0.5f * c.resolution.y - cam->centre.y));
-    Vec2f extra_move = (((c.resolution * 0.5f).to_float() - cam->centre) - pixel_perfect_move.to_float()) * c.render_scale;
+    Vec2 pixel_perfect_move = Vec2(floor(0.5f * c.resolution.x - cam->pos.x), floor(0.5f * c.resolution.y - cam->pos.y));
+    Vec2f extra_move = (((c.resolution * 0.5f).to_float() - cam->pos) - pixel_perfect_move.to_float()) * c.render_scale;
     
     mat_active_camera = glm::translate(glm::mat4(1.0f), glm::vec3(pixel_perfect_move.x, pixel_perfect_move.y, 0.0f));
     mat_extra_camera = glm::translate(glm::mat4(1.0f), glm::vec3(extra_move.x, extra_move.y, 0.0f));
@@ -118,21 +103,21 @@ void System::Camera::updatePoints(Config &c, Vec2f &pos) {
 }
 
 void System::Camera::checkBounds(Config &c) {
-    if (bounds.w != 0) {
-        if (focus_pos.x + (0.5f * c.resolution.x) > bounds.x + 0.5f * bounds.w) {
-            focus_pos.x = bounds.x + 0.5f * bounds.w - 0.5f * c.resolution.x;
+    if (cam->bounds.w != 0) {
+        if (focus_pos.x + (0.5f * c.resolution.x) > cam->bounds.x + 0.5f * cam->bounds.w) {
+            focus_pos.x = cam->bounds.x + 0.5f * cam->bounds.w - 0.5f * c.resolution.x;
         }
-        if (focus_pos.x - (0.5f * c.resolution.x) < bounds.x - 0.5f * bounds.w) {
-            focus_pos.x = bounds.x - 0.5f * bounds.w + 0.5f * c.resolution.x;
+        if (focus_pos.x - (0.5f * c.resolution.x) < cam->bounds.x - 0.5f * cam->bounds.w) {
+            focus_pos.x = cam->bounds.x - 0.5f * cam->bounds.w + 0.5f * c.resolution.x;
         }
     }
     
-    if (bounds.h != 0) {
-        if (focus_pos.y + (0.5f * c.resolution.y) > bounds.y + 0.5f * bounds.h) {
-            focus_pos.y = bounds.y + 0.5f * bounds.h - 0.5f * c.resolution.y;
+    if (cam->bounds.h != 0) {
+        if (focus_pos.y + (0.5f * c.resolution.y) > cam->bounds.y + 0.5f * cam->bounds.h) {
+            focus_pos.y = cam->bounds.y + 0.5f * cam->bounds.h - 0.5f * c.resolution.y;
         }
-        if (focus_pos.y - (0.5f * c.resolution.y) < bounds.y - 0.5f * bounds.h) {
-            focus_pos.y = bounds.y - 0.5f * bounds.h + 0.5f * c.resolution.y;
+        if (focus_pos.y - (0.5f * c.resolution.y) < cam->bounds.y - 0.5f * cam->bounds.h) {
+            focus_pos.y = cam->bounds.y - 0.5f * cam->bounds.h + 0.5f * c.resolution.y;
         }
     }
 }

@@ -12,11 +12,9 @@
 #include "config.h"
 
 #include "serialization.h"
-#include "serialize_scene.h"
 
 //These are the functions of the game
 #include "init.h"
-#include <filesystem>
 
 
 using namespace Verse;
@@ -30,7 +28,6 @@ int main(int argc, const char * argv[]) {
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .enable_gui = true,
-        .camera_focus_size = Vec2(72, 90),
         .use_grayscale = false,
         .use_light = true,
         .palette_index = 0,
@@ -47,9 +44,13 @@ int main(int argc, const char * argv[]) {
     
     Scene scene;
     
-    Serialization::loadScene("test_scene", scene, config);
+    Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
+    EntityID player = Serialization::loadPlayer(scene);
+    Component::Camera* camera = scene.getComponent<Component::Camera>(player);
+    System::Camera::setActive(camera);
     
-    init(scene, config);
+    
+    //init(scene, config);
     Game::setActiveScene(&scene);
     
     while (running)

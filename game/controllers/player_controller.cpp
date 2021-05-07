@@ -96,7 +96,7 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     
     //Jump Animation
     if (on_jump) {
-        anim->curr_key = "jump_down";
+        anim->curr_key = "jump";
     }
     
     

@@ -48,7 +48,9 @@ namespace Verse
         light->radius = 144;
         
         Component::Camera* camera = scene.addComponent<Component::Camera>(test);
-        System::Camera::init(camera, Vec2f(20, 90), config.camera_focus_size.to_float());
-        System::Camera::setActive(camera, scene);
+        camera->pos = Vec2f(0,0);
+        camera->bounds = Rect2(scene.size * 0.5f, scene.size);
+        System::Camera::init(camera);
+        System::Camera::setActive(camera);
     }
 }
