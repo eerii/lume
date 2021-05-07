@@ -12,9 +12,11 @@
 #include "config.h"
 
 #include "serialization.h"
+#include "serialize_scene.h"
 
 //These are the functions of the game
 #include "init.h"
+#include <filesystem>
 
 
 using namespace Verse;
@@ -23,7 +25,7 @@ int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.1.0",
+        .version = "0.1.3",
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
@@ -44,6 +46,9 @@ int main(int argc, const char * argv[]) {
     Component::registerComponents();
     
     Scene scene;
+    
+    Serialization::loadScene("test_scene", scene, config);
+    
     init(scene, config);
     Game::setActiveScene(&scene);
     

@@ -1,0 +1,24 @@
+%YAML 1.2
+---
+scene:
+  name: test_scene
+  size: [256, 180]
+
+entities:
+  lantern:
+    light:
+      pos: [200, 160]
+      radius: 50
+  single_block:
+    collider:
+      transform: [192, 72, 8, 8]
+    texture:
+      res: res/graphics/ground2.png
+      transform: [192, 72, 8, 8]
+  tile_blocks:
+    collider: tile #tilemap collider
+    tilemap:
+      res: res/graphics/ground2.png
+      tiles: res/levels/1.png
+      pos: [0, 96]
+      tex_size: [8, 8]

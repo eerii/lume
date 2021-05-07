@@ -6,11 +6,11 @@
 
 #include "c_collider.h"
 #include "c_texture.h"
+#include "c_animation.h"
 #include "c_actor.h"
 #include "c_tilemap.h"
 #include "c_light.h"
 #include "c_camera.h"
-#include "c_animation.h"
 
 #define COMPONENTS logComponentID(Collider); \
                    logComponentID(Texture); \
@@ -22,6 +22,8 @@
 
 #define COLLIDER
 #define TEXTURE
+#define ANIMATION
 #define ACTOR
 #define TILEMAP
 #define LIGHT
+#define CAMERA

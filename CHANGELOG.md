@@ -8,9 +8,12 @@
 - Load, write, destroy YAML files
 - Edit/remove particular entries
 - Append with specific typings
+- Scene serialization
 #### Changed
 - Different Vec2 and Vec2f, Rect2 and Rect2f (For precission and cleanness matters)
 - Rect2 now uses x, y, w, h instead of pos and size
+#### Fixed
+- Now when you delete an entity, and create a new one, it has the propper name and not the previous one
 
 ### **[0.1.2]** ~ New rendering pipeline _2021-04-04_
 #### Changed
