@@ -10,6 +10,7 @@
 #include "s_tilemap.h"
 #include "s_light.h"
 #include "s_camera.h"
+#include "s_fire.h"
 
 #include "component_list.h"
 
@@ -18,6 +19,7 @@
 
 #define RENDER_SYSTEMS System::Tilemap::render(scene, c); \
                        System::Texture::render(scene, c); \
+                       System::Fire::render(scene, c); \
                        System::Light::render(scene, c); \
                        if (c.render_collision_boxes) \
                            System::Collider::render(scene, c); \

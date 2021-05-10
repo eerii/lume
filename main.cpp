@@ -6,16 +6,12 @@
 
 #include "dtypes.h"
 #include "log.h"
+#include "config.h"
+#include "serialization.h"
 
 #include "game.h"
 #include "scene.h"
-#include "config.h"
-
-#include "serialization.h"
-
-//These are the functions of the game
-#include "init.h"
-
+#include "system_list.h"
 
 using namespace Verse;
 

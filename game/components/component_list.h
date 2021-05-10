@@ -11,6 +11,7 @@
 #include "c_tilemap.h"
 #include "c_light.h"
 #include "c_camera.h"
+#include "c_fire.h"
 
 #define COMPONENTS logComponentID(Collider); \
                    logComponentID(Texture); \
@@ -19,6 +20,7 @@
                    logComponentID(Tilemap); \
                    logComponentID(Light); \
                    logComponentID(Camera); \
+                   logComponentID(Fire); \
 
 #define COLLIDER
 #define TEXTURE
@@ -27,3 +29,4 @@
 #define TILEMAP
 #define LIGHT
 #define CAMERA
+#define FIRE

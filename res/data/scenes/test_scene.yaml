@@ -2,7 +2,7 @@
 ---
 scene:
   name: test_scene
-  size: [256, 180]
+  size: [768, 180]
 
 entities:
   lantern:
@@ -19,6 +19,6 @@ entities:
     collider: tile #tilemap collider
     tilemap:
       res: res/graphics/ground2.png
-      tiles: res/levels/1.png
-      pos: [0, 96]
+      tiles: res/levels/2.png
+      pos: [0, 40]
       tex_size: [8, 8]

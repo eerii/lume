@@ -2,7 +2,13 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.3]** ~ Serialization _2021-04-07_
+### **[0.1.4]** ~ Procedural Animation _2021-05-10_
+#### Added
+- Fire component
+- Procedural fire animation
+- White and Perlin Noise generator
+
+### **[0.1.3]** ~ Serialization _2021-05-07_
 #### Added
 - YAML Serialization
 - Load, write, destroy YAML files
@@ -16,13 +22,13 @@
 #### Fixed
 - Now when you delete an entity, and create a new one, it has the propper name and not the previous one
 
-### **[0.1.2]** ~ New rendering pipeline _2021-04-04_
+### **[0.1.2]** ~ New rendering pipeline _2021-05-04_
 #### Changed
 - Completely redesigned rendering pipeline. Now it renders in low res, applies post processing and camera movement, then upscales it and add the remaining camera move (smooth cam but keeping it pixel perfect). Finally it places it in the middle of the screen and adds the background
 - New and more clear mvp
 - Separated the shaders into several pieces
 
-### **[0.1.1]** ~ Fresa _2021-04-04_
+### **[0.1.1]** ~ Fresa _2021-05-04_
 #### Added
 - 3D preliminary rendering
 #### Changed

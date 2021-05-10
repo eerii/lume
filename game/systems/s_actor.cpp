@@ -21,7 +21,12 @@ void System::Actor::update(Config &c, Scene &scene) {
 void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
     Component::Actor* actor = scene.getComponent<Component::Actor>(eid);
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
+#ifdef TEXTURE
     Component::Texture* texture = scene.getComponent<Component::Texture>(eid);
+#endif
+#ifdef FIRE
+    Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
+#endif
     
     actor->controller();
 
@@ -89,6 +94,12 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
             }
         }
         
+#ifdef TEXTURE
         texture->transform = collider->transform.pos();
+#endif
+#ifdef FIRE
+        if (fire != nullptr)
+            fire->transform = collider->transform.pos() + fire->offset;
+#endif
     }
 }
