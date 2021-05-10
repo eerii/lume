@@ -106,7 +106,6 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
     }
     
-    
     return actor->vel != Vec2f(0,0);
 }
 

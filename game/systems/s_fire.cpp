@@ -18,12 +18,12 @@ namespace {
 }
 
 void System::Fire::init(Component::Fire *fire) {
-    fire->w_data = new ui8[fire->transform.w * fire->transform.h];
+    /*fire->w_data = new ui8[fire->transform.w * fire->transform.h];*/
     fire->p_data = new ui8[fire->transform.w * fire->transform.h];
     
-    Graphics::Texture::createWhiteNoise(fire->transform.w,
+    /*Graphics::Texture::createWhiteNoise(fire->transform.w,
                                         fire->w_data,
-                                        fire->w_tex);
+                                        fire->w_tex);*/
 }
 
 void System::Fire::render(Scene &scene, Config &c) {
@@ -42,9 +42,9 @@ void System::Fire::render(Scene &scene, Config &c) {
         if (noise_time[e] > (refresh_rate / (float)fire->fps)) {
             noise_offset[e]++;
             
-            Graphics::Texture::offsetWhiteNoise(fire->transform.w,
+            /*Graphics::Texture::offsetWhiteNoise(fire->transform.w,
                                                 fire->w_data,
-                                                fire->w_tex);
+                                                fire->w_tex);*/
             Graphics::Texture::createPerlinNoise(fire->transform.w,
                                                  fire->dir * noise_offset[e],
                                                  fire->freq,
@@ -58,6 +58,6 @@ void System::Fire::render(Scene &scene, Config &c) {
         if (noise_offset[e] > 256)
             noise_offset[e] = 0;
         
-        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->w_tex, fire->flame_tex);
+        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->flame_tex);
     }
 }

@@ -41,7 +41,7 @@ int main(int argc, const char * argv[]) {
     Scene scene;
     
     Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
-    EntityID player = Serialization::loadPlayer(scene);
+    EntityID player = Serialization::loadPlayer(scene, config);
     Component::Camera* camera = scene.getComponent<Component::Camera>(player);
     System::Camera::setActive(camera);
     

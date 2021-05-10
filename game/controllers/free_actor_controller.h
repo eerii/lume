@@ -9,7 +9,7 @@
 
 #include "scene.h"
 
-namespace Verse::Controller::Free
+namespace Verse::Controller::FreeActor
 {
     bool controller(Scene &scene, EntityID eid);
 }

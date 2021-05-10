@@ -24,9 +24,6 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
 #ifdef TEXTURE
     Component::Texture* texture = scene.getComponent<Component::Texture>(eid);
 #endif
-#ifdef FIRE
-    Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
-#endif
     
     actor->controller();
 
@@ -97,7 +94,13 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
 #ifdef TEXTURE
         texture->transform = collider->transform.pos();
 #endif
+#ifdef CAMERA
+        Component::Camera* camera = scene.getComponent<Component::Camera>(eid);
+        if (camera != nullptr)
+            camera->target_pos = collider->transform.pos();
+#endif
 #ifdef FIRE
+        Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
         if (fire != nullptr)
             fire->transform = collider->transform.pos() + fire->offset;
 #endif

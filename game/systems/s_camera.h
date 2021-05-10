@@ -15,8 +15,6 @@ namespace Verse::System::Camera
 {
     void init(Component::Camera* camera);
     void setActive(Component::Camera* camera);
-    void update(Config &c, Scene& scene);
-    void move(Config &c, Vec2f pos, int input);
-    void updatePoints(Config &c, Vec2f &pos);
-    void checkBounds(Config &c);
+    void update(Config &c, Scene &s);
+    void updatePoints(Config &c, Vec2f pos);
 }

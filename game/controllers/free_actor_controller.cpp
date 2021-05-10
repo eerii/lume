@@ -2,13 +2,13 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include "free_controller.h"
+#include "free_actor_controller.h"
 #include "game.h"
 #include "input.h"
 
 using namespace Verse;
 
-bool Controller::Free::controller(Scene &scene, EntityID eid) {
+bool Controller::FreeActor::controller(Scene &scene, EntityID eid) {
     
     Component::Actor* actor = scene.getComponent<Component::Actor>(eid);
     
