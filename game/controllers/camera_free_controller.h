@@ -12,8 +12,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-namespace Verse::Controller::Camera::Actor
+namespace Verse::Controller::Camera::Free
 {
     bool controller(Scene &s, Config &c, EntityID eid);
-    void checkBounds(Config &c, Component::Camera* cam);
 }

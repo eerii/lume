@@ -19,6 +19,7 @@ namespace Verse::Component
         Rect2 bounds;
         Vec2 focus_size;
         float l,r,t,b;
+        float scale = 1.0f;
         
         float look_ahead;
         float la_speed;

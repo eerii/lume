@@ -39,8 +39,6 @@ void System::Camera::update(Config &c, Scene &s) {
 }
 
 void System::Camera::updatePoints(Config &c, Vec2f pos) {
-    cam->vel = Vec2f(0,0);
-    
     if (pos.x < cam->l)
         cam->vel.x = pos.x - cam->l;
     else if (pos.x > cam->r)
@@ -56,4 +54,5 @@ void System::Camera::updatePoints(Config &c, Vec2f pos) {
     cam->b += cam->vel.y;
     
     cam->target_pos = Vec2(floor((cam->l+cam->r)/2.0f), floor((cam->t+cam->b)/2.0f));
+    cam->vel = Vec2f(0,0);
 }

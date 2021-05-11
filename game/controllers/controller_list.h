@@ -11,5 +11,7 @@
 #define FREE_ACTOR_CONTROLLER [&s, eid]() -> bool {return Controller::FreeActor::controller(s, eid);};
 
 #include "camera_actor_controller.h"
+#include "camera_free_controller.h"
 
 #define CAMERA_ACTOR_CONTROLLER [&s, &c, eid]() -> bool {return Controller::Camera::Actor::controller(s, c, eid);};
+#define CAMERA_FREE_CONTROLLER [&s, &c, eid]() -> bool {return Controller::Camera::Free::controller(s, c, eid);};
