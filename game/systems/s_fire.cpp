@@ -18,12 +18,7 @@ namespace {
 }
 
 void System::Fire::init(Component::Fire *fire) {
-    /*fire->w_data = new ui8[fire->transform.w * fire->transform.h];*/
     fire->p_data = new ui8[fire->transform.w * fire->transform.h];
-    
-    /*Graphics::Texture::createWhiteNoise(fire->transform.w,
-                                        fire->w_data,
-                                        fire->w_tex);*/
 }
 
 void System::Fire::render(Scene &scene, Config &c) {

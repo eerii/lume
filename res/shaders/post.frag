@@ -2,7 +2,8 @@
 
 #define MAX_LIGHTS 32
 #define SMOOTHNESS 0.5
-#define DITHERING_THRESHOLD 0.85
+#define PRIMARY 0.57143
+#define SECONDARY 0.42857
 
 in vec2 f_tex_coord;
 
@@ -66,15 +67,41 @@ void main() {
     
     //Palette
     if (palette_index > -1.0f) {
+        bool is_primary = color.z > color.r;
+        bool is_bright = luminance > 0.75f;
+        bool is_dark = luminance < 0.1f;
+        
         vec4 i_color;
     
         if (use_grayscale) {
             i_color = luminance * vec4(1.0, 1.0, 1.0, 1.0);
         } else {
-            i_color = texture(palette, vec2(luminance * 0.999, palette_index));
-            if (previous_palette_index != palette_index) {
-                vec4 p_color = texture(palette, vec2(luminance * 0.999, previous_palette_index));
-                i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
+            if (is_bright) {
+                i_color = texture(palette, vec2(0.999, palette_index));
+                if (previous_palette_index != palette_index) {
+                    vec4 p_color = texture(palette, vec2(0.999, previous_palette_index));
+                    i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
+                }
+            } else if (is_dark) {
+                i_color = texture(palette, vec2(0.001, palette_index));
+                if (previous_palette_index != palette_index) {
+                    vec4 p_color = texture(palette, vec2(0.001, previous_palette_index));
+                    i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
+                }
+            } else {
+                if (is_primary) {
+                    i_color = texture(palette, vec2(luminance * PRIMARY, palette_index));
+                    if (previous_palette_index != palette_index) {
+                        vec4 p_color = texture(palette, vec2(luminance * PRIMARY, previous_palette_index));
+                        i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
+                    }
+                } else {
+                    i_color = texture(palette, vec2(SECONDARY + luminance * PRIMARY, palette_index));
+                    if (previous_palette_index != palette_index) {
+                        vec4 p_color = texture(palette, vec2(SECONDARY + luminance * PRIMARY, previous_palette_index));
+                        i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
+                    }
+                }
             }
         }
         

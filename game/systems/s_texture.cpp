@@ -42,7 +42,7 @@ void System::Texture::render(Scene &scene, Config &c) {
                 frame_count = -1;
             }
             src = Rect2(Vec2((tex->transform.w * anim->frames[curr_key][anim->curr_frame]), 0), tex->transform.size());
-            Graphics::Renderer::renderTexture(tex->tex_id, src, dst, anim->size, c, tex->is_reversed);
+            Graphics::Renderer::renderTexture(tex->tex_id, src, dst, anim->size-1, c, tex->is_reversed);
         } else {
             src = Rect2(Vec2(), tex->transform.size());
             Graphics::Renderer::renderTexture(tex->tex_id, src, dst, 1, c, tex->is_reversed);

@@ -36,9 +36,9 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         actor->vel.x += actor->acc_ground * DELTA;
     
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
-        anim->curr_key = "walk";
+        anim->curr_key = "walk_1";
     } else {
-        anim->curr_key = "idle";
+        anim->curr_key = "idle_1";
     }
     
     if (abs(actor->vel.x) > actor->max_move_speed)
@@ -96,7 +96,7 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     
     //Jump Animation
     if (on_jump) {
-        anim->curr_key = "jump";
+        anim->curr_key = "jump_up";
     }
     
     
