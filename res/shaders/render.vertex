@@ -5,8 +5,9 @@ layout (location = 0) in vec4 v_transform;
 out vec2 f_tex_coord;
 
 uniform mat4 mvp;
+uniform float layer;
 
 void main() {
-    gl_Position = mvp * vec4(v_transform.xy, 0.0, 1.0);
+    gl_Position = mvp * vec4(v_transform.xy, layer, 1.0);
     f_tex_coord = v_transform.zw;
 }

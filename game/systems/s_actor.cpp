@@ -99,10 +99,10 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         if (camera != nullptr)
             camera->target_pos = collider->transform.pos();
 #endif
+    }
 #ifdef FIRE
         Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
         if (fire != nullptr)
             fire->transform = collider->transform.pos() + fire->offset;
 #endif
-    }
 }

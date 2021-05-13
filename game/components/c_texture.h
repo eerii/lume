@@ -5,6 +5,7 @@
 #pragma once
 
 #include "dtypes.h"
+#include <vector>
 
 namespace Verse::Component
 {
@@ -14,7 +15,8 @@ namespace Verse::Component
         
         Rect2 transform;
         
-        Vec2 offset = Vec2(0,0);
+        std::vector<Vec2> offset;
+        std::vector<int> layer;
         bool is_reversed = false;
     };
 }

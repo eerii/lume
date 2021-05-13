@@ -22,5 +22,7 @@ namespace Verse::Component
         float freq;
         ui8 octaves;
         ui32 seed;
+        
+        int layer;
     };
 }

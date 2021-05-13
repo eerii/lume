@@ -23,6 +23,10 @@ namespace {
     ui64 coyote_time = 0;
     bool on_jump = false;
     bool previously_on_ground = false;
+
+    int flame_offsets[18] = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 0, 0, 1, 1, 1, 2 };
+    int flame_horizonal_offset = 0;
+    Vec2 flame_initial_offset = Vec2(-1, -1);
 }
 
 bool Controller::Player::controller(Scene &scene, EntityID eid) {
@@ -37,8 +41,10 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
         anim->curr_key = "walk_1";
+        flame_horizonal_offset = -sign(actor->vel.x);
     } else {
         anim->curr_key = "idle_1";
+        flame_horizonal_offset = 0;
     }
     
     if (abs(actor->vel.x) > actor->max_move_speed)
@@ -50,7 +56,6 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         else
             actor->vel.x = 0;
     }
-    
     
     //JUMP
     if (Input::pressed(Input::Key::Space)) {
@@ -95,10 +100,13 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     }
     
     //Jump Animation
-    if (on_jump) {
+    if (not actor->is_on_ground) {
         anim->curr_key = "jump_up";
     }
     
+    //FLAME
+    Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
+    fire->offset = flame_initial_offset - Vec2(flame_horizonal_offset, flame_offsets[anim->frames[anim->curr_key][anim->curr_frame]]);
     
     //RESPAWN
     Component::Collider* collider = scene.getComponent<Component::Collider>(eid);

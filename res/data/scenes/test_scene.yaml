@@ -9,16 +9,32 @@ entities:
     light:
       pos: [200, 160]
       radius: 50
-  single_block:
-    collider:
-      transform: [192, 72, 8, 8]
-    texture:
-      res: res/graphics/ground2.png
-      transform: [192, 72, 8, 8]
+  tile_bg_1:
+    tilemap:
+      res: res/graphics/bg_1.png
+      tiles: res/levels/bg_1.png
+      pos: [-56, 12]
+      tex_size: [7, 7]
+      layer: 20
+  tile_bg_2:
+    tilemap:
+      res: res/graphics/bg_2.png
+      tiles: res/levels/bg_2.png
+      pos: [-56, 12]
+      tex_size: [7, 7]
+      layer: 20
+  tile_bg_3:
+    tilemap:
+      res: res/graphics/bg_3.png
+      tiles: res/levels/bg_3.png
+      pos: [-56, 12]
+      tex_size: [7, 7]
+      layer: 20
   tile_blocks:
     collider: tile #tilemap collider
     tilemap:
-      res: res/graphics/ground2.png
+      res: res/graphics/ground3.png
       tiles: res/levels/2.png
-      pos: [0, 40]
-      tex_size: [8, 8]
+      pos: [14, 61]
+      tex_size: [7, 7]
+      layer: 10

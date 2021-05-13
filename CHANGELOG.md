@@ -8,8 +8,11 @@
 - Procedural fire animation
 - White and Perlin Noise generator
 - Free camera
+- Multiple textures
+- Depth testing and layers
 #### Changed
 - Camera component and system
+- Palettes with primary and secondary colors
 
 ### **[0.1.3]** ~ Serialization _2021-05-07_
 #### Added

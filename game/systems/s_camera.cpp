@@ -32,7 +32,7 @@ void System::Camera::update(Config &c, Scene &s) {
         if (camera != cam)
             break;
         
-        updatePoints(c, cam->target_pos.to_float());
+        updatePoints(c, camera->target_pos.to_float());
         
         camera->controller();
     }

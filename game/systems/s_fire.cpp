@@ -53,6 +53,6 @@ void System::Fire::render(Scene &scene, Config &c) {
         if (noise_offset[e] > 256)
             noise_offset[e] = 0;
         
-        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->flame_tex);
+        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->flame_tex, fire->layer);
     }
 }

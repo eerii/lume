@@ -21,6 +21,8 @@ namespace Verse::Component
         Vec2 tex_size;
         Vec2 pos;
         
+        int layer;
+        
         std::vector<std::array<float, 24>> vert;
     };
 }

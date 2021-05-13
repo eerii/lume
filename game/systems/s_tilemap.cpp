@@ -93,7 +93,7 @@ void System::Tilemap::render(Scene &scene, Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(scene)) {
         Component::Tilemap* tmap = scene.getComponent<Component::Tilemap>(e);
         
-        Graphics::Renderer::renderTilemap(tmap->tex_id, reinterpret_cast<float*>(tmap->vert.data()), (int)tmap->vert.size(), c);
+        Graphics::Renderer::renderTilemap(tmap->tex_id, reinterpret_cast<float*>(tmap->vert.data()), (int)tmap->vert.size(), c, tmap->layer);
     }
 }
 

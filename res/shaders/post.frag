@@ -67,9 +67,9 @@ void main() {
     
     //Palette
     if (palette_index > -1.0f) {
-        bool is_primary = color.z > color.r;
+        bool is_primary = color.z >= color.r;
         bool is_bright = luminance > 0.75f;
-        bool is_dark = luminance < 0.1f;
+        bool is_dark = luminance < 0.15f;
         
         vec4 i_color;
     

@@ -4,7 +4,12 @@
     texture:
       res: res/graphics/lume_test.png
       transform: [32, 64, 11, 14]
-      offset: [-1, 0]
+      layer:
+        body: 0
+        eyes: -2
+      offset:
+        body: [-1, 0]
+        eyes: [-1, 0]
     animation:
       frames:
         idle_1: [0, 0, 0, 1, 2]
@@ -37,10 +42,10 @@
       la_speed: 1
     fire:
       transform: [32, 64, 11, 11]
-      offset: [-1, -15]
       res: res/graphics/flame.png
       dir: [0, 1]
       fps: 3
       freq: 16
       octaves: 16
       seed: 256
+      layer: -1
