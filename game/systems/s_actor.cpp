@@ -29,7 +29,7 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
 
     //Gravity
     if (actor->has_gravity && !actor->is_on_ground) {
-        actor->vel.y += gravity * DELTA;
+        actor->vel.y += gravity * DELTA * c.game_speed;
     }
     
     //Terminal Velocity
@@ -37,14 +37,12 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         actor->vel.y = actor->max_fall_speed;
     
     if (actor->vel != Vec2f(0,0)) {
-        Vec2f total = actor->remainder + actor->vel * DELTA;
+        Vec2f total = actor->remainder + actor->vel * DELTA * c.game_speed;
         Vec2f to_move = Vec2f((int)total.x, (int)total.y);
         actor->remainder = total - to_move;
         
         //MoveX
         int sx = sign(to_move.x);
-        if (to_move.x != 0)
-            texture->is_reversed = sx == -1;
         while (to_move.x != 0) {
             collider->transform += Vec2::i * sx;
             

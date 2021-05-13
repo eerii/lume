@@ -11,7 +11,7 @@
 using namespace Verse;
 
 namespace {
-    int animation_speed = Graphics::getRefreshRate() / 3; //3 FPS
+    float animation_speed = (float)Graphics::getRefreshRate() / 3.0f; //3 FPS
     int frame_count = 0;
     str curr_key = "";
 
@@ -24,7 +24,7 @@ namespace {
 }
 
 void System::Texture::render(Scene &scene, Config &c) {
-    if (frame_count < animation_speed)
+    if (frame_count * c.game_speed < animation_speed)
         frame_count++;
     
     for (EntityID e : SceneView<Component::Texture>(scene)) {
@@ -34,7 +34,7 @@ void System::Texture::render(Scene &scene, Config &c) {
         if (anim != nullptr) {
             if (curr_key == "")
                 curr_key = anim->curr_key;
-            if (frame_count >= animation_speed or frame_count == -1) {
+            if (frame_count * c.game_speed >= animation_speed or frame_count == -1) {
                 frame_count = -1;
                 if (anim->curr_frame < anim->frames[anim->curr_key].size() - 1) {
                     anim->curr_frame++;

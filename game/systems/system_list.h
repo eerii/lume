@@ -14,8 +14,8 @@
 
 #include "component_list.h"
 
-#define PHYSICS_UPDATE_SYSTEMS System::Actor::update(*config, *scene); \
-                               System::Camera::update(*config, *scene);
+#define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c, s); \
+                               System::Camera::update(c, s);
 
 #define RENDER_SYSTEMS System::Tilemap::render(scene, c); \
                        System::Texture::render(scene, c); \

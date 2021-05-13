@@ -2,7 +2,18 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.4]** ~ Procedural Animation _2021-05-10_
+### **[0.1.5]** ~ Light _2021-05-13_
+#### Added
+- Light decreases with time
+- Game speed controller
+#### Changed
+- Started improving UI, changed to top menu
+#### Fixed
+- General polish and bug fixes
+- Review all pointers and tried to fix EXEC_BAD_ACCESS
+- Used a lot more pointer checks and error messages
+
+### **[0.1.4]** ~ Procedural Animation _2021-05-12_
 #### Added
 - Fire component
 - Procedural fire animation

@@ -6,12 +6,10 @@
 
 #include "dtypes.h"
 #include "log.h"
-
-#include "scene.h"
 #include "config.h"
+#include "scene.h"
 
-namespace Verse::Controller::FreeActor
+namespace Verse::Gui
 {
-    bool controller(Scene &s, Config &c, EntityID eid);
+    void settings(Scene &s, Config &c);
 }
-

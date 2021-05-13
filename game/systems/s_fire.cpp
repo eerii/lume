@@ -11,7 +11,7 @@
 using namespace Verse;
 
 namespace {
-    std::map<EntityID, ui16> noise_time;
+    std::map<EntityID, float> noise_time;
     std::map<EntityID, ui16> noise_offset;
 
     float refresh_rate = 0;
@@ -33,8 +33,8 @@ void System::Fire::render(Scene &scene, Config &c) {
         if (noise_offset.count(e) == 0)
             noise_offset[e] = 0;
         
-        noise_time[e] += (ui16)(time() - Time::current);
-        if (noise_time[e] > (refresh_rate / (float)fire->fps)) {
+        noise_time[e] += ((float)Time::delta / 1000.0f) * c.game_speed;
+        if (noise_time[e] > (1.0f / (float)fire->fps)) {
             noise_offset[e]++;
             
             /*Graphics::Texture::offsetWhiteNoise(fire->transform.w,
@@ -53,6 +53,6 @@ void System::Fire::render(Scene &scene, Config &c) {
         if (noise_offset[e] > 256)
             noise_offset[e] = 0;
         
-        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->flame_tex, fire->layer);
+        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->flame_tex, c, fire->layer);
     }
 }

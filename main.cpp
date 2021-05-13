@@ -23,6 +23,7 @@ int main(int argc, const char * argv[]) {
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
+        .game_speed = 1.0f,
         .enable_gui = true,
         .use_grayscale = false,
         .use_light = true,
@@ -42,15 +43,13 @@ int main(int argc, const char * argv[]) {
     
     Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
     EntityID player = Serialization::loadPlayer(scene, config);
-    Component::Camera* camera = scene.getComponent<Component::Camera>(player);
-    System::Camera::setActive(camera);
+    config.active_camera = scene.getComponent<Component::Camera>(player);
+    if (config.active_camera == nullptr)
+        log::error("Failed to get the active camera!");
     
-    
-    //init(scene, config);
-    Game::setActiveScene(&scene);
     
     while (running)
-        running = Game::update();
+        running = Game::update(config, scene);
     
     
     Game::stop();

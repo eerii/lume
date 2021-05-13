@@ -13,7 +13,7 @@ void main() {
     float noise_value = texture(pnoise, f_tex_coord).x;
     //float wnoise_value = texture(wnoise, f_tex_coord).x;
     
-    float s1 = step(noise_value, flame_value - 0.01f);
+    float s1 = step(noise_value, flame_value - 0.0f);
     //float s2 = step(wnoise_value, s1);
     
     if (s1 > 0.1f) {

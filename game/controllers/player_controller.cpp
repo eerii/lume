@@ -7,7 +7,7 @@
 #include "input.h"
 #include "time.h"
 
-#define EPSILON 10
+#define EPSILON 5
 
 using namespace Verse;
 
@@ -19,6 +19,11 @@ namespace {
 
     Component::Actor* actor;
     Component::Animation* anim;
+    Component::Texture* tex;
+    Component::Fire* fire;
+    Component::Collider* collider;
+    Component::Light* light;
+
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
     bool on_jump = false;
@@ -27,23 +32,38 @@ namespace {
     int flame_offsets[18] = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 0, 0, 1, 1, 1, 2 };
     int flame_horizonal_offset = 0;
     Vec2 flame_initial_offset = Vec2(-1, -1);
+
+    int light_strength = 100;
+    ui32 light_time = 0;
+    str curr_idle_anim = "idle_1";
 }
 
-bool Controller::Player::controller(Scene &scene, EntityID eid) {
-    actor = scene.getComponent<Component::Actor>(eid);
-    anim = scene.getComponent<Component::Animation>(eid);
+bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
+    if (collider == nullptr or actor == nullptr or anim == nullptr or tex == nullptr or fire == nullptr or light == nullptr) {
+        collider = s.getComponent<Component::Collider>(eid);
+        actor = s.getComponent<Component::Actor>(eid);
+        anim = s.getComponent<Component::Animation>(eid);
+        tex = s.getComponent<Component::Texture>(eid);
+        fire = s.getComponent<Component::Fire>(eid);
+        light = s.getComponent<Component::Light>(eid);
+    }
     
     //MOVE X
-    if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
-        actor->vel.x -= actor->acc_ground * DELTA;
-    if (Input::down(Input::Key::Right) or Input::down(Input::Key::D))
-        actor->vel.x += actor->acc_ground * DELTA;
+    if (Input::down(Input::Key::Left) or Input::down(Input::Key::A)) {
+        actor->vel.x -= actor->acc_ground * DELTA * c.game_speed;
+        tex->is_reversed = true;
+        flame_horizonal_offset = 1;
+    }
+    if (Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
+        actor->vel.x += actor->acc_ground * DELTA * c.game_speed;
+        tex->is_reversed = false;
+        flame_horizonal_offset = -1;
+    }
     
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
         anim->curr_key = "walk_1";
-        flame_horizonal_offset = -sign(actor->vel.x);
     } else {
-        anim->curr_key = "idle_1";
+        anim->curr_key = curr_idle_anim;
         flame_horizonal_offset = 0;
     }
     
@@ -51,8 +71,8 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
         actor->vel.x = sign(actor->vel.x) * actor->max_move_speed;
     
     if (!Input::down(Input::Key::Left) && !Input::down(Input::Key::Right)) {
-        if (abs(actor->vel.x) > EPSILON)
-            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * DELTA;
+        if (abs(actor->vel.x) > EPSILON * c.game_speed)
+            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * DELTA * c.game_speed;
         else
             actor->vel.x = 0;
     }
@@ -105,11 +125,23 @@ bool Controller::Player::controller(Scene &scene, EntityID eid) {
     }
     
     //FLAME
-    Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
     fire->offset = flame_initial_offset - Vec2(flame_horizonal_offset, flame_offsets[anim->frames[anim->curr_key][anim->curr_frame]]);
     
+    //LIGHT
+    light->radius = light_strength;
+    if (light_time > 500) {
+        light_time = 0;
+        //TODO: ENABLE light_strength -= 1;
+        curr_idle_anim = (light_strength > 75) ? "idle_1" : (light_strength > 50) ? "idle_2" : (light_strength > 25) ? "idle_3" : "idle_4";
+    } else {
+        light_time += Time::delta * c.game_speed;
+    }
+    
+    if (light_strength == 0) {
+        light_strength = 100;
+    }
+    
     //RESPAWN
-    Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
     if (collider->transform.y > 500) {
         collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
     }

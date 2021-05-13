@@ -36,7 +36,7 @@ void System::Light::render(Scene &scene, Config &c) {
             light_sources[i].x /= c.resolution.x;
             light_sources[i].y = 1.0f - light_sources[i].y / c.resolution.y;
             
-            light_sources[i][2] = (light->radius + sin(Time::current * 0.001 * LIGHT_PERIOD) * LIGHT_VARIATION) / c.resolution.y;
+            light_sources[i][2] = (light->radius + sin(Time::current * 0.001f * LIGHT_PERIOD * c.game_speed) * LIGHT_VARIATION) / c.resolution.y;
             light_sources[i][3] = light_sources[i][2] * LIGHT_CENTER_RADIUS;
         } else {
             light_entities.push_back(e);

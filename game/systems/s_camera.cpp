@@ -9,10 +9,6 @@
 
 using namespace Verse;
 
-namespace {
-    Component::Camera *cam; //Active Camera
-}
-
 void System::Camera::init(Component::Camera* camera) {
     camera->vel = Vec2f(0,0);
     camera->l = camera->pos.x - ((float)camera->focus_size.x / 2.0f);
@@ -21,15 +17,10 @@ void System::Camera::init(Component::Camera* camera) {
     camera->b = camera->pos.y + ((float)camera->focus_size.y / 2.0f);
 }
 
-void System::Camera::setActive(Component::Camera *camera) {
-    cam = camera;
-    Graphics::Renderer::bindCamera(&camera->m_pixel, &camera->m_extra, &camera->pos);
-}
-
 void System::Camera::update(Config &c, Scene &s) {
     for (EntityID e : SceneView<Component::Camera>(s)) {
         Component::Camera* camera = s.getComponent<Component::Camera>(e);
-        if (camera != cam)
+        if (camera != c.active_camera)
             break;
         
         updatePoints(c, camera->target_pos.to_float());
@@ -39,20 +30,21 @@ void System::Camera::update(Config &c, Scene &s) {
 }
 
 void System::Camera::updatePoints(Config &c, Vec2f pos) {
-    if (pos.x < cam->l)
-        cam->vel.x = pos.x - cam->l;
-    else if (pos.x > cam->r)
-        cam->vel.x = pos.x - cam->r;
-    cam->l += cam->vel.x;
-    cam->r += cam->vel.x;
+    if (pos.x < c.active_camera->l)
+        c.active_camera->vel.x = pos.x - c.active_camera->l;
+    else if (pos.x > c.active_camera->r)
+        c.active_camera->vel.x = pos.x - c.active_camera->r;
+    c.active_camera->l += c.active_camera->vel.x;
+    c.active_camera->r += c.active_camera->vel.x;
     
-    if (pos.y < cam->t)
-        cam->vel.y = pos.y - cam->t;
-    else if (pos.y > cam->b)
-        cam->vel.y = pos.y - cam->b;
-    cam->t += cam->vel.y;
-    cam->b += cam->vel.y;
+    if (pos.y < c.active_camera->t)
+        c.active_camera->vel.y = pos.y - c.active_camera->t;
+    else if (pos.y > c.active_camera->b)
+        c.active_camera->vel.y = pos.y - c.active_camera->b;
+    c.active_camera->t += c.active_camera->vel.y;
+    c.active_camera->b += c.active_camera->vel.y;
     
-    cam->target_pos = Vec2(floor((cam->l+cam->r)/2.0f), floor((cam->t+cam->b)/2.0f));
-    cam->vel = Vec2f(0,0);
+    c.active_camera->target_pos = Vec2(floor((c.active_camera->l+c.active_camera->r)/2.0f),
+                                       floor((c.active_camera->t+c.active_camera->b)/2.0f));
+    c.active_camera->vel = Vec2f(0,0);
 }

@@ -7,8 +7,8 @@
 #include "player_controller.h"
 #include "free_actor_controller.h"
 
-#define PLAYER_CONTROLLER [&s, eid]() -> bool {return Controller::Player::controller(s, eid);};
-#define FREE_ACTOR_CONTROLLER [&s, eid]() -> bool {return Controller::FreeActor::controller(s, eid);};
+#define PLAYER_CONTROLLER [&s, &c, eid]() -> bool {return Controller::Player::controller(s, c, eid);};
+#define FREE_ACTOR_CONTROLLER [&s, &c, eid]() -> bool {return Controller::FreeActor::controller(s, c, eid);};
 
 #include "camera_actor_controller.h"
 #include "camera_free_controller.h"

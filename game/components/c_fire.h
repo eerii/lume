@@ -12,9 +12,8 @@ namespace Verse::Component
         Rect2 transform;
         Vec2 offset = Vec2(0, 0);
         
-        ui32 flame_tex, p_tex;//, w_tex;
+        ui32 flame_tex, p_tex;
         ui8* p_data;
-        //ui8* w_data;
         
         Vec2 dir;
         ui8 fps;
@@ -24,5 +23,9 @@ namespace Verse::Component
         ui32 seed;
         
         int layer;
+        
+        ~Fire() {
+            delete[] p_data;
+        }
     };
 }
