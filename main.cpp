@@ -19,12 +19,13 @@ int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.1.4",
+        .version = "0.1.5",
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
         .game_speed = 1.0f,
         .enable_gui = true,
+        .use_vsync = true,
         .use_grayscale = false,
         .use_light = true,
         .palette_index = 0,

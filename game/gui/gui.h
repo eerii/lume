@@ -19,7 +19,8 @@
 
 namespace Verse::Gui
 {
+    void init(Config &c);
     void update(float delta, Config &c);
-    void prerender(Scene &scene, Config &c, ui16 &fps, SDL_Window* window);
+    void prerender(Scene &scene, Config &c, SDL_Window* window);
     void render();
 }

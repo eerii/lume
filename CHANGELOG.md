@@ -6,12 +6,15 @@
 #### Added
 - Light decreases with time
 - Game speed controller
+- Improved the menu
 #### Changed
 - Started improving UI, changed to top menu
+- Switched ImGui to docking
 #### Fixed
 - General polish and bug fixes
 - Review all pointers and tried to fix EXEC_BAD_ACCESS
 - Used a lot more pointer checks and error messages
+- Finally fixed memory leaks!
 
 ### **[0.1.4]** ~ Procedural Animation _2021-05-12_
 #### Added

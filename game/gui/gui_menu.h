@@ -11,5 +11,5 @@
 
 namespace Verse::Gui
 {
-    void menu(Config &c, int fps);
+    void menu(Config &c);
 }

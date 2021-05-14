@@ -18,7 +18,7 @@ namespace {
 }
 
 void System::Fire::init(Component::Fire *fire) {
-    fire->p_data = new ui8[fire->transform.w * fire->transform.h];
+    fire->p_data = (ui8*)malloc((fire->transform.w+1) * (fire->transform.h+1));
 }
 
 void System::Fire::render(Scene &scene, Config &c) {
@@ -36,11 +36,7 @@ void System::Fire::render(Scene &scene, Config &c) {
         noise_time[e] += ((float)Time::delta / 1000.0f) * c.game_speed;
         if (noise_time[e] > (1.0f / (float)fire->fps)) {
             noise_offset[e]++;
-            
-            /*Graphics::Texture::offsetWhiteNoise(fire->transform.w,
-                                                fire->w_data,
-                                                fire->w_tex);*/
-            Graphics::Texture::createPerlinNoise(fire->transform.w,
+            Graphics::Texture::createPerlinNoise(fire->transform.size(),
                                                  fire->dir * noise_offset[e],
                                                  fire->freq,
                                                  fire->octaves,

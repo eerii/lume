@@ -125,7 +125,10 @@ bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
     }
     
     //FLAME
-    fire->offset = flame_initial_offset - Vec2(flame_horizonal_offset, flame_offsets[anim->frames[anim->curr_key][anim->curr_frame]]);
+    if (anim->frames[anim->curr_key].size() > anim->curr_frame)
+        fire->offset = flame_initial_offset - Vec2(flame_horizonal_offset, flame_offsets[anim->frames[anim->curr_key][anim->curr_frame]]);
+    else
+        fire->offset = flame_initial_offset;
     
     //LIGHT
     light->radius = light_strength;
