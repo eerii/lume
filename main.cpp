@@ -4,66 +4,12 @@
 
 #include <SDL2/SDL.h>
 
-#include "dtypes.h"
 #include "log.h"
 #include "config.h"
+#include "game.h"
 #include "serialization.h"
 
-#include "game.h"
-#include "scene.h"
-#include "system_list.h"
-
-#include "state_machine.h"
-#include "static_str.h"
-
 using namespace Verse;
-
-namespace {
-
-struct OpenEvent {};
-struct CloseEvent {};
-struct LockEvent {
-    ui32 new_key;
-};
-struct UnlockEvent {
-    ui32 key;
-};
-
-struct OpenState;
-struct CloseState;
-struct LockedState;
-
-struct OpenState : State::Do<State::Default<State::Nothing>,
-                             State::On<CloseEvent, State::To<CloseState>>> {};
-
-struct CloseState : State::Do<State::Default<State::Nothing>,
-                              State::On<LockEvent, State::To<LockedState>>,
-                              State::On<OpenEvent, State::To<OpenState>>> {};
-
-struct LockedState : State::Default<State::Nothing> {
-    using Default::handle;
-    
-    ui32 key;
-    LockedState(ui32 p_key) : key(p_key) {};
-    
-    void onEnter(const LockEvent &e) {
-        key = e.new_key;
-    }
-    
-    State::ThisOrNothing<State::To<CloseState>> handle(const UnlockEvent& e) {
-        if (e.key == key) {
-            log::info("unlocking...");
-            return State::To<CloseState>();
-        }
-        else {
-            return State::Nothing();
-        }
-    }
-};
-
-using Door = State::StateMachine<CloseState, OpenState, LockedState>;
-
-}
 
 int main(int argc, const char * argv[]) {
     
@@ -84,24 +30,6 @@ int main(int argc, const char * argv[]) {
         .render_collision_boxes = false
     };
     
-    
-    /*Door door{CloseState{}, OpenState{}, LockedState{0}};
-    
-    door.handle(LockEvent{1234});
-    door.handle(UnlockEvent{2});
-    door.handle(UnlockEvent{1234});*/
-    
-    /*ui8 a[4] = {1,2,3,4};
-    ui8 b[3] = {5,6,7};
-    auto c = toArray(a);
-    auto d = toArray(b);
-    auto e = joinArrays(c, d);
-    auto f = resizeArray<10>(e);
-    log::num(f[5]);
-    
-    Str test{"hola"};
-    Str test2{" hey"};
-    log::info((test + test2).c_str());*/
     
     Serialization::initYAML();
     bool running = Game::init(config);
