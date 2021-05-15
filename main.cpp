@@ -14,6 +14,7 @@
 #include "system_list.h"
 
 #include "state_machine.h"
+#include "static_str.h"
 
 using namespace Verse;
 
@@ -90,6 +91,17 @@ int main(int argc, const char * argv[]) {
     door.handle(UnlockEvent{2});
     door.handle(UnlockEvent{1234});*/
     
+    ui8 a[4] = {1,2,3,4};
+    ui8 b[3] = {5,6,7};
+    auto c = toArray(a);
+    auto d = toArray(b);
+    auto e = joinArrays(c, d);
+    auto f = resizeArray<10>(e);
+    log::num(f[5]);
+    
+    Str test{"hola"};
+    Str test2{" hey"};
+    log::info((test + test2).c_str());
     
     Serialization::initYAML();
     bool running = Game::init(config);

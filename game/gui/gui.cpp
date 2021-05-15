@@ -12,6 +12,8 @@ using namespace Verse;
 struct ImVec3 { float x, y, z; ImVec3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) { x = _x; y = _y; z = _z; } };
 
 void Gui::init(Config &c) {
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowBorderSize = 0;
     style.ChildBorderSize = 0;
