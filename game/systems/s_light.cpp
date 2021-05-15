@@ -3,7 +3,7 @@
 //all rights reserved uwu
 
 #include "s_light.h"
-#include "r_opengl.h"
+
 #include "time.h"
 
 #define LIGHT_PERIOD 5

@@ -4,11 +4,9 @@
 
 #pragma once
 
-#include <vector>
-#include <array>
-#include <glm/glm.hpp>
-
 #include "dtypes.h"
+#include <vector>
+#include <glm/glm.hpp>
 
 namespace Verse::Component
 {

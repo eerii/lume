@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <functional>
 #include "dtypes.h"
+#include <functional>
 
 namespace Verse::Component
 {

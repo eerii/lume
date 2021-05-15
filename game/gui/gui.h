@@ -4,18 +4,8 @@
 
 #pragma once
 
-#include <SDL2/SDL.h>
-
-#include "dtypes.h"
-#include "log.h"
-
-#include "imgui.h"
-
-#include "imgui_impl_sdl.h"
-#include "imgui_impl_opengl3.h"
-
-#include "scene.h"
 #include "config.h"
+#include "imgui.h"
 
 namespace Verse::Gui
 {

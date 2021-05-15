@@ -3,7 +3,9 @@
 //all rights reserved uwu
 
 #include "s_fire.h"
+
 #include "time.h"
+
 #include "r_pipeline.h"
 #include "r_textures.h"
 #include "r_renderer.h"

@@ -91,7 +91,7 @@ int main(int argc, const char * argv[]) {
     door.handle(UnlockEvent{2});
     door.handle(UnlockEvent{1234});*/
     
-    ui8 a[4] = {1,2,3,4};
+    /*ui8 a[4] = {1,2,3,4};
     ui8 b[3] = {5,6,7};
     auto c = toArray(a);
     auto d = toArray(b);
@@ -101,7 +101,7 @@ int main(int argc, const char * argv[]) {
     
     Str test{"hola"};
     Str test2{" hey"};
-    log::info((test + test2).c_str());
+    log::info((test + test2).c_str());*/
     
     Serialization::initYAML();
     bool running = Game::init(config);

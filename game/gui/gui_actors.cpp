@@ -2,10 +2,7 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include <math.h>
-
 #include "gui_actors.h"
-#include "imgui.h"
 
 using namespace Verse;
 

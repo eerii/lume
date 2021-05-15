@@ -4,13 +4,7 @@
 
 #pragma once
 
-#include "dtypes.h"
-#include "log.h"
-
-#include "ecs.h"
-#include "scene.h"
-#include "r_pipeline.h"
-#include "r_textures.h"
+#include "config.h"
 
 namespace Verse::System::Texture
 {

@@ -3,7 +3,11 @@
 //all rights reserved uwu
 
 #include "gui.h"
+
 #include "input.h"
+
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
 
 #include "gui_menu.h"
 

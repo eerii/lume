@@ -4,11 +4,7 @@
 
 #pragma once
 
-#include "dtypes.h"
-#include "log.h"
 #include "config.h"
-
-#include "scene.h"
 
 namespace Verse::Controller::Player
 {

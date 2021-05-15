@@ -4,10 +4,6 @@
 
 #pragma once
 
-#include "dtypes.h"
-#include "log.h"
-#include "c_fire.h"
-#include "scene.h"
 #include "config.h"
 
 namespace Verse::System::Fire

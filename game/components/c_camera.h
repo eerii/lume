@@ -5,9 +5,7 @@
 #pragma once
 
 #include "dtypes.h"
-
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
 
 namespace Verse::Component
 {

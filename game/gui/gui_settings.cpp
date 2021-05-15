@@ -3,7 +3,6 @@
 //all rights reserved uwu
 
 #include "gui_settings.h"
-#include "imgui.h"
 
 using namespace Verse;
 

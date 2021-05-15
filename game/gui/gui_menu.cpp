@@ -3,8 +3,6 @@
 //all rights reserved uwu
 
 #include "gui_menu.h"
-#include "imgui.h"
-
 #include "r_window.h"
 
 using namespace Verse;

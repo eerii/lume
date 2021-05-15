@@ -3,8 +3,6 @@
 //all rights reserved uwu
 
 #include "gui_entities.h"
-#include "imgui.h"
-#include "ecs.h"
 
 using namespace Verse;
 

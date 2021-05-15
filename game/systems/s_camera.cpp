@@ -3,9 +3,6 @@
 //all rights reserved uwu
 
 #include "s_camera.h"
-#include "r_renderer.h"
-#include "time.h"
-#include "game.h"
 
 using namespace Verse;
 

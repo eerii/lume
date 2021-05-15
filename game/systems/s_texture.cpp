@@ -2,11 +2,10 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
-
 #include "s_texture.h"
+
 #include "r_renderer.h"
+#include "r_pipeline.h"
 
 using namespace Verse;
 

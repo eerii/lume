@@ -3,6 +3,9 @@
 //all rights reserved uwu
 
 #include "camera_actor_controller.h"
+
+#include <glm/ext.hpp>
+
 #include "input.h"
 
 #define EPSILON 0.1

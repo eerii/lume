@@ -4,12 +4,6 @@
 
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include "dtypes.h"
-#include "log.h"
-#include "ecs.h"
-#include "scene.h"
 #include "config.h"
 
 namespace Verse::System::Light

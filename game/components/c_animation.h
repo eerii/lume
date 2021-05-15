@@ -5,8 +5,8 @@
 #pragma once
 
 #include "dtypes.h"
-#include <map>
 #include <vector>
+#include <map>
 
 namespace Verse::Component
 {

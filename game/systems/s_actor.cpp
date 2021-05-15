@@ -2,8 +2,10 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include "game.h"
 #include "s_actor.h"
+
+#include "game.h"
+
 #include "s_collider.h"
 
 using namespace Verse;

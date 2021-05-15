@@ -4,10 +4,7 @@
 
 #pragma once
 
-#include "dtypes.h"
-#include "log.h"
-
-#include "config.h"
+#include "gui.h"
 
 namespace Verse::Gui
 {

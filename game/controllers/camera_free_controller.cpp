@@ -3,6 +3,9 @@
 //all rights reserved uwu
 
 #include "camera_free_controller.h"
+
+#include <glm/ext.hpp>
+
 #include "input.h"
 
 using namespace Verse;

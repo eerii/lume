@@ -4,13 +4,7 @@
 
 #pragma once
 
-#include "dtypes.h"
-
-#include "scene.h"
 #include "config.h"
-
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
 
 namespace Verse::Controller::Camera::Actor
 {

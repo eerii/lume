@@ -2,11 +2,13 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include <glm/gtc/type_ptr.hpp>
-#include <math.h>
+#include "s_tilemap.h"
+
 #include <array>
 
-#include "s_tilemap.h"
+#include "log.h"
+
+#include "r_pipeline.h"
 #include "r_renderer.h"
 #include "stb_image.h"
 

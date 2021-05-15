@@ -4,12 +4,7 @@
 
 #pragma once
 
-#include "dtypes.h"
-#include "log.h"
 #include "config.h"
-#include "ecs.h"
-#include "scene.h"
-#include "c_camera.h"
 
 namespace Verse::System::Camera
 {
