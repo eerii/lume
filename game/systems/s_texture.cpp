@@ -11,7 +11,7 @@
 using namespace Verse;
 
 namespace {
-    float animation_speed = (float)Graphics::getRefreshRate() / 3.0f; //3 FPS
+    float animation_speed = (float)Graphics::getRefreshRate() / 6.0f; //3 FPS
     int frame_count = 0;
     str curr_key = "";
 

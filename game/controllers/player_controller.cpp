@@ -101,7 +101,7 @@ bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
         coyote_time = Time::current;
     
     if (coyote_time != 0) {
-        int diff = (int)(Time::current - coyote_time);
+        ui16 diff = (ui16)(Time::current - coyote_time);
         
         if (diff > jump_coyote) {
             previously_on_ground = false;
@@ -110,7 +110,7 @@ bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
     }
     //Jump Grace
     if (jump_time != 0) {
-        int diff = (int)(Time::current - jump_time);
+        ui16 diff = (ui16)(Time::current - jump_time);
         
         if (actor->is_on_ground)
             jump();
@@ -121,7 +121,9 @@ bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
     
     //Jump Animation
     if (not actor->is_on_ground) {
-        anim->curr_key = "jump_up";
+        if (on_jump or not previously_on_ground) {
+            anim->curr_key = "jump_up";
+        }
     }
     
     //FLAME
