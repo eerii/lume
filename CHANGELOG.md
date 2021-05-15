@@ -2,14 +2,19 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.5]** ~ Light _2021-05-13_
+### **[0.1.5]** ~ Fixes and State Machine _2021-05-15_
 #### Added
 - Light decreases with time
 - Game speed controller
 - Improved the menu
+- State machine
+- Array and static string changes (for SM)
+- Transition tables
+- Define state machines externally
 #### Changed
 - Started improving UI, changed to top menu
 - Switched ImGui to docking
+- Big refactoring and include cleanup
 #### Fixed
 - General polish and bug fixes
 - Review all pointers and tried to fix EXEC_BAD_ACCESS
