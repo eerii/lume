@@ -23,12 +23,12 @@ void System::Fire::init(Component::Fire *fire) {
     fire->p_data = (ui8*)malloc((fire->transform.w+1) * (fire->transform.h+1));
 }
 
-void System::Fire::render(Scene &scene, Config &c) {
+void System::Fire::render(Config &c) {
     if (refresh_rate == 0)
         refresh_rate = Graphics::getRefreshRate();
     
-    for (EntityID e : SceneView<Component::Fire>(scene)) {
-        Component::Fire* fire = scene.getComponent<Component::Fire>(e);
+    for (EntityID e : SceneView<Component::Fire>(*c.active_scene)) {
+        Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(e);
         
         if (noise_time.count(e) == 0)
             noise_time[e] = 0;
@@ -51,6 +51,6 @@ void System::Fire::render(Scene &scene, Config &c) {
         if (noise_offset[e] > 256)
             noise_offset[e] = 0;
         
-        Graphics::Renderer::renderFire(fire->transform, fire->p_tex, fire->flame_tex, c, fire->layer);
+        Graphics::Renderer::renderFire(c, fire->transform, fire->p_tex, fire->flame_tex, fire->layer);
     }
 }

@@ -8,6 +8,6 @@
 
 namespace Verse::Controller::Camera::Actor
 {
-    bool controller(Scene &s, Config &c, EntityID eid);
+    bool controller(Config &c, EntityID eid);
     void checkBounds(Config &c, Component::Camera* cam);
 }

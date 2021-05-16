@@ -8,9 +8,9 @@
 
 using namespace Verse;
 
-bool Controller::FreeActor::controller(Scene &s, Config &c, EntityID eid) {
+bool Controller::FreeActor::controller(Config &c, EntityID eid, actor_move_func move) {
     
-    Component::Actor* actor = s.getComponent<Component::Actor>(eid);
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     
     if (Input::down(Input::Key::J))
         actor->vel.x = -actor->max_move_speed;
@@ -25,6 +25,8 @@ bool Controller::FreeActor::controller(Scene &s, Config &c, EntityID eid) {
         actor->vel.x = 0;
     if (!Input::down(Input::Key::I) && !Input::down(Input::Key::K))
         actor->vel.y = 0;
+    
+    move(c, eid);
     
     return actor->vel != Vec2f(0,0);
 }

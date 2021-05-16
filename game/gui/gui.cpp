@@ -70,10 +70,10 @@ void Gui::init(Config &c) {
     style.Colors[ImGuiCol_PopupBg] = ImVec4( color_for_pops.x, color_for_pops.y, color_for_pops.z, 0.92f );
 }
 
-void Gui::update(float delta, Config &c) {
+void Gui::update(Config &c) {
     ImGuiIO& imgui_io = ImGui::GetIO();
     
-    imgui_io.DeltaTime = delta;
+    imgui_io.DeltaTime = c.delta;
     
     Vec2f mouse_pos = Vec2f(Input::mouse().x, Input::mouse().y);
     
@@ -83,7 +83,7 @@ void Gui::update(float delta, Config &c) {
     imgui_io.MouseWheel = static_cast<float>(Input::mouseWheel());
 }
 
-void Gui::prerender(Scene &scene, Config &c, SDL_Window* window) {
+void Gui::prerender(Config &c, SDL_Window* window) {
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplSDL2_NewFrame(window);
     ImGui::NewFrame();

@@ -14,24 +14,20 @@ namespace {
     float gravity = 800;
 }
 
-void System::Actor::update(Config &c, Scene &scene) {
-    for (EntityID e : SceneView<Component::Actor>(scene)) {
-        System::Actor::move(c, scene, e);
+void System::Actor::update(Config &c) {
+    for (EntityID e : SceneView<Component::Actor>(*c.active_scene)) {
+        Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(e);
+        actor->controller();
     }
 }
 
-void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
-    Component::Actor* actor = scene.getComponent<Component::Actor>(eid);
-    Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
-#ifdef TEXTURE
-    Component::Texture* texture = scene.getComponent<Component::Texture>(eid);
-#endif
-    
-    actor->controller();
+void System::Actor::move(Config &c, EntityID eid) {
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
+    Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
 
     //Gravity
     if (actor->has_gravity && !actor->is_on_ground) {
-        actor->vel.y += gravity * DELTA * c.game_speed;
+        actor->vel.y += gravity * c.delta * c.game_speed;
     }
     
     //Terminal Velocity
@@ -39,7 +35,7 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         actor->vel.y = actor->max_fall_speed;
     
     if (actor->vel != Vec2f(0,0)) {
-        Vec2f total = actor->remainder + actor->vel * DELTA * c.game_speed;
+        Vec2f total = actor->remainder + actor->vel * c.delta * c.game_speed;
         Vec2f to_move = Vec2f((int)total.x, (int)total.y);
         actor->remainder = total - to_move;
         
@@ -48,7 +44,7 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         while (to_move.x != 0) {
             collider->transform += Vec2::i * sx;
             
-            bool isColliding = System::Collider::checkCollisions(eid, scene);
+            bool isColliding = System::Collider::checkCollisions(c, eid);
             if (isColliding) {
                 collider->transform -= Vec2::i * sx;
                 
@@ -61,7 +57,7 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
                 //Check on ground
                 if (to_move.y == 0) {
                     collider->transform += Vec2::j;
-                    bool isColliding = System::Collider::checkCollisions(eid, scene);
+                    bool isColliding = System::Collider::checkCollisions(c, eid);
                     if (!isColliding)
                         actor->is_on_ground = false;
                     collider->transform -= Vec2::j;
@@ -74,7 +70,7 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         while (to_move.y != 0) {
             collider->transform += Vec2::j * sy;
             
-            bool isColliding = System::Collider::checkCollisions(eid, scene);
+            bool isColliding = System::Collider::checkCollisions(c, eid);
             if (isColliding) {
                 collider->transform -= Vec2::j * sy;
                 
@@ -92,16 +88,17 @@ void System::Actor::move(Config &c, Scene &scene, EntityID eid) {
         }
         
 #ifdef TEXTURE
+        Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
         texture->transform = collider->transform.pos();
 #endif
 #ifdef CAMERA
-        Component::Camera* camera = scene.getComponent<Component::Camera>(eid);
+        Component::Camera* camera = c.active_scene->getComponent<Component::Camera>(eid);
         if (camera != nullptr)
             camera->target_pos = collider->transform.pos();
 #endif
     }
 #ifdef FIRE
-        Component::Fire* fire = scene.getComponent<Component::Fire>(eid);
+        Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
         if (fire != nullptr)
             fire->transform = collider->transform.pos() + fire->offset;
 #endif

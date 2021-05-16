@@ -9,19 +9,19 @@
 
 using namespace Verse;
 
-std::vector<EntityID> System::Collider::checkObjectCollisions(EntityID eid, Scene &scene) {
-    Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
+std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityID eid) {
+    Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     SDL_Rect rect = collider->transform.toSDL();
     
     collider->is_colliding = false;
     
     std::vector<EntityID> collisions;
     
-    for (EntityID e : SceneView<Component::Collider>(scene)) {
+    for (EntityID e : SceneView<Component::Collider>(*c.active_scene)) {
         if(e == eid)
             continue;
         
-        Component::Collider* test_collider = scene.getComponent<Component::Collider>(e);
+        Component::Collider* test_collider = c.active_scene->getComponent<Component::Collider>(e);
         SDL_Rect test_rect = test_collider->transform.toSDL();
         
         test_collider->is_colliding = false;
@@ -59,16 +59,16 @@ bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Comp
     return is_colliding_with_tile;
 }
 
-bool System::Collider::checkCollisions(EntityID eid, Scene &scene) {
+bool System::Collider::checkCollisions(Config &c, EntityID eid) {
     bool is_colliding = false;
     
-    Component::Collider* collider = scene.getComponent<Component::Collider>(eid);
-    std::vector<EntityID> collisions = System::Collider::checkObjectCollisions(eid, scene);
+    Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
+    std::vector<EntityID> collisions = System::Collider::checkObjectCollisions(c, eid);
     
     if(collisions.size() > 0) {
         for (const EntityID &e : collisions) {
-            Component::Collider* c_col = scene.getComponent<Component::Collider>(e);
-            Component::Tilemap* c_tile = scene.getComponent<Component::Tilemap>(e);
+            Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(e);
+            Component::Tilemap* c_tile = c.active_scene->getComponent<Component::Tilemap>(e);
             
             if (c_tile != nullptr) {
                 bool isCollidingWithTile = System::Collider::checkTilemapCollision(collider, c_col, c_tile);
@@ -86,7 +86,7 @@ bool System::Collider::checkCollisions(EntityID eid, Scene &scene) {
 }
 
 
-void System::Collider::render(Scene &scene, Config &c) {
+void System::Collider::render(Config &c) {
     /*for (EntityID e : SceneView<Component::Texture>(scene)) {
         Component::Collider* collider = scene.getComponent<Component::Collider>(e);
         Rect rect = Rect(collider->transform.pos * c.render_scale, collider->transform.size * c.render_scale);

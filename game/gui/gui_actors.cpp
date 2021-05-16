@@ -6,7 +6,7 @@
 
 using namespace Verse;
 
-void Gui::actors(Scene &scene) {
+void Gui::actors(Config &c) {
 #ifdef ACTOR
 #ifdef COLLIDER
     ImGui::Begin("Actors");
@@ -21,27 +21,27 @@ void Gui::actors(Scene &scene) {
         ImGui::TableSetupColumn("On Ground", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableHeadersRow();
         
-        for (EntityID ent : SceneView<Component::Actor>(scene))
+        for (EntityID ent : SceneView<Component::Actor>(*c.active_scene))
         {
             Entity::EntityIndex index = Entity::getIndex(ent);
             
             ImGui::TableNextRow();
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", scene.entity_names[index].c_str());
+            ImGui::Text("%s", c.active_scene->entity_names[index].c_str());
             
             ImGui::TableNextColumn();
             ImGui::Text("x: %d, y:%d",
-                        (int)scene.getComponent<Component::Collider>(ent)->transform.x,
-                        (int)scene.getComponent<Component::Collider>(ent)->transform.y);
+                        (int)c.active_scene->getComponent<Component::Collider>(ent)->transform.x,
+                        (int)c.active_scene->getComponent<Component::Collider>(ent)->transform.y);
             
             ImGui::TableNextColumn();
             ImGui::Text("x: %.2f, y:%.2f",
-                        scene.getComponent<Component::Actor>(ent)->vel.x,
-                        scene.getComponent<Component::Actor>(ent)->vel.y);
+                        c.active_scene->getComponent<Component::Actor>(ent)->vel.x,
+                        c.active_scene->getComponent<Component::Actor>(ent)->vel.y);
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", scene.getComponent<Component::Actor>(ent)->is_on_ground ? "true" : "false");
+            ImGui::Text("%s", c.active_scene->getComponent<Component::Actor>(ent)->is_on_ground ? "true" : "false");
         }
         ImGui::EndTable();
     }

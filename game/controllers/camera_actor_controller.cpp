@@ -17,10 +17,10 @@ namespace {
     bool is_la_stopped;
 }
 
-bool Controller::Camera::Actor::controller(Scene &s, Config &c, EntityID eid) {
-    Component::Camera* cam = s.getComponent<Component::Camera>(eid);
+bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
+    Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
     
-    Component::Actor* actor = s.getComponent<Component::Actor>(eid);
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     int input = (actor->vel.x != 0) ? sign(actor->vel.x) : 0;
     
     is_la_stopped = (input != 0 and input == sign(cam->vel.x)) ? false : is_la_stopped;

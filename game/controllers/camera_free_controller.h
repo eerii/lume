@@ -8,5 +8,5 @@
 
 namespace Verse::Controller::Camera::Free
 {
-    bool controller(Scene &s, Config &c, EntityID eid);
+    bool controller(Config &c, EntityID eid);
 }

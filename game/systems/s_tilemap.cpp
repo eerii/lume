@@ -45,14 +45,14 @@ std::vector<std::vector<ui8>> System::Tilemap::load(str path) {
     return tiles;
 }
 
-void System::Tilemap::init(Scene &scene, Config &c) {
-    for (EntityID e : SceneView<Component::Tilemap>(scene)) {
-        Component::Tilemap* tmap = scene.getComponent<Component::Tilemap>(e);
-        createVertices(tmap, c);
+void System::Tilemap::init(Config &c) {
+    for (EntityID e : SceneView<Component::Tilemap>(*c.active_scene)) {
+        createVertices(c, e);
     }
 }
 
-void System::Tilemap::createVertices(Component::Tilemap *tmap, Config &c) {
+void System::Tilemap::createVertices(Config &c, EntityID eid) {
+    Component::Tilemap* tmap = c.active_scene->getComponent<Component::Tilemap>(eid);
     tmap->vert = {};
     
     Rect2 src;
@@ -81,7 +81,7 @@ void System::Tilemap::createVertices(Component::Tilemap *tmap, Config &c) {
                     1.0,  0.0,  1.0,  0.0,
                 };
                 tmap->vert.push_back(v);
-                Graphics::Renderer::prepareTilemap(dst, c, tmap->vert[k]);
+                Graphics::Renderer::prepareTilemap(c, dst, tmap->vert[k]);
                 k++;
             }
             dst.x += tmap->tex_size.x;
@@ -91,11 +91,11 @@ void System::Tilemap::createVertices(Component::Tilemap *tmap, Config &c) {
     }
 }
 
-void System::Tilemap::render(Scene &scene, Config &c) {
-    for (EntityID e : SceneView<Component::Tilemap>(scene)) {
-        Component::Tilemap* tmap = scene.getComponent<Component::Tilemap>(e);
+void System::Tilemap::render(Config &c) {
+    for (EntityID e : SceneView<Component::Tilemap>(*c.active_scene)) {
+        Component::Tilemap* tmap = c.active_scene->getComponent<Component::Tilemap>(e);
         
-        Graphics::Renderer::renderTilemap(tmap->tex_id, reinterpret_cast<float*>(tmap->vert.data()), (int)tmap->vert.size(), c, tmap->layer);
+        Graphics::Renderer::renderTilemap(c, tmap->tex_id, reinterpret_cast<float*>(tmap->vert.data()), (int)tmap->vert.size(), tmap->layer);
     }
 }
 

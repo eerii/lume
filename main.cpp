@@ -16,18 +16,23 @@ int main(int argc, const char * argv[]) {
     Config config = {
         .name = "Proxecto Lume",
         .version = "0.1.5",
+        
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
-        .game_speed = 1.0f,
         .enable_gui = true,
         .use_vsync = true,
+        
+        .game_speed = 1.0f,
+        
         .use_grayscale = false,
         .use_light = true,
         .palette_index = 0,
         .num_palettes = 4,
         .background_color = {0.0, 0.0, 0.0, 1.0},
-        .render_collision_boxes = false
+        
+        .gravity = 1.0f,
+        .gravity_dir = Vec2(0, -1)
     };
     
     
@@ -44,9 +49,10 @@ int main(int argc, const char * argv[]) {
     if (config.active_camera == nullptr)
         log::error("Failed to get the active camera!");
     
+    config.active_scene = &scene;
     
     while (running)
-        running = Game::update(config, scene);
+        running = Game::update(config);
     
     
     Game::stop();

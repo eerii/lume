@@ -14,9 +14,9 @@ void System::Camera::init(Component::Camera* camera) {
     camera->b = camera->pos.y + ((float)camera->focus_size.y / 2.0f);
 }
 
-void System::Camera::update(Config &c, Scene &s) {
-    for (EntityID e : SceneView<Component::Camera>(s)) {
-        Component::Camera* camera = s.getComponent<Component::Camera>(e);
+void System::Camera::update(Config &c) {
+    for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
+        Component::Camera* camera = c.active_scene->getComponent<Component::Camera>(e);
         if (camera != c.active_camera)
             break;
         

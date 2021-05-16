@@ -8,6 +8,6 @@
 
 namespace Verse::System::Actor
 {
-    void update(Config &c, Scene &scene);
-    void move(Config &c, Scene &scene, EntityID eid);
+    void update(Config &c);
+    void move(Config &c, EntityID eid);
 }

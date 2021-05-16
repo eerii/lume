@@ -6,8 +6,10 @@
 
 #include "config.h"
 
+typedef void (*actor_move_func)(Verse::Config&, Verse::EntityID);
+
 namespace Verse::Controller::FreeActor
 {
-    bool controller(Scene &s, Config &c, EntityID eid);
+    bool controller(Config &c, EntityID eid, actor_move_func move);
 }
 

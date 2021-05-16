@@ -10,7 +10,7 @@
 namespace Verse::Gui
 {
     void init(Config &c);
-    void update(float delta, Config &c);
-    void prerender(Scene &scene, Config &c, SDL_Window* window);
+    void update(Config &c);
+    void prerender(Config &c, SDL_Window* window);
     void render();
 }

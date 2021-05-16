@@ -8,6 +8,6 @@
 
 namespace Verse::System::Light
 {
-    void render(Scene &scene, Config &c);
+    void render(Config &c);
     std::vector<glm::vec4> getLight();
 }

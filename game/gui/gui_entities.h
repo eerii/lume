@@ -8,5 +8,5 @@
 
 namespace Verse::Gui
 {
-    void entities(Scene &scene);
+    void entities(Config &c);
 }

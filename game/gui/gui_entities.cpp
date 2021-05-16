@@ -6,7 +6,7 @@
 
 using namespace Verse;
 
-void Gui::entities(Scene &scene) {
+void Gui::entities(Config &c) {
     ImGui::Begin("Entity Manager");
     
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_PadOuterX | ImGuiTableFlags_RowBg;
@@ -18,7 +18,7 @@ void Gui::entities(Scene &scene) {
         ImGui::TableSetupColumn("Signature", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableHeadersRow();
         
-        for (EntityID ent : SceneView<>(scene))
+        for (EntityID ent : SceneView<>(*c.active_scene))
         {
             Entity::EntityIndex index = Entity::getIndex(ent);
             
@@ -28,10 +28,10 @@ void Gui::entities(Scene &scene) {
             ImGui::Text("%d", index);
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", scene.entity_names[index].c_str());
+            ImGui::Text("%s", c.active_scene->entity_names[index].c_str());
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", scene.mask[index].to_string().c_str());
+            ImGui::Text("%s", c.active_scene->mask[index].to_string().c_str());
         }
         ImGui::EndTable();
     }

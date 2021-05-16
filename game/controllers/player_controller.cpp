@@ -39,24 +39,24 @@ namespace {
     str curr_idle_anim = "idle_1";
 }
 
-bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
+bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func move) {
     if (collider == nullptr or actor == nullptr or anim == nullptr or tex == nullptr or fire == nullptr or light == nullptr) {
-        collider = s.getComponent<Component::Collider>(eid);
-        actor = s.getComponent<Component::Actor>(eid);
-        anim = s.getComponent<Component::Animation>(eid);
-        tex = s.getComponent<Component::Texture>(eid);
-        fire = s.getComponent<Component::Fire>(eid);
-        light = s.getComponent<Component::Light>(eid);
+        collider = c.active_scene->getComponent<Component::Collider>(eid);
+        actor = c.active_scene->getComponent<Component::Actor>(eid);
+        anim = c.active_scene->getComponent<Component::Animation>(eid);
+        tex = c.active_scene->getComponent<Component::Texture>(eid);
+        fire = c.active_scene->getComponent<Component::Fire>(eid);
+        light = c.active_scene->getComponent<Component::Light>(eid);
     }
     
     //MOVE X
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A)) {
-        actor->vel.x -= actor->acc_ground * DELTA * c.game_speed;
+        actor->vel.x -= actor->acc_ground * c.delta * c.game_speed;
         tex->is_reversed = true;
         flame_horizonal_offset = 1;
     }
     if (Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
-        actor->vel.x += actor->acc_ground * DELTA * c.game_speed;
+        actor->vel.x += actor->acc_ground * c.delta * c.game_speed;
         tex->is_reversed = false;
         flame_horizonal_offset = -1;
     }
@@ -73,7 +73,7 @@ bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
     
     if (!Input::down(Input::Key::Left) && !Input::down(Input::Key::Right)) {
         if (abs(actor->vel.x) > EPSILON * c.game_speed)
-            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * DELTA * c.game_speed;
+            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * c.delta * c.game_speed;
         else
             actor->vel.x = 0;
     }
@@ -151,6 +151,8 @@ bool Controller::Player::controller(Scene &s, Config &c, EntityID eid) {
     if (collider->transform.y > 500) {
         collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
     }
+    
+    move(c, eid);
     
     return actor->vel != Vec2f(0,0);
 }

@@ -22,13 +22,13 @@ namespace {
     };
 }
 
-void System::Texture::render(Scene &scene, Config &c) {
+void System::Texture::render(Config &c) {
     if (frame_count * c.game_speed < animation_speed)
         frame_count++;
     
-    for (EntityID e : SceneView<Component::Texture>(scene)) {
-        Component::Texture* tex = scene.getComponent<Component::Texture>(e);
-        Component::Animation* anim = scene.getComponent<Component::Animation>(e);
+    for (EntityID e : SceneView<Component::Texture>(*c.active_scene)) {
+        Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
+        Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
         
         if (anim != nullptr) {
             if (curr_key == "")
@@ -70,7 +70,7 @@ void System::Texture::render(Scene &scene, Config &c) {
             Rect2 dst = Rect2((tex->transform.pos() + tex->offset[i]), tex->transform.size());
             glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos() - Vec2(1,1), dst.size());
             
-            Graphics::Renderer::renderTexture(tex->tex_id, model, glm::value_ptr(vertices), c, tex->layer[i]);
+            Graphics::Renderer::renderTexture(c, tex->tex_id, model, glm::value_ptr(vertices), tex->layer[i]);
         }
     }
 }

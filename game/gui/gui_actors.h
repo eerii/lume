@@ -8,5 +8,5 @@
 
 namespace Verse::Gui
 {
-    void actors(Scene &scene);
+    void actors(Config &c);
 }

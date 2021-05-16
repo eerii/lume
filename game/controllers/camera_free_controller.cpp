@@ -10,8 +10,8 @@
 
 using namespace Verse;
 
-bool Controller::Camera::Free::controller(Scene &s, Config &c, EntityID eid) {
-    Component::Camera* cam = s.getComponent<Component::Camera>(eid);
+bool Controller::Camera::Free::controller(Config &c, EntityID eid) {
+    Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
     
     if (Input::down(Input::Key::J))
         cam->vel.x = -6;

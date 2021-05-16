@@ -14,12 +14,12 @@
 
 #include "component_list.h"
 
-#define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c, s); \
-                               System::Camera::update(c, s);
+#define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
+                               System::Camera::update(c);
 
-#define RENDER_SYSTEMS System::Tilemap::render(scene, c); \
-                       System::Texture::render(scene, c); \
-                       System::Fire::render(scene, c); \
-                       System::Light::render(scene, c); \
+#define RENDER_SYSTEMS System::Tilemap::render(c); \
+                       System::Texture::render(c); \
+                       System::Fire::render(c); \
+                       System::Light::render(c); \
                        if (c.render_collision_boxes) \
-                           System::Collider::render(scene, c); \
+                           System::Collider::render(c); \

@@ -9,5 +9,5 @@
 namespace Verse::System::Fire
 {
     void init(Component::Fire* fire);
-    void render(Scene &scene, Config &c);
+    void render(Config &c);
 }

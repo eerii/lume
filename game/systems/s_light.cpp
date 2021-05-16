@@ -17,10 +17,10 @@ namespace {
     std::vector<glm::vec4> light_sources;
 }
 
-void System::Light::render(Scene &scene, Config &c) {
-    for (EntityID e : SceneView<Component::Light>(scene)) {
-        Component::Light* light = scene.getComponent<Component::Light>(e);
-        Component::Texture* tex = scene.getComponent<Component::Texture>(e);
+void System::Light::render(Config &c) {
+    for (EntityID e : SceneView<Component::Light>(*c.active_scene)) {
+        Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
+        Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         
         std::vector<EntityID>::iterator it = std::find(light_entities.begin(), light_entities.end(), e);
         if (it != light_entities.end()) {

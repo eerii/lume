@@ -8,5 +8,5 @@
 
 namespace Verse::System::Texture
 {
-    void render(Scene &scene, Config &c);
+    void render(Config &c);
 }
