@@ -55,7 +55,10 @@ void System::Texture::render(Config &c) {
             vertices[2] /= (float)size.x;
             vertices[3] = (vertices[3] + (float)i) / (float)size.y;
             
-            if (anim != nullptr)
+            if (anim != nullptr and
+                anim->frames.size() > 0 and
+                anim->frames.count(curr_key) > 0 and
+                anim->frames[curr_key].size() > anim->curr_frame)
                 vertices[2] += (float)anim->frames[curr_key][anim->curr_frame] / (float)size.x;
             
             if (tex->is_reversed) {

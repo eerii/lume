@@ -15,7 +15,7 @@ int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.1.5",
+        .version = "0.1.6",
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -31,10 +31,9 @@ int main(int argc, const char * argv[]) {
         .num_palettes = 4,
         .background_color = {0.0, 0.0, 0.0, 1.0},
         
-        .gravity = 1.0f,
-        .gravity_dir = Vec2(0, -1)
+        .gravity = 800,
+        .gravity_dir = Vec2f(0, 1)
     };
-    
     
     Serialization::initYAML();
     bool running = Game::init(config);
@@ -45,11 +44,19 @@ int main(int argc, const char * argv[]) {
     
     Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
     EntityID player = Serialization::loadPlayer(scene, config);
+    config.available_scenes.push_back(&scene);
+    
+    Scene scene2;
+    Serialization::loadScene("test_scene_2", scene2, config);
+    EntityID player2 = Serialization::loadPlayer(scene2, config);
+    config.available_scenes.push_back(&scene2);
+    
     config.active_camera = scene.getComponent<Component::Camera>(player);
     if (config.active_camera == nullptr)
         log::error("Failed to get the active camera!");
     
     config.active_scene = &scene;
+    
     
     while (running)
         running = Game::update(config);

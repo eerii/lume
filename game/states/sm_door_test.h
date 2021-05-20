@@ -7,6 +7,8 @@
 #include "state_machine.h"
 #include "static_str.h"
 
+#include "log.h"
+
 #define MAKE_STRING(TYPE) [[maybe_unused]] static constexpr auto make_string(Types<TYPE>) { return Str{#TYPE}; };
 
 namespace Verse::State
@@ -64,7 +66,7 @@ namespace Verse::State
         MAKE_STRING(LockedState)
     }
 
-    using Door_SM = StateMachine<Door::CloseState, Door::OpenState, Door::LockedState>;
+    using DoorSM = StateMachine<Door::CloseState, Door::OpenState, Door::LockedState>;
 }
 
 /*Door_SM door{Door::CloseState{}, Door::OpenState{}, Door::LockedState{0}};

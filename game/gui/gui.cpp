@@ -10,6 +10,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "gui_menu.h"
+#include "gui_actors.h"
 
 using namespace Verse;
 
@@ -73,7 +74,7 @@ void Gui::init(Config &c) {
 void Gui::update(Config &c) {
     ImGuiIO& imgui_io = ImGui::GetIO();
     
-    imgui_io.DeltaTime = c.delta;
+    imgui_io.DeltaTime = c.physics_delta;
     
     Vec2f mouse_pos = Vec2f(Input::mouse().x, Input::mouse().y);
     
@@ -89,6 +90,7 @@ void Gui::prerender(Config &c, SDL_Window* window) {
     ImGui::NewFrame();
     
     Gui::menu(c);
+    //Gui::actors(c);
     
     //ImGui::ShowDemoWindow();
 }

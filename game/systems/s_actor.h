@@ -5,9 +5,10 @@
 #pragma once
 
 #include "config.h"
+#include "state_machines_list.h"
 
 namespace Verse::System::Actor
 {
     void update(Config &c);
-    void move(Config &c, EntityID eid);
+    void move(Config &c, EntityID eid, State::StateType state);
 }

@@ -26,7 +26,7 @@ bool Controller::FreeActor::controller(Config &c, EntityID eid, actor_move_func 
     if (!Input::down(Input::Key::I) && !Input::down(Input::Key::K))
         actor->vel.y = 0;
     
-    move(c, eid);
+    move(c, eid, false);
     
     return actor->vel != Vec2f(0,0);
 }

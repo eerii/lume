@@ -2,6 +2,11 @@
 
 ## **0.2** ~ Light
 
+### **[0.1.6]** ~ Scenes _2021-05-20_
+#### Added
+- Active scene
+- GUI for changing scene
+
 ### **[0.1.5]** ~ Fixes and State Machine _2021-05-15_
 #### Added
 - Light decreases with time

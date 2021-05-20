@@ -8,22 +8,30 @@
 #include "input.h"
 #include "time.h"
 
+#include "state_machines_list.h"
+#include "log.h"
+
 #define EPSILON 5
+#define COYOTE_TIMEOUT 100
+#define GRACE_TIMEOUT 150
 
 using namespace Verse;
+using namespace State;
+using namespace Player;
 
 namespace {
     int jump_impulse = 220;
     int min_jump_impulse = 70;
-    int jump_grace = 150;
-    int jump_coyote = 100;
 
+    Scene* scene;
     Component::Actor* actor;
     Component::Animation* anim;
     Component::Texture* tex;
     Component::Fire* fire;
     Component::Collider* collider;
     Component::Light* light;
+
+    PlayerStates state(COYOTE_TIMEOUT, GRACE_TIMEOUT);
 
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
@@ -40,7 +48,9 @@ namespace {
 }
 
 bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func move) {
-    if (collider == nullptr or actor == nullptr or anim == nullptr or tex == nullptr or fire == nullptr or light == nullptr) {
+    if (scene != c.active_scene or collider == nullptr or actor == nullptr or anim == nullptr or
+        tex == nullptr or fire == nullptr or light == nullptr) {
+        scene = c.active_scene;
         collider = c.active_scene->getComponent<Component::Collider>(eid);
         actor = c.active_scene->getComponent<Component::Actor>(eid);
         anim = c.active_scene->getComponent<Component::Animation>(eid);
@@ -51,12 +61,12 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     
     //MOVE X
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A)) {
-        actor->vel.x -= actor->acc_ground * c.delta * c.game_speed;
+        actor->vel.x -= actor->acc_ground * c.physics_delta;
         tex->is_reversed = true;
         flame_horizonal_offset = 1;
     }
     if (Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
-        actor->vel.x += actor->acc_ground * c.delta * c.game_speed;
+        actor->vel.x += actor->acc_ground * c.physics_delta;
         tex->is_reversed = false;
         flame_horizonal_offset = -1;
     }
@@ -73,12 +83,19 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     
     if (!Input::down(Input::Key::Left) && !Input::down(Input::Key::Right)) {
         if (abs(actor->vel.x) > EPSILON * c.game_speed)
-            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * c.delta * c.game_speed;
+            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * c.physics_delta;
         else
             actor->vel.x = 0;
     }
     
     //JUMP
+    /*if (state.jump.is(GroundedState())) {
+        if (Input::pressed(Input::Key::Space)) {
+            state.jump.handle(JumpEvent());
+            jump();
+        }
+    }*/
+    
     if (Input::pressed(Input::Key::Space)) {
         if (actor->is_on_ground or previously_on_ground) {
             jump();
@@ -104,7 +121,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     if (coyote_time != 0) {
         ui16 diff = (ui16)(Time::current - coyote_time);
         
-        if (diff > jump_coyote) {
+        if (diff > COYOTE_TIMEOUT) {
             previously_on_ground = false;
             coyote_time = 0;
         }
@@ -116,7 +133,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
         if (actor->is_on_ground)
             jump();
         
-        if (diff > jump_grace)
+        if (diff > GRACE_TIMEOUT)
             jump_time = 0;
     }
     
@@ -152,7 +169,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
         collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
     }
     
-    move(c, eid);
+    move(c, eid, &state);
     
     return actor->vel != Vec2f(0,0);
 }

@@ -4,6 +4,8 @@
 
 #include "gui_menu.h"
 #include "r_window.h"
+#include "log.h"
+#include "s_tilemap.h"
 
 using namespace Verse;
 
@@ -17,10 +19,35 @@ void Gui::menu(Config &c) {
             ImGui::Text("version: %s", c.version.c_str());
             ImGui::Text("res: %d x %d (x%d)", c.resolution.x, c.resolution.y, c.render_scale);
             
-            if (c.active_scene != nullptr)
-                ImGui::Text("scene: %s", c.active_scene->name.c_str());
-            else
-                ImGui::Text("scene: NULL");
+            str scene_name = "scene: " + ((c.active_scene != nullptr) ? c.active_scene->name : "NULL");
+            if (ImGui::BeginMenu(scene_name.c_str())) {
+                if (ImGui::BeginListBox(""))
+                {
+                    for (Scene* s : c.available_scenes) {
+                        const bool is_selected = (s == c.active_scene);
+                        const char* scene_name = s->name.c_str();
+                        
+                        if (ImGui::Selectable(scene_name, is_selected)) {
+                            c.active_scene = s;
+                            
+                            for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
+                                if (c.active_scene->getName(e) != "player")
+                                    continue;
+                                
+                                c.active_camera = c.active_scene->getComponent<Component::Camera>(e);
+                                if (c.active_camera == nullptr)
+                                    log::error("Failed to get the active camera!");
+                            }
+                            System::Tilemap::init(c);
+                        }
+                        
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndListBox();
+                }
+                ImGui::EndMenu();
+            }
             
             if (c.active_camera == nullptr)
                 ImGui::Text("camera: NULL");

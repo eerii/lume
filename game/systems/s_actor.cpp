@@ -10,10 +10,6 @@
 
 using namespace Verse;
 
-namespace {
-    float gravity = 800;
-}
-
 void System::Actor::update(Config &c) {
     for (EntityID e : SceneView<Component::Actor>(*c.active_scene)) {
         Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(e);
@@ -21,13 +17,18 @@ void System::Actor::update(Config &c) {
     }
 }
 
-void System::Actor::move(Config &c, EntityID eid) {
+void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
+    
+    /*if(not std::holds_alternative<bool>(state))
+        log::info(CURR_STATE(std::get<State::PlayerStates*>(state)->jump));*/
+    /*if(std::holds_alternative<State::PlayerStates*>(state))
+        std::get<State::PlayerStates*>(state)->jump.handle(State::Player::JumpEvent());*/
 
     //Gravity
     if (actor->has_gravity && !actor->is_on_ground) {
-        actor->vel.y += gravity * c.delta * c.game_speed;
+        actor->vel += c.gravity_dir * c.gravity * c.physics_delta;
     }
     
     //Terminal Velocity
@@ -35,7 +36,7 @@ void System::Actor::move(Config &c, EntityID eid) {
         actor->vel.y = actor->max_fall_speed;
     
     if (actor->vel != Vec2f(0,0)) {
-        Vec2f total = actor->remainder + actor->vel * c.delta * c.game_speed;
+        Vec2f total = actor->remainder + actor->vel * c.physics_delta;
         Vec2f to_move = Vec2f((int)total.x, (int)total.y);
         actor->remainder = total - to_move;
         
