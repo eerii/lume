@@ -51,7 +51,7 @@ bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Comp
         for (int j = upleft.y; j <= downright.y; j++) {
             if (j < 0 or j >= tilemap->tiles.size() - 1)
                 continue;
-            if (tilemap->tiles[j][i] != 0)
+            if (tilemap->tiles[j][i] < 255)
                 is_colliding_with_tile = true;
         }
     }

@@ -48,7 +48,7 @@ int main(int argc, const char * argv[]) {
     
     Scene scene2;
     Serialization::loadScene("test_scene_2", scene2, config);
-    EntityID player2 = Serialization::loadPlayer(scene2, config);
+    Serialization::loadPlayer(scene2, config);
     config.available_scenes.push_back(&scene2);
     
     config.active_camera = scene.getComponent<Component::Camera>(player);

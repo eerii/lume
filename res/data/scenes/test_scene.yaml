@@ -11,22 +11,11 @@ entities:
       radius: 50
   tile_bg_1:
     tilemap:
-      res: res/graphics/bg_1.png
-      tiles: res/levels/bg_1.png
-      pos: [-56, 12]
-      tex_size: [7, 7]
-      layer: 20
-  tile_bg_2:
-    tilemap:
-      res: res/graphics/bg_2.png
+      res:
+        - res/graphics/bg_1.png
+        - res/graphics/bg_2.png
+        - res/graphics/bg_3.png
       tiles: res/levels/bg_2.png
-      pos: [-56, 12]
-      tex_size: [7, 7]
-      layer: 20
-  tile_bg_3:
-    tilemap:
-      res: res/graphics/bg_3.png
-      tiles: res/levels/bg_3.png
       pos: [-56, 12]
       tex_size: [7, 7]
       layer: 20

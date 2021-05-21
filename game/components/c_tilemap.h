@@ -11,8 +11,7 @@
 namespace Verse::Component
 {
     struct Tilemap {
-        ui8* tex;
-        ui32 tex_id;
+        std::vector<ui32> tex_id;
         
         std::vector<std::vector<ui8>> tiles;
         
@@ -21,6 +20,6 @@ namespace Verse::Component
         
         int layer;
         
-        std::vector<std::array<float, 24>> vert;
+        std::vector<std::vector<std::array<float, 24>>> vert;
     };
 }

@@ -22,6 +22,7 @@ void System::Light::render(Config &c) {
         Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         
+        //TODO: THIS ITERATOR MISSES ONE LIGHT!!!
         std::vector<EntityID>::iterator it = std::find(light_entities.begin(), light_entities.end(), e);
         if (it != light_entities.end()) {
             long i = it - light_entities.begin();

@@ -30,13 +30,12 @@ void Gui::menu(Config &c) {
                         if (ImGui::Selectable(scene_name, is_selected)) {
                             c.active_scene = s;
                             
-                            for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
-                                if (c.active_scene->getName(e) != "player")
-                                    continue;
-                                
+                            for (EntityID e : SceneView<Component::Player>(*c.active_scene)) {
                                 c.active_camera = c.active_scene->getComponent<Component::Camera>(e);
                                 if (c.active_camera == nullptr)
                                     log::error("Failed to get the active camera!");
+                                else
+                                    break;
                             }
                             System::Tilemap::init(c);
                         }
