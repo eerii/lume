@@ -10,6 +10,13 @@ namespace Verse::Component
 {
     struct Collider {
         Rect2 transform;
+        ui8 layer;
         bool is_colliding;
+    };
+
+    enum ColliderLayers {
+        GROUND,
+        ACTORS,
+        EVENT
     };
 }

@@ -1,6 +1,7 @@
   player:
     collider:
       transform: [32, 64, 9, 14]
+      layer: actor
     texture:
       res: res/graphics/lume_test.png
       transform: [32, 64, 11, 14]
@@ -31,6 +32,9 @@
       max_fall_speed: 250
       acc_ground: 1000
       friction_ground: 0.25
+      collision_mask:
+        - ground
+        - event
     light:
       pos: [3, 7]
       radius: 100

@@ -11,10 +11,13 @@ using namespace Verse;
 
 std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityID eid) {
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
-    SDL_Rect rect = collider->transform.toSDL();
-    
     collider->is_colliding = false;
     
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
+    if (actor == nullptr)
+        return {};
+    
+    SDL_Rect rect = collider->transform.toSDL();
     std::vector<EntityID> collisions;
     
     for (EntityID e : SceneView<Component::Collider>(*c.active_scene)) {
@@ -22,9 +25,12 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityI
             continue;
         
         Component::Collider* test_collider = c.active_scene->getComponent<Component::Collider>(e);
-        SDL_Rect test_rect = test_collider->transform.toSDL();
-        
         test_collider->is_colliding = false;
+        
+        if (not actor->collision_mask[test_collider->layer])
+            continue;
+        
+        SDL_Rect test_rect = test_collider->transform.toSDL();
         
         if(SDL_HasIntersection(&rect, &test_rect)) {
             collisions.push_back(e);

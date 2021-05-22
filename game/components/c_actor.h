@@ -6,6 +6,9 @@
 
 #include "dtypes.h"
 #include <functional>
+#include <bitset>
+
+#define MAX_COLLISION_LAYERS 16
 
 namespace Verse::Component
 {
@@ -23,5 +26,7 @@ namespace Verse::Component
         bool is_on_ground = false;
         
         std::function<bool()> controller;
+        
+        std::bitset<MAX_COLLISION_LAYERS> collision_mask;
     };
 }

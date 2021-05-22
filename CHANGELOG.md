@@ -7,6 +7,7 @@
 - Active scene
 - GUI for changing scene
 - Tilemaps with different tiles
+- Collision masks
 
 ### **[0.1.5]** ~ Fixes and State Machine _2021-05-15_
 #### Added
