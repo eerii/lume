@@ -27,3 +27,10 @@ entities:
       pos: [14, 61]
       tex_size: [7, 7]
       layer: 10
+  #to_test_2:
+    #collider:
+      #transform: [150, 80, 30, 30]
+      #layer: event
+    #scene_transition:
+      #scene: res/data/scenes/test_scene_2.yaml
+      #pos: [32, 64]

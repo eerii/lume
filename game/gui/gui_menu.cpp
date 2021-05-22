@@ -3,12 +3,24 @@
 //all rights reserved uwu
 
 #include "gui_menu.h"
+
+#include "serialization.h"
+
 #include "r_window.h"
-#include "log.h"
 #include "s_tilemap.h"
 #include "s_scene_transition.h"
 
 using namespace Verse;
+
+#ifdef DEBUG
+namespace {
+    std::vector<str> available_scenes {
+        "test_scene",
+        "test_scene_2",
+    };
+    Scene* prev_scene;
+}
+#endif
 
 void Gui::menu(Config &c) {
     ImGuiStyle& style = ImGui::GetStyle();
@@ -22,14 +34,21 @@ void Gui::menu(Config &c) {
             
             str scene_name = "scene: " + ((c.active_scene != nullptr) ? c.active_scene->name : "NULL");
             if (ImGui::BeginMenu(scene_name.c_str())) {
+#ifdef DEBUG
                 if (ImGui::BeginListBox(""))
                 {
-                    for (Scene* s : c.available_scenes) {
-                        const bool is_selected = (s == c.active_scene);
-                        const char* scene_name = s->name.c_str();
+                    for (str name : available_scenes) {
+                        const bool is_selected = (name == c.active_scene->name);
+                        const char* scene_name = name.c_str();
                         
                         if (ImGui::Selectable(scene_name, is_selected)) {
+                            Scene* s = new Scene();
+                            Serialization::loadScene(name, s, c);
                             System::SceneTransition::handle(c, s, Vec2(30,0)); //TODO: Change for actual spawn point
+                            
+                            if (prev_scene != nullptr)
+                                delete prev_scene;
+                            prev_scene = s;
                         }
                         
                         if (is_selected)
@@ -37,6 +56,7 @@ void Gui::menu(Config &c) {
                     }
                     ImGui::EndListBox();
                 }
+#endif
                 ImGui::EndMenu();
             }
             

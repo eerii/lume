@@ -42,35 +42,46 @@ int main(int argc, const char * argv[]) {
     Component::registerComponents();
     
     
-    Scene scene;
+    Scene* scene = new Scene();
     
     Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
     EntityID player = Serialization::loadPlayer(scene, config);
-    config.available_scenes.push_back(&scene);
     
-    Scene scene2;
+    Scene* scene2 = new Scene();
     Serialization::loadScene("test_scene_2", scene2, config);
-    config.available_scenes.push_back(&scene2);
     
-    EntityID test_transition = scene.createEntity("scene_transition");
-    Component::SceneTransition* t = scene.addComponent<Component::SceneTransition>(test_transition);
+    EntityID test_transition = scene->createEntity("scene_transition");
+    Component::SceneTransition* t = scene->addComponent<Component::SceneTransition>(test_transition);
     t->to_pos = Vec2(32, 64);
-    t->to_scene = &scene2;
-    Component::Collider* c = scene.addComponent<Component::Collider>(test_transition);
+    t->to_scene = scene2;
+    Component::Collider* c = scene->addComponent<Component::Collider>(test_transition);
     c->transform = Rect2(150, 80, 30, 30);
     c->layer = Component::ColliderLayers::EVENT;
-    Component::Texture* tex = scene.addComponent<Component::Texture>(test_transition);
+    Component::Texture* tex = scene->addComponent<Component::Texture>(test_transition);
     Graphics::Texture::loadTexture("res/graphics/palette_multi.png", tex);
     tex->transform = Rect2(150, 80, 30, 30);
     tex->offset.push_back(Vec2(0,0));
     tex->layer.push_back(0);
     
+    EntityID test_transition2 = scene2->createEntity("scene_transition");
+    Component::SceneTransition* t2 = scene2->addComponent<Component::SceneTransition>(test_transition2);
+    t2->to_pos = Vec2(32, 64);
+    t2->to_scene = scene;
+    Component::Collider* c2 = scene2->addComponent<Component::Collider>(test_transition2);
+    c2->transform = Rect2(150, 60, 30, 30);
+    c2->layer = Component::ColliderLayers::EVENT;
+    Component::Texture* tex2 = scene2->addComponent<Component::Texture>(test_transition2);
+    Graphics::Texture::loadTexture("res/graphics/palette_multi.png", tex2);
+    tex2->transform = Rect2(150, 60, 30, 30);
+    tex2->offset.push_back(Vec2(0,0));
+    tex2->layer.push_back(0);
     
-    config.active_camera = scene.getComponent<Component::Camera>(player);
+    
+    config.active_camera = scene->getComponent<Component::Camera>(player);
     if (config.active_camera == nullptr)
         log::error("Failed to get the active camera!");
     
-    config.active_scene = &scene;
+    config.active_scene = scene;
     
     
     while (running)
