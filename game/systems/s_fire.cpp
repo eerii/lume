@@ -13,9 +13,6 @@
 using namespace Verse;
 
 namespace {
-    std::map<EntityID, float> noise_time;
-    std::map<EntityID, ui16> noise_offset;
-
     float refresh_rate = 0;
 }
 
@@ -30,26 +27,21 @@ void System::Fire::render(Config &c) {
     for (EntityID e : SceneView<Component::Fire>(*c.active_scene)) {
         Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(e);
         
-        if (noise_time.count(e) == 0)
-            noise_time[e] = 0;
-        if (noise_offset.count(e) == 0)
-            noise_offset[e] = 0;
-        
-        noise_time[e] += ((float)Time::delta / 1000.0f) * c.game_speed;
-        if (noise_time[e] > (1.0f / (float)fire->fps)) {
-            noise_offset[e]++;
+        fire->noise_time += ((float)Time::delta / 1000.0f) * c.game_speed;
+        if (fire->noise_time > (1.0f / (float)fire->fps)) {
+            fire->noise_offset++;
             Graphics::Texture::createPerlinNoise(fire->transform.size(),
-                                                 fire->dir * noise_offset[e],
+                                                 fire->dir * fire->noise_offset,
                                                  fire->freq,
                                                  fire->octaves,
                                                  fire->seed,
                                                  fire->p_data,
                                                  fire->p_tex);
             
-            noise_time[e] = 0;
+            fire->noise_time = 0;
         }
-        if (noise_offset[e] > 256)
-            noise_offset[e] = 0;
+        if (fire->noise_offset > 256)
+            fire->noise_offset = 0;
         
         Graphics::Renderer::renderFire(c, fire->transform, fire->p_tex, fire->flame_tex, fire->layer);
     }

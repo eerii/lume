@@ -8,6 +8,10 @@
 - GUI for changing scene
 - Tilemaps with different tiles
 - Collision masks
+- Scene transition component
+- Functional scene transition (player instantiation missing)
+#### Fixed
+- Fire was a block for a few seconds when changing scene
 
 ### **[0.1.5]** ~ Fixes and State Machine _2021-05-15_
 #### Added

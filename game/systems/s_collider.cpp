@@ -5,12 +5,15 @@
 #include "s_collider.h"
 
 #include "s_tilemap.h"
+#include "s_scene_transition.h"
 #include "r_renderer.h"
 
 using namespace Verse;
 
 std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityID eid) {
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
+    if (collider == nullptr)
+        return {};
     collider->is_colliding = false;
     
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
@@ -75,6 +78,7 @@ bool System::Collider::checkCollisions(Config &c, EntityID eid) {
         for (const EntityID &e : collisions) {
             Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(e);
             Component::Tilemap* c_tile = c.active_scene->getComponent<Component::Tilemap>(e);
+            Component::SceneTransition* c_transition = c.active_scene->getComponent<Component::SceneTransition>(e);
             
             if (c_tile != nullptr) {
                 bool isCollidingWithTile = System::Collider::checkTilemapCollision(collider, c_col, c_tile);
@@ -82,6 +86,8 @@ bool System::Collider::checkCollisions(Config &c, EntityID eid) {
                     is_colliding = true;
                 else
                     collider->is_colliding = false;
+            } else if (c_transition != nullptr) {
+                System::SceneTransition::handle(c, c_transition);
             } else {
                 is_colliding = true;
             }

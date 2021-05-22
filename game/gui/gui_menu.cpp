@@ -32,6 +32,11 @@ void Gui::menu(Config &c) {
                             
                             for (EntityID e : SceneView<Component::Player>(*c.active_scene)) {
                                 c.active_camera = c.active_scene->getComponent<Component::Camera>(e);
+                                
+                                //TODO: Change this hack for an actual spawn point
+                                Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(e);
+                                collider->transform.y = 500;
+                                
                                 if (c.active_camera == nullptr)
                                     log::error("Failed to get the active camera!");
                                 else

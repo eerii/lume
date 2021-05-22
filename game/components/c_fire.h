@@ -24,6 +24,9 @@ namespace Verse::Component
         
         int layer;
         
+        float noise_time = 1000;
+        ui16 noise_offset = 0;
+        
         ~Fire() {
             delete[] p_data;
         }
