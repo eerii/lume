@@ -50,7 +50,6 @@ int main(int argc, const char * argv[]) {
     
     Scene scene2;
     Serialization::loadScene("test_scene_2", scene2, config);
-    Serialization::loadPlayer(scene2, config);
     config.available_scenes.push_back(&scene2);
     
     EntityID test_transition = scene.createEntity("scene_transition");
@@ -58,11 +57,11 @@ int main(int argc, const char * argv[]) {
     t->to_pos = Vec2(32, 64);
     t->to_scene = &scene2;
     Component::Collider* c = scene.addComponent<Component::Collider>(test_transition);
-    c->transform = Rect2(150, 120, 30, 30);
+    c->transform = Rect2(150, 80, 30, 30);
     c->layer = Component::ColliderLayers::EVENT;
     Component::Texture* tex = scene.addComponent<Component::Texture>(test_transition);
     Graphics::Texture::loadTexture("res/graphics/palette_multi.png", tex);
-    tex->transform = Rect2(150, 120, 30, 30);
+    tex->transform = Rect2(150, 80, 30, 30);
     tex->offset.push_back(Vec2(0,0));
     tex->layer.push_back(0);
     

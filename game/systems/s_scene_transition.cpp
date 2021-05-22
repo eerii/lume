@@ -4,33 +4,41 @@
 
 #include "s_scene_transition.h"
 #include "s_tilemap.h"
+#include "serialization.h"
 #include "log.h"
 
 using namespace Verse;
 
 void System::SceneTransition::handle(Config &c, Component::SceneTransition* transition) {
+    handle(c, transition->to_scene, transition->to_pos);
+}
+
+void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) {
+    Scene* prev_scene = c.active_scene;
+    
     EntityID prev_player = 0;
-    for (EntityID e : SceneView<Component::Player>(*c.active_scene)) {
+    for (EntityID e : SceneView<Component::Player>(*prev_scene)) {
         prev_player = e;
     }
     
-    EntityID player = 0;
-    for (EntityID e : SceneView<Component::Player>(*transition->to_scene)) {
-        player = e;
-    }
+    EntityID new_player = Serialization::loadPlayer(*new_scene, c);
     
-    Component::Collider* new_col = transition->to_scene->getComponent<Component::Collider>(player);
-    new_col->transform = transition->to_pos;
+    Component::Collider* new_col = new_scene->getComponent<Component::Collider>(new_player);
+    new_col->transform = new_pos;
     
-    Component::Actor* prev_actor = c.active_scene->getComponent<Component::Actor>(prev_player);
-    Component::Actor* new_actor = transition->to_scene->getComponent<Component::Actor>(player);
+    Component::Actor* prev_actor = prev_scene->getComponent<Component::Actor>(prev_player);
+    Component::Actor* new_actor = new_scene->getComponent<Component::Actor>(new_player);
     new_actor->vel = prev_actor->vel;
     new_actor->remainder = prev_actor->remainder;
     
-    c.active_camera = transition->to_scene->getComponent<Component::Camera>(player);
+    //TODO: Pass player component
+    
+    prev_scene->removeEntity(prev_player);
+    
+    c.active_camera = new_scene->getComponent<Component::Camera>(new_player);
     if (c.active_camera == nullptr)
         log::error("Failed to get the active camera!");
-    c.active_scene = transition->to_scene;
+    c.active_scene = new_scene;
     
     System::Tilemap::init(c);
 }
