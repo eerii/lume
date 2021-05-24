@@ -2,7 +2,13 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.6]** ~ Scenes _2021-05-20_
+### **[0.1.7]** ~ Water _2021-05-24_
+#### Added
+- 
+#### Fixed
+- Bug where the game crashed if hitting the transition from above without any input
+
+### **[0.1.6]** ~ Scenes _2021-05-24_
 #### Added
 - Active scene
 - GUI for changing scene

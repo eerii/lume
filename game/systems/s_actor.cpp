@@ -45,25 +45,27 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.x != 0) {
         collider->transform += Vec2::i * sx;
         
-        int isColliding = System::Collider::checkCollisions(c, eid);
-        if (isColliding > 0) {
+        int is_col = System::Collider::checkCollisions(c, eid);
+        if (is_col > 0) {
             collider->transform -= Vec2::i * sx;
             
             to_move.x = 0;
             actor->remainder.x = 0;
             actor->vel.x = 0;
-        } else if (isColliding == 0) {
+        } else if (is_col == 0) {
             to_move.x -= sx;
             
             //Check on ground
             if (to_move.y == 0) {
                 collider->transform += Vec2::j;
-                bool isColliding = System::Collider::checkCollisions(c, eid);
-                if (!isColliding)
+                int is_col_ground = System::Collider::checkCollisions(c, eid);
+                if (is_col_ground == -1)
+                    return false;
+                if (is_col_ground == 0)
                     actor->is_on_ground = false;
                 collider->transform -= Vec2::j;
             }
-        } else if (isColliding == -1) {
+        } else if (is_col == -1) {
             return false;
         }
     }
@@ -73,8 +75,8 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.y != 0) {
         collider->transform += Vec2::j * sy;
         
-        int isColliding = System::Collider::checkCollisions(c, eid);
-        if (isColliding > 0) {
+        int is_col = System::Collider::checkCollisions(c, eid);
+        if (is_col > 0) {
             collider->transform -= Vec2::j * sy;
             
             to_move.y = 0;
@@ -83,11 +85,11 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
             
             if (sy > 0)
                 actor->is_on_ground = true;
-        } else if (isColliding == 0) {
+        } else if (is_col == 0) {
             to_move.y -= sy;
             
             actor->is_on_ground = false;
-        } else if (isColliding == -1) {
+        } else if (is_col == -1) {
             return false;
         }
     }
@@ -102,9 +104,10 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
         camera->target_pos = collider->transform.pos();
 #endif
 #ifdef FIRE
-        Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
-        if (fire != nullptr)
-            fire->transform = collider->transform.pos() + fire->offset;
+    Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
+    if (fire != nullptr)
+        fire->transform = collider->transform.pos() + fire->offset;
 #endif
+        
     return true;
 }
