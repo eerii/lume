@@ -10,5 +10,5 @@
 namespace Verse::System::Actor
 {
     void update(Config &c);
-    void move(Config &c, EntityID eid, State::StateType state);
+    bool move(Config &c, EntityID eid, State::StateType state);
 }

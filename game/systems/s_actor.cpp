@@ -13,11 +13,12 @@ using namespace Verse;
 void System::Actor::update(Config &c) {
     for (EntityID e : SceneView<Component::Actor>(*c.active_scene)) {
         Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(e);
-        actor->controller();
+        if (not actor->controller())
+            return;
     }
 }
 
-void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
+bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     
@@ -44,14 +45,14 @@ void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.x != 0) {
         collider->transform += Vec2::i * sx;
         
-        bool isColliding = System::Collider::checkCollisions(c, eid);
-        if (isColliding) {
+        int isColliding = System::Collider::checkCollisions(c, eid);
+        if (isColliding > 0) {
             collider->transform -= Vec2::i * sx;
             
             to_move.x = 0;
             actor->remainder.x = 0;
             actor->vel.x = 0;
-        } else {
+        } else if (isColliding == 0) {
             to_move.x -= sx;
             
             //Check on ground
@@ -62,6 +63,8 @@ void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
                     actor->is_on_ground = false;
                 collider->transform -= Vec2::j;
             }
+        } else if (isColliding == -1) {
+            return false;
         }
     }
     
@@ -70,8 +73,8 @@ void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.y != 0) {
         collider->transform += Vec2::j * sy;
         
-        bool isColliding = System::Collider::checkCollisions(c, eid);
-        if (isColliding) {
+        int isColliding = System::Collider::checkCollisions(c, eid);
+        if (isColliding > 0) {
             collider->transform -= Vec2::j * sy;
             
             to_move.y = 0;
@@ -80,10 +83,12 @@ void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
             
             if (sy > 0)
                 actor->is_on_ground = true;
-        } else {
+        } else if (isColliding == 0) {
             to_move.y -= sy;
             
             actor->is_on_ground = false;
+        } else if (isColliding == -1) {
+            return false;
         }
     }
     
@@ -101,4 +106,5 @@ void System::Actor::move(Config &c, EntityID eid, State::StateType state) {
         if (fire != nullptr)
             fire->transform = collider->transform.pos() + fire->offset;
 #endif
+    return true;
 }

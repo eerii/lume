@@ -169,9 +169,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
         collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
     }
     
-    move(c, eid, &state);
-    
-    return actor->vel != Vec2f(0,0);
+    return move(c, eid, &state);;
 }
 
 void Controller::Player::jump() {

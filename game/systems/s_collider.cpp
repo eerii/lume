@@ -68,8 +68,8 @@ bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Comp
     return is_colliding_with_tile;
 }
 
-bool System::Collider::checkCollisions(Config &c, EntityID eid) {
-    bool is_colliding = false;
+int System::Collider::checkCollisions(Config &c, EntityID eid) {
+    int is_colliding = 0;
     
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     std::vector<EntityID> collisions = System::Collider::checkObjectCollisions(c, eid);
@@ -83,13 +83,14 @@ bool System::Collider::checkCollisions(Config &c, EntityID eid) {
             if (c_tile != nullptr) {
                 bool isCollidingWithTile = System::Collider::checkTilemapCollision(collider, c_col, c_tile);
                 if (isCollidingWithTile)
-                    is_colliding = true;
+                    is_colliding = 1;
                 else
                     collider->is_colliding = false;
             } else if (c_transition != nullptr) {
                 System::SceneTransition::handle(c, c_transition);
+                return -1;
             } else {
-                is_colliding = true;
+                is_colliding = 1;
             }
         }
     }

@@ -1,18 +1,14 @@
 %YAML 1.2
 ---
 scene:
-  name: test_scene_2
+  name: test_scene_3
   size: [768, 180]
 
 entities:
-  lantern:
-    light:
-      pos: [200, 160]
-      radius: 50
   tile_blocks:
     collider: tile #tilemap collider
     tilemap:
-      res: res/graphics/ground3.png
+      res: res/graphics/ground.png
       tiles: res/levels/1.png
       pos: [14, 90]
       tex_size: [7, 7]

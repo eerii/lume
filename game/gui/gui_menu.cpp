@@ -17,8 +17,8 @@ namespace {
     std::vector<str> available_scenes {
         "test_scene",
         "test_scene_2",
+        "test_scene_3"
     };
-    Scene* prev_scene;
 }
 #endif
 
@@ -35,6 +35,8 @@ void Gui::menu(Config &c) {
             str scene_name = "scene: " + ((c.active_scene != nullptr) ? c.active_scene->name : "NULL");
             if (ImGui::BeginMenu(scene_name.c_str())) {
 #ifdef DEBUG
+                //WARNING: Using this feature creates new scenes. Hopefully this should be managed, but it might be prone to errors.
+                
                 if (ImGui::BeginListBox(""))
                 {
                     for (str name : available_scenes) {
@@ -45,10 +47,6 @@ void Gui::menu(Config &c) {
                             Scene* s = new Scene();
                             Serialization::loadScene(name, s, c);
                             System::SceneTransition::handle(c, s, Vec2(30,0)); //TODO: Change for actual spawn point
-                            
-                            if (prev_scene != nullptr)
-                                delete prev_scene;
-                            prev_scene = s;
                         }
                         
                         if (is_selected)

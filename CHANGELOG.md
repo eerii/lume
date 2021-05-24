@@ -10,6 +10,8 @@
 - Collision masks
 - Scene transition component
 - Functional scene transition with player instantiation
+- Load scene transitions
+- Handle scene loading and unloading on change
 #### Fixed
 - Fire was a block for a few seconds when changing scene
 
