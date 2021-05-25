@@ -46,7 +46,7 @@ void Gui::menu(Config &c) {
                         if (ImGui::Selectable(scene_name, is_selected)) {
                             Scene* s = new Scene();
                             Serialization::loadScene(name, s, c);
-                            System::SceneTransition::handle(c, s, Vec2(30,0)); //TODO: Change for actual spawn point
+                            System::SceneTransition::handle(c, s, s->spawn[0]);
                         }
                         
                         if (is_selected)

@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "dtypes.h"
+
 namespace Verse::Component
 {
     struct Player {

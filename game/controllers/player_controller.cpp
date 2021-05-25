@@ -166,7 +166,11 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     
     //RESPAWN
     if (collider->transform.y > 500) {
-        collider->transform = Vec2(32, 64); //TODO: Change for a propper spawn
+        collider->transform = *std::min_element(c.active_scene->spawn.cbegin(), c.active_scene->spawn.cend(),
+                                                [=](Vec2 v1, Vec2 v2) ->
+                                                bool {
+                                                    return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x);
+                                                });
     }
     
     return move(c, eid, &state);;

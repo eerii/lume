@@ -4,7 +4,10 @@
 
 ### **[0.1.7]** ~ Water _2021-05-24_
 #### Added
-- 
+- Spawn points
+- Choose closest spawn point
+#### Changed
+- Cleanup conditional statements in fresa (game missing)
 #### Fixed
 - Bug where the game crashed if hitting the transition from above without any input
 
