@@ -8,12 +8,7 @@
 #include "input.h"
 #include "time.h"
 
-#include "state_machines_list.h"
 #include "log.h"
-
-#define EPSILON 5
-#define COYOTE_TIMEOUT 100
-#define GRACE_TIMEOUT 150
 
 using namespace Verse;
 using namespace State;
@@ -31,7 +26,7 @@ namespace {
     Component::Collider* collider;
     Component::Light* light;
 
-    PlayerStates state(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon
+    State::PlayerStates* state;
 
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
@@ -59,6 +54,9 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         light = c.active_scene->getComponent<Component::Light>(eid);
     }
     
+    if (state == nullptr)
+        state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon
+    
     //MOVE X
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
         move(c, false);
@@ -66,15 +64,15 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         move(c, true);
     
     if (not (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)))
-        state.move.handle(StopMovingEvent(actor->vel.x));
+        state->move.handle(StopMovingEvent(actor->vel.x));
     
-    if (state.move.is(IdleState()))
+    if (state->move.is(IdleState()))
         actor->vel.x = 0;
     
-    if (state.move.is(MovingState()))
+    if (state->move.is(MovingState()))
         actor->vel.x = sign(actor->vel.x) * actor->max_move_speed;
     
-    if (state.move.is(DeceleratingState()))
+    if (state->move.is(DeceleratingState()))
         actor->vel.x -= actor->friction_ground * c.physics_delta * sign(actor->vel.x); //TODO: Add friction air
         
     
@@ -151,15 +149,14 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     if (collider->transform.y > 500) //TODO: Change
         respawn(c);
     
-    log::info("a");
-    bool moving = actor_move(c, eid, &state);
+    bool moving = actor_move(c, eid, state);
     
     //ANIMATION
-    if (state.move.is(IdleState())) {
+    if (state->move.is(IdleState())) {
         anim->curr_key = curr_idle_anim;
         flame_horizonal_offset = 0;
     }
-    if (state.move.is(MovingState()) or state.move.is(AcceleratingState()) or state.move.is(DeceleratingState())) {
+    if (state->move.is(MovingState()) or state->move.is(AcceleratingState()) or state->move.is(DeceleratingState())) {
         anim->curr_key = "walk_1";
         flame_horizonal_offset = tex->is_reversed ? 1 : -1;
     }
@@ -172,7 +169,7 @@ void Controller::Player::move(Config &c, bool right) {
     
     tex->is_reversed = not right;
     
-    state.move.handle(MoveEvent(right ? 1 : -1, actor->vel.x)); //TODO: Change direction state
+    state->move.handle(MoveEvent(right ? 1 : -1, actor->vel.x)); //TODO: Change direction state
 }
 
 void Controller::Player::jump() {
@@ -193,4 +190,12 @@ void Controller::Player::respawn(Config &c) {
     collider->transform = closest_spawn;
     actor->vel = Vec2f(0,0);
     actor->is_on_ground = false;
+}
+
+str Controller::Player::getCurrentJumpState() {
+    return (state == nullptr) ? "" : CURR_STATE(state->jump);
+}
+
+str Controller::Player::getCurrentMoveState() {
+    return (state == nullptr) ? "" : CURR_STATE(state->move);
 }

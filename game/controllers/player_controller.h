@@ -7,6 +7,10 @@
 #include "config.h"
 #include "state_machines_list.h"
 
+#define EPSILON 5
+#define COYOTE_TIMEOUT 100
+#define GRACE_TIMEOUT 150
+
 typedef bool (*actor_move_func)(Verse::Config&, Verse::EntityID, Verse::State::StateType);
 
 namespace Verse::Controller::Player
@@ -15,4 +19,7 @@ namespace Verse::Controller::Player
     void move(Config &c, bool right);
     void jump();
     void respawn(Config &c);
+
+    str getCurrentJumpState();
+    str getCurrentMoveState();
 }

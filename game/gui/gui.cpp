@@ -10,7 +10,7 @@
 #include "imgui_impl_opengl3.h"
 
 #include "gui_menu.h"
-#include "gui_actors.h"
+#include "gui_player.h"
 
 using namespace Verse;
 
@@ -90,7 +90,7 @@ void Gui::prerender(Config &c, SDL_Window* window) {
     ImGui::NewFrame();
     
     Gui::menu(c);
-    //Gui::actors(c);
+    Gui::player(c);
     
     //ImGui::ShowDemoWindow();
 }

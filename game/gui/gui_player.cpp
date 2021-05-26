@@ -2,14 +2,16 @@
 //by jose pazos perez
 //all rights reserved uwu
 
-#include "gui_actors.h"
+#include "gui_player.h"
+
+#include "player_controller.h"
 
 using namespace Verse;
 
-void Gui::actors(Config &c) {
+void Gui::player(Config &c) {
 #ifdef ACTOR
 #ifdef COLLIDER
-    ImGui::Begin("Actors");
+    ImGui::Begin("Player");
     
     static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_PadOuterX | ImGuiTableFlags_RowBg;
     
@@ -21,29 +23,30 @@ void Gui::actors(Config &c) {
         ImGui::TableSetupColumn("On Ground", ImGuiTableColumnFlags_WidthFixed);
         ImGui::TableHeadersRow();
         
-        for (EntityID ent : SceneView<Component::Actor>(*c.active_scene))
+        for (EntityID e : SceneView<Component::Player>(*c.active_scene))
         {
-            Entity::EntityIndex index = Entity::getIndex(ent);
-            
             ImGui::TableNextRow();
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", c.active_scene->entity_names[index].c_str());
+            ImGui::Text("%s", c.active_scene->getName(e).c_str());
             
             ImGui::TableNextColumn();
             ImGui::Text("x: %d, y:%d",
-                        (int)c.active_scene->getComponent<Component::Collider>(ent)->transform.x,
-                        (int)c.active_scene->getComponent<Component::Collider>(ent)->transform.y);
+                        (int)c.active_scene->getComponent<Component::Collider>(e)->transform.x,
+                        (int)c.active_scene->getComponent<Component::Collider>(e)->transform.y);
             
             ImGui::TableNextColumn();
             ImGui::Text("x: %.2f, y:%.2f",
-                        c.active_scene->getComponent<Component::Actor>(ent)->vel.x,
-                        c.active_scene->getComponent<Component::Actor>(ent)->vel.y);
+                        c.active_scene->getComponent<Component::Actor>(e)->vel.x,
+                        c.active_scene->getComponent<Component::Actor>(e)->vel.y);
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", c.active_scene->getComponent<Component::Actor>(ent)->is_on_ground ? "true" : "false");
+            ImGui::Text("%s", c.active_scene->getComponent<Component::Actor>(e)->is_on_ground ? "true" : "false");
         }
         ImGui::EndTable();
+        
+        ImGui::Text("Move State: %s", Controller::Player::getCurrentMoveState().c_str());
+        ImGui::Text("Jump State: %s", Controller::Player::getCurrentJumpState().c_str());
     }
     
     ImGui::End();
