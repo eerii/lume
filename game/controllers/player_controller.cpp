@@ -31,7 +31,7 @@ namespace {
     Component::Collider* collider;
     Component::Light* light;
 
-    PlayerStates state(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: CHANGE FOR ACTOR VALUES
+    PlayerStates state(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon
 
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
@@ -47,7 +47,7 @@ namespace {
     str curr_idle_anim = "idle_1";
 }
 
-bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func move) {
+bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func actor_move) {
     if (scene != c.active_scene or collider == nullptr or actor == nullptr or anim == nullptr or
         tex == nullptr or fire == nullptr or light == nullptr) {
         scene = c.active_scene;
@@ -60,42 +60,25 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     }
     
     //MOVE X
-    if (Input::down(Input::Key::Left) or Input::down(Input::Key::A)) {
-        actor->vel.x -= actor->acc_ground * c.physics_delta;
-        tex->is_reversed = true;
-        flame_horizonal_offset = 1;
-    }
-    if (Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
-        actor->vel.x += actor->acc_ground * c.physics_delta;
-        tex->is_reversed = false;
-        flame_horizonal_offset = -1;
-    }
+    if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
+        move(c, false);
+    if (Input::down(Input::Key::Right) or Input::down(Input::Key::D))
+        move(c, true);
     
-    if (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)) {
-        anim->curr_key = "walk_1";
-    } else {
-        anim->curr_key = curr_idle_anim;
-        flame_horizonal_offset = 0;
-    }
+    if (not (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)))
+        state.move.handle(StopMovingEvent(actor->vel.x));
     
-    if (abs(actor->vel.x) > actor->max_move_speed)
+    if (state.move.is(IdleState()))
+        actor->vel.x = 0;
+    
+    if (state.move.is(MovingState()))
         actor->vel.x = sign(actor->vel.x) * actor->max_move_speed;
     
-    if (!Input::down(Input::Key::Left) && !Input::down(Input::Key::Right)) {
-        if (abs(actor->vel.x) > EPSILON * c.game_speed)
-            actor->vel.x -= sign(actor->vel.x) * (1 / actor->friction_ground) * actor->max_move_speed * c.physics_delta;
-        else
-            actor->vel.x = 0;
-    }
+    if (state.move.is(DeceleratingState()))
+        actor->vel.x -= actor->friction_ground * c.physics_delta * sign(actor->vel.x); //TODO: Add friction air
+        
     
     //JUMP
-    /*if (state.jump.is(GroundedState())) {
-        if (Input::pressed(Input::Key::Space)) {
-            state.jump.handle(JumpEvent());
-            jump();
-        }
-    }*/
-    
     if (Input::pressed(Input::Key::Space)) {
         if (actor->is_on_ground or previously_on_ground) {
             jump();
@@ -168,7 +151,28 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     if (collider->transform.y > 500) //TODO: Change
         respawn(c);
     
-    return move(c, eid, &state);;
+    log::info("a");
+    bool moving = actor_move(c, eid, &state);
+    
+    //ANIMATION
+    if (state.move.is(IdleState())) {
+        anim->curr_key = curr_idle_anim;
+        flame_horizonal_offset = 0;
+    }
+    if (state.move.is(MovingState()) or state.move.is(AcceleratingState()) or state.move.is(DeceleratingState())) {
+        anim->curr_key = "walk_1";
+        flame_horizonal_offset = tex->is_reversed ? 1 : -1;
+    }
+    
+    return moving;
+}
+
+void Controller::Player::move(Config &c, bool right) {
+    actor->vel.x += actor->acc_ground * c.physics_delta * (right ? 1 : -1); //TODO: Add acc air
+    
+    tex->is_reversed = not right;
+    
+    state.move.handle(MoveEvent(right ? 1 : -1, actor->vel.x)); //TODO: Change direction state
 }
 
 void Controller::Player::jump() {

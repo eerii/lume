@@ -31,7 +31,7 @@
       max_move_speed: 100
       max_fall_speed: 250
       acc_ground: 1000
-      friction_ground: 0.25
+      friction_ground: 500
       collision_mask:
         - ground
         - event

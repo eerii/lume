@@ -5,6 +5,7 @@
 ### **[0.1.8]** ~ State and Animation _2021-05-26_
 #### Added
 - Created player Move state machine
+- Implemented Move SM in the controller
 #### Changed
 - Modified Jump state machine with new states: falling faster and crouching
 

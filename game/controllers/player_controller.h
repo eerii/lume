@@ -11,7 +11,8 @@ typedef bool (*actor_move_func)(Verse::Config&, Verse::EntityID, Verse::State::S
 
 namespace Verse::Controller::Player
 {
-    bool controller(Config &c, EntityID eid, actor_move_func move);
+    bool controller(Config &c, EntityID eid, actor_move_func actor_move);
+    void move(Config &c, bool right);
     void jump();
     void respawn(Config &c);
 }

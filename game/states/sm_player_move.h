@@ -13,12 +13,13 @@ namespace Verse::State::Player
 {
 
     struct MoveEvent {
-        ui16 acceleration;
-        ui16 speed;
+        int sign_acc;
+        int speed;
+        MoveEvent(int p_a, int p_s) : sign_acc(p_a), speed(p_s) {};
     };
     struct StopMovingEvent {
-        ui16 deceleration;
-        ui16 speed;
+        int speed;
+        StopMovingEvent(int p_s) : speed(p_s) {};
     };
 
     struct IdleState;
@@ -31,24 +32,27 @@ namespace Verse::State::Player
         On<MoveEvent, To<AcceleratingState>>
     > {};
 
-    struct MovingState : Do<
-        Default<Nothing>,
-        On<StopMovingEvent, To<DeceleratingState>>
-    > {};
+    struct MovingState : Default<Nothing> {
+        using Default::handle;
+        
+        Maybe<To<AcceleratingState>> handle(const MoveEvent &e) {
+            if (e.sign_acc != sign(e.speed))
+                return To<AcceleratingState>();
+            return Nothing();
+        }
+        
+        To<DeceleratingState> handle(const StopMovingEvent &e) { return To<DeceleratingState>(); };
+    };
 
     struct AcceleratingState : Default<Nothing> {
         using Default::handle;
         
-        ui16 acceleration;
         ui16 max_speed;
+        AcceleratingState() = default;
         AcceleratingState(ui16 p_max) : max_speed(p_max) {};
         
-        void onEnter(const MoveEvent &e) {
-            acceleration = e.acceleration;
-        }
-        
         Maybe<To<MovingState>> handle(const MoveEvent &e) {
-            if (e.speed >= max_speed)
+            if (abs(e.speed) >= max_speed and e.sign_acc == sign(e.speed))
                 return To<MovingState>();
             return Nothing();
         }
@@ -59,16 +63,12 @@ namespace Verse::State::Player
     struct DeceleratingState : Default<Nothing> {
         using Default::handle;
         
-        ui16 deceleration;
         ui16 min_speed;
+        DeceleratingState() = default;
         DeceleratingState(ui16 p_min) : min_speed(p_min) {};
         
-        void onEnter(const StopMovingEvent &e) {
-            deceleration = e.deceleration;
-        }
-        
         Maybe<To<IdleState>> handle(const StopMovingEvent &e) {
-            if (e.speed <= min_speed)
+            if (abs(e.speed) <= min_speed)
                 return To<IdleState>();
             return Nothing();
         }
