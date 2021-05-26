@@ -22,7 +22,7 @@
         jump_start: [7]
         jump_up: [8]
         jump_peak: [9]
-        jump_down: [10]
+        jump_down: [8]
         jump_end: [11]
       curr_key: idle
       size: 18

@@ -8,9 +8,12 @@
 - Implemented Move SM in the controller
 - Player Controller can return the name of the current states
 - Player GUI
+- Implemented Jump SM in the controller
 #### Changed
 - Modified Jump state machine with new states: falling faster and crouching
 - PlayerState is now a pointer inside Player Controller
+#### Fixed
+- Walk animation stopping when falling 1 block
 
 ### **[0.1.7]** ~ Water _2021-05-26_
 #### Added

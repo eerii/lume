@@ -3,9 +3,12 @@
 //all rights reserved uwu
 
 #include "s_scene_transition.h"
-#include "s_tilemap.h"
+
 #include "serialization.h"
 #include "log.h"
+
+#include "s_tilemap.h"
+#include "player_controller.h"
 
 using namespace Verse;
 
@@ -90,6 +93,7 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
             }
         }
         
+        Controller::Player::resetState(c);
         System::Tilemap::init(c);
     }
 }

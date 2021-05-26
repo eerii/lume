@@ -21,7 +21,9 @@ namespace Verse::State::Player
     struct ReleaseDownEvent {};
     struct TouchGroundEvent {};
     struct TimeoutEvent {
-        ui64 time;
+        float game_speed = 1.0f;
+        TimeoutEvent() = default;
+        TimeoutEvent(float p_s) : game_speed(p_s) {};
     };
 
     struct GroundedState;
@@ -58,6 +60,7 @@ namespace Verse::State::Player
         
         ui64 grace_time;
         ui64 enter_time;
+        FallingCoyoteState() = default;
         FallingCoyoteState(ui64 p_time) : grace_time(p_time) {};
         
         void onEnter(const FallEvent &e) {
@@ -65,7 +68,7 @@ namespace Verse::State::Player
         }
         
         Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
-            if (e.time > enter_time + grace_time)
+            if ((time() - enter_time) * e.game_speed > grace_time)
                 return To<FallingState>();
             return Nothing();
         }
@@ -80,6 +83,7 @@ namespace Verse::State::Player
         
         ui64 grace_time;
         ui64 enter_time;
+        FallingButJumpingState() = default;
         FallingButJumpingState(ui64 p_time) : grace_time(p_time) {};
         
         void onEnter(const JumpEvent &e) {
@@ -87,7 +91,7 @@ namespace Verse::State::Player
         }
         
         Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
-            if (e.time > enter_time + grace_time)
+            if ((time() - enter_time) * e.game_speed > grace_time)
                 return To<FallingState>();
             return Nothing();
         }
@@ -109,6 +113,7 @@ namespace Verse::State::Player
         
         ui64 grace_time;
         ui64 enter_time;
+        FallingFasterButJumpingState() = default;
         FallingFasterButJumpingState(ui64 p_time) : grace_time(p_time) {};
         
         void onEnter(const JumpEvent &e) {
@@ -116,7 +121,7 @@ namespace Verse::State::Player
         }
         
         Maybe<To<FallingFasterState>> handle(const TimeoutEvent &e) {
-            if (e.time > enter_time + grace_time)
+            if ((time() - enter_time) * e.game_speed > grace_time)
                 return To<FallingFasterState>();
             return Nothing();
         }
@@ -152,7 +157,7 @@ namespace Verse::State::Player
     MAKE_STRING(FallingFasterButJumpingState)
     MAKE_STRING(CrouchingState)
 
-    using JumpSM = StateMachine<GroundedState, JumpingState, FallingState, FallingCoyoteState, FallingButJumpingState,
+    using JumpSM = StateMachine<FallingState, GroundedState, JumpingState, FallingCoyoteState, FallingButJumpingState,
                                 FallingFasterState, FallingFasterButJumpingState, CrouchingState>;
 
 }

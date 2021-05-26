@@ -18,8 +18,11 @@ namespace Verse::Controller::Player
     bool controller(Config &c, EntityID eid, actor_move_func actor_move);
     void move(Config &c, bool right);
     void jump();
+    void releaseJump();
     void respawn(Config &c);
+    bool checkGroundDown(Config &c, EntityID eid, int down = 1);
 
     str getCurrentJumpState();
     str getCurrentMoveState();
+    void resetState(Config &c);
 }

@@ -9,6 +9,7 @@
 #include "s_collider.h"
 
 using namespace Verse;
+using namespace State;
 
 namespace {
     std::bitset<MAX_COLLISION_LAYERS> collision_layers;
@@ -30,9 +31,16 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
         log::info(CURR_STATE(std::get<State::PlayerStates*>(state)->jump));*/
     /*if(std::holds_alternative<State::PlayerStates*>(state))
         std::get<State::PlayerStates*>(state)->jump.handle(State::Player::JumpEvent());*/
+    
+    PlayerStates* p_state = nullptr;
+    if (std::holds_alternative<PlayerStates*>(state))
+        p_state = std::get<PlayerStates*>(state);
 
     //Gravity
-    if (actor->has_gravity && !actor->is_on_ground) {
+    bool grounded = (p_state != nullptr) ?
+                     p_state->jump.is(Player::GroundedState()) or
+                     p_state->jump.is(Player::CrouchingState()) : false;
+    if (actor->has_gravity and not grounded) {
         actor->vel += c.gravity_dir * c.gravity * c.physics_delta;
     }
     
@@ -82,8 +90,8 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
                     return false;
                 }
                 
-                if (collision_layers.none())
-                    actor->is_on_ground = false;
+                if (collision_layers.none() and p_state != nullptr)
+                    p_state->jump.handle(Player::FallEvent());
                 
                 collider->transform -= Vec2::j;
             }
@@ -112,12 +120,12 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
             actor->remainder.y = 0;
             actor->vel.y = 0;
             
-            if (sy > 0)
-                actor->is_on_ground = true;
+            if (sy > 0 and p_state != nullptr)
+                p_state->jump.handle(Player::TouchGroundEvent());
         } else {
             to_move.y -= sy;
             
-            actor->is_on_ground = false;
+            p_state->jump.handle(Player::FallEvent());
         }
     }
     

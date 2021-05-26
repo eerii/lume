@@ -29,9 +29,9 @@ namespace Verse::State
             min_speed(p_min)
         {}
         
-        Player::JumpSM jump{Player::GroundedState(),
+        Player::JumpSM jump{Player::FallingState(),
+                            Player::GroundedState(),
                             Player::JumpingState(),
-                            Player::FallingState(),
                             Player::FallingCoyoteState(coyote_timeout),
                             Player::FallingButJumpingState(grace_timeout),
                             Player::FallingFasterState(),

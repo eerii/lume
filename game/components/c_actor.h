@@ -23,7 +23,6 @@ namespace Verse::Component
         float friction_ground;
         
         bool has_gravity = true;
-        bool is_on_ground = false;
         
         std::function<bool()> controller;
         std::function<void()> damage;

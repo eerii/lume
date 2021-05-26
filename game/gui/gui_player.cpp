@@ -41,7 +41,7 @@ void Gui::player(Config &c) {
                         c.active_scene->getComponent<Component::Actor>(e)->vel.y);
             
             ImGui::TableNextColumn();
-            ImGui::Text("%s", c.active_scene->getComponent<Component::Actor>(e)->is_on_ground ? "true" : "false");
+            //ImGui::Text("%s", c.active_scene->getComponent<Component::Actor>(e)->is_on_ground ? "true" : "false");
         }
         ImGui::EndTable();
         

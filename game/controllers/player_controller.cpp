@@ -7,8 +7,11 @@
 #include "game.h"
 #include "input.h"
 #include "time.h"
-
 #include "log.h"
+
+#include "s_collider.h"
+
+#define TINY_BIT 8
 
 using namespace Verse;
 using namespace State;
@@ -28,10 +31,8 @@ namespace {
 
     State::PlayerStates* state;
 
-    ui64 jump_time = 0;
-    ui64 coyote_time = 0;
-    bool on_jump = false;
-    bool previously_on_ground = false;
+    bool tried_jumping = false;
+    bool falling_tiny_bit = false;
 
     int flame_offsets[18] = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 0, 0, 1, 1, 1, 2 };
     int flame_horizonal_offset = 0;
@@ -40,6 +41,8 @@ namespace {
     int light_strength = 100;
     ui32 light_time = 0;
     str curr_idle_anim = "idle_1";
+
+    float previous_game_speed = 1.0f;
 }
 
 bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func actor_move) {
@@ -55,9 +58,11 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     }
     
     if (state == nullptr)
-        state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon
+        resetState(c); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon and change in delete state pls
+    if (previous_game_speed != c.game_speed)
+        state->move.updateStates(IdleState(), AcceleratingState(100), MovingState(), DeceleratingState(EPSILON * c.game_speed)); //TODO: Change too
     
-    //MOVE X
+    //MOVE
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
         move(c, false);
     if (Input::down(Input::Key::Right) or Input::down(Input::Key::D))
@@ -77,59 +82,28 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         
     
     //JUMP
-    if (Input::pressed(Input::Key::Space)) {
-        if (actor->is_on_ground or previously_on_ground) {
-            jump();
-        } else {
-            jump_time = Time::current;
-        }
-    }
-    //Stop Jump
-    if (Input::released(Input::Key::Space) and on_jump) {
-        on_jump = false;
-        
-        if (-actor->vel.y > min_jump_impulse)
-            actor->vel.y = -min_jump_impulse;
-    }
-    //Coyote Time
-    if (actor->is_on_ground) {
-        previously_on_ground = true;
-        on_jump = false;
-    }
-    if (!actor->is_on_ground and previously_on_ground and coyote_time == 0 and !on_jump)
-        coyote_time = Time::current;
+    if (Input::pressed(Input::Key::Space))
+        jump();
     
-    if (coyote_time != 0) {
-        ui16 diff = (ui16)(Time::current - coyote_time);
-        
-        if (diff * c.game_speed > COYOTE_TIMEOUT) {
-            previously_on_ground = false;
-            coyote_time = 0;
-        }
-    }
-    //Jump Grace
-    if (jump_time != 0) {
-        ui16 diff = (ui16)(Time::current - jump_time);
-        
-        if (actor->is_on_ground)
-            jump();
-        
-        if (diff * c.game_speed > GRACE_TIMEOUT)
-            jump_time = 0;
-    }
+    if (Input::released(Input::Key::Space))
+        releaseJump();
     
-    //Jump Animation
-    if (not actor->is_on_ground) {
-        if (on_jump or not previously_on_ground) {
-            anim->curr_key = "jump_up";
-        }
-    }
+    if (actor->vel.y > 0 and state->jump.is(JumpingState()))
+        state->jump.handle(PeakJumpEvent());
+    
+    if (state->jump.is(GroundedState()) or state->jump.is(CrouchingState()))
+        falling_tiny_bit = false;
+        
+    state->jump.handle(TimeoutEvent(c.game_speed));
+    tried_jumping = state->jump.is(FallingButJumpingState()) or state->jump.is(FallingFasterButJumpingState());
+    
     
     //FLAME
     if (anim->frames[anim->curr_key].size() > anim->curr_frame)
         fire->offset = flame_initial_offset - Vec2(flame_horizonal_offset, flame_offsets[anim->frames[anim->curr_key][anim->curr_frame]]);
     else
         fire->offset = flame_initial_offset;
+    
     
     //LIGHT
     light->radius = light_strength;
@@ -145,11 +119,20 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         light_strength = 100;
     }
     
+    
     //FALL OFF THE LEVEL
     if (collider->transform.y > 500) //TODO: Change
         respawn(c);
     
+    
+    //ACTOR MOVE FUNCTION
     bool moving = actor_move(c, eid, state);
+    
+    
+    //JUMP GRACE
+    if (tried_jumping and state->jump.is(JumpingState()))
+        actor->vel.y = -jump_impulse;
+        
     
     //ANIMATION
     if (state->move.is(IdleState())) {
@@ -159,7 +142,14 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     if (state->move.is(MovingState()) or state->move.is(AcceleratingState()) or state->move.is(DeceleratingState())) {
         anim->curr_key = "walk_1";
         flame_horizonal_offset = tex->is_reversed ? 1 : -1;
+        
+        if (state->jump.is(FallingCoyoteState()))
+            falling_tiny_bit = checkGroundDown(c, eid, TINY_BIT);
     }
+    if (state->jump.is(JumpingState()))
+        anim->curr_key = "jump_up";
+    if (not falling_tiny_bit and (state->jump.is(FallingState()) or state->jump.is(FallingCoyoteState()) or state->jump.is(FallingButJumpingState())))
+        anim->curr_key = "jump_down";
     
     return moving;
 }
@@ -169,16 +159,27 @@ void Controller::Player::move(Config &c, bool right) {
     
     tex->is_reversed = not right;
     
-    state->move.handle(MoveEvent(right ? 1 : -1, actor->vel.x)); //TODO: Change direction state
+    state->move.handle(MoveEvent(right ? 1 : -1, actor->vel.x));
 }
 
 void Controller::Player::jump() {
-    actor->vel.y = -jump_impulse;
-    jump_time = 0;
-    on_jump = true;
+    if (state->jump.is(JumpingState()))
+        return;
     
-    actor->is_on_ground = false;
-    previously_on_ground = false;
+    state->jump.handle(JumpEvent());
+    
+    if (state->jump.is(JumpingState()))
+        actor->vel.y = -jump_impulse;
+}
+
+void Controller::Player::releaseJump() {
+    if (not state->jump.is(JumpingState()))
+        return;
+    
+    state->jump.handle(ReleaseJumpEvent());
+    
+    if (state->jump.is(FallingState()) and -actor->vel.y > min_jump_impulse)
+        actor->vel.y = -min_jump_impulse;
 }
 
 void Controller::Player::respawn(Config &c) {
@@ -189,7 +190,21 @@ void Controller::Player::respawn(Config &c) {
     
     collider->transform = closest_spawn;
     actor->vel = Vec2f(0,0);
-    actor->is_on_ground = false;
+    state->jump.handle(FallEvent());
+}
+
+bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {
+    bool is_ground_down = false;
+    
+    collider->transform += Vec2::j * down;
+    
+    std::bitset<MAX_COLLISION_LAYERS> collision_layers = System::Collider::checkCollisions(c, eid);
+    if (collision_layers.any())
+        is_ground_down = true;
+    
+    collider->transform -= Vec2::j * down;
+    
+    return is_ground_down;
 }
 
 str Controller::Player::getCurrentJumpState() {
@@ -198,4 +213,9 @@ str Controller::Player::getCurrentJumpState() {
 
 str Controller::Player::getCurrentMoveState() {
     return (state == nullptr) ? "" : CURR_STATE(state->move);
+}
+
+void Controller::Player::resetState(Config &c) {
+    delete state;
+    state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON * c.game_speed); //TODO: Change
 }
