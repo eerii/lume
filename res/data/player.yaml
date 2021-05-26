@@ -35,6 +35,8 @@
       collision_mask:
         - ground
         - event
+        - scene
+        - water
     light:
       pos: [3, 7]
       radius: 100

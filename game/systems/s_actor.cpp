@@ -10,6 +10,10 @@
 
 using namespace Verse;
 
+namespace {
+    std::bitset<MAX_COLLISION_LAYERS> collision_layers;
+}
+
 void System::Actor::update(Config &c) {
     for (EntityID e : SceneView<Component::Actor>(*c.active_scene)) {
         Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(e);
@@ -45,28 +49,44 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.x != 0) {
         collider->transform += Vec2::i * sx;
         
-        int is_col = System::Collider::checkCollisions(c, eid);
-        if (is_col > 0) {
+        collision_layers = System::Collider::checkCollisions(c, eid);
+        
+        if (collision_layers[Component::ColliderLayers::SCENE])
+            return false;
+        
+        if (collision_layers[Component::ColliderLayers::WATER]) {
+            actor->damage();
+            return false;
+        }
+        
+        if (collision_layers.any()) {
             collider->transform -= Vec2::i * sx;
             
             to_move.x = 0;
             actor->remainder.x = 0;
             actor->vel.x = 0;
-        } else if (is_col == 0) {
+        } else {
             to_move.x -= sx;
             
             //Check on ground
             if (to_move.y == 0) {
                 collider->transform += Vec2::j;
-                int is_col_ground = System::Collider::checkCollisions(c, eid);
-                if (is_col_ground == -1)
+                
+                collision_layers = System::Collider::checkCollisions(c, eid);
+                
+                if (collision_layers[Component::ColliderLayers::SCENE])
                     return false;
-                if (is_col_ground == 0)
+                
+                if (collision_layers[Component::ColliderLayers::WATER]) {
+                    actor->damage();
+                    return false;
+                }
+                
+                if (collision_layers.none())
                     actor->is_on_ground = false;
+                
                 collider->transform -= Vec2::j;
             }
-        } else if (is_col == -1) {
-            return false;
         }
     }
     
@@ -75,8 +95,17 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.y != 0) {
         collider->transform += Vec2::j * sy;
         
-        int is_col = System::Collider::checkCollisions(c, eid);
-        if (is_col > 0) {
+        collision_layers = System::Collider::checkCollisions(c, eid);
+        
+        if (collision_layers[Component::ColliderLayers::SCENE])
+            return false;
+        
+        if (collision_layers[Component::ColliderLayers::WATER]) {
+            actor->damage();
+            return false;
+        }
+        
+        if (collision_layers.any()) {
             collider->transform -= Vec2::j * sy;
             
             to_move.y = 0;
@@ -85,12 +114,10 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
             
             if (sy > 0)
                 actor->is_on_ground = true;
-        } else if (is_col == 0) {
+        } else {
             to_move.y -= sy;
             
             actor->is_on_ground = false;
-        } else if (is_col == -1) {
-            return false;
         }
     }
     

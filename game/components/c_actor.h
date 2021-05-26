@@ -26,6 +26,7 @@ namespace Verse::Component
         bool is_on_ground = false;
         
         std::function<bool()> controller;
+        std::function<void()> damage;
         
         std::bitset<MAX_COLLISION_LAYERS> collision_mask;
     };

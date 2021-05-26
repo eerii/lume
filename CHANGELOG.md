@@ -6,8 +6,11 @@
 #### Added
 - Spawn points
 - Choose closest spawn point
+- Water collision layer
+- Damage function to actor component, calls player respawn
 #### Changed
 - Cleanup conditional statements in fresa (game missing)
+- Collision now returns a bitset with all the collision masks
 #### Fixed
 - Bug where the game crashed if hitting the transition from above without any input
 

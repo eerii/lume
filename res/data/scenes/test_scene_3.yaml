@@ -16,7 +16,7 @@ entities:
   to_test_1:
     collider:
       transform: [150, 120, 30, 30]
-      layer: event
+      layer: scene
     texture:
       res: res/graphics/ground.png
       transform: [150, 120, 30, 30]

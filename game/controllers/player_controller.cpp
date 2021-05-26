@@ -121,7 +121,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
     if (coyote_time != 0) {
         ui16 diff = (ui16)(Time::current - coyote_time);
         
-        if (diff > COYOTE_TIMEOUT) {
+        if (diff * c.game_speed > COYOTE_TIMEOUT) {
             previously_on_ground = false;
             coyote_time = 0;
         }
@@ -133,7 +133,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
         if (actor->is_on_ground)
             jump();
         
-        if (diff > GRACE_TIMEOUT)
+        if (diff * c.game_speed > GRACE_TIMEOUT)
             jump_time = 0;
     }
     
@@ -164,14 +164,9 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func mov
         light_strength = 100;
     }
     
-    //RESPAWN
-    if (collider->transform.y > 500) {
-        collider->transform = *std::min_element(c.active_scene->spawn.cbegin(), c.active_scene->spawn.cend(),
-                                                [=](Vec2 v1, Vec2 v2) ->
-                                                bool {
-                                                    return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x);
-                                                });
-    }
+    //FALL OFF THE LEVEL
+    if (collider->transform.y > 500) //TODO: Change
+        respawn(c);
     
     return move(c, eid, &state);;
 }
@@ -183,4 +178,15 @@ void Controller::Player::jump() {
     
     actor->is_on_ground = false;
     previously_on_ground = false;
+}
+
+void Controller::Player::respawn(Config &c) {
+    auto closest_vec = [=](Vec2 v1, Vec2 v2) -> bool {
+        return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x); };
+    
+    Vec2 closest_spawn = *std::min_element(c.active_scene->spawn.cbegin(), c.active_scene->spawn.cend(), closest_vec);
+    
+    collider->transform = closest_spawn;
+    actor->vel = Vec2f(0,0);
+    actor->is_on_ground = false;
 }

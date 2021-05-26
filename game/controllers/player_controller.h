@@ -13,4 +13,5 @@ namespace Verse::Controller::Player
 {
     bool controller(Config &c, EntityID eid, actor_move_func move);
     void jump();
+    void respawn(Config &c);
 }

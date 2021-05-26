@@ -68,8 +68,8 @@ bool System::Collider::checkTilemapCollision(Component::Collider* test_col, Comp
     return is_colliding_with_tile;
 }
 
-int System::Collider::checkCollisions(Config &c, EntityID eid) {
-    int is_colliding = 0;
+std::bitset<MAX_COLLISION_LAYERS> System::Collider::checkCollisions(Config &c, EntityID eid) {
+    std::bitset<MAX_COLLISION_LAYERS> collision_layers;
     
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     std::vector<EntityID> collisions = System::Collider::checkObjectCollisions(c, eid);
@@ -77,25 +77,31 @@ int System::Collider::checkCollisions(Config &c, EntityID eid) {
     if(collisions.size() > 0) {
         for (const EntityID &e : collisions) {
             Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(e);
-            Component::Tilemap* c_tile = c.active_scene->getComponent<Component::Tilemap>(e);
-            Component::SceneTransition* c_transition = c.active_scene->getComponent<Component::SceneTransition>(e);
             
+            //Tilemap
+            Component::Tilemap* c_tile = c.active_scene->getComponent<Component::Tilemap>(e);
             if (c_tile != nullptr) {
-                bool isCollidingWithTile = System::Collider::checkTilemapCollision(collider, c_col, c_tile);
-                if (isCollidingWithTile)
-                    is_colliding = 1;
+                bool is_colliding_with_tile = System::Collider::checkTilemapCollision(collider, c_col, c_tile);
+                if (is_colliding_with_tile)
+                    collision_layers.set(Component::ColliderLayers::GROUND);
                 else
                     collider->is_colliding = false;
-            } else if (c_transition != nullptr) {
-                System::SceneTransition::handle(c, c_transition);
-                return -1;
-            } else {
-                is_colliding = 1;
+                continue;
             }
+            
+            //Scene Transition
+            Component::SceneTransition* c_transition = c.active_scene->getComponent<Component::SceneTransition>(e);
+            if (c_transition != nullptr) {
+                System::SceneTransition::handle(c, c_transition);
+                collision_layers.set(Component::ColliderLayers::SCENE);
+                continue;
+            }
+            
+            collision_layers.set(c_col->layer);
         }
     }
     
-    return is_colliding;
+    return collision_layers;
 }
 
 

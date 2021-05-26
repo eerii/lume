@@ -17,6 +17,8 @@ namespace Verse::Component
     enum ColliderLayers {
         GROUND,
         ACTORS,
-        EVENT
+        EVENT,
+        SCENE,
+        WATER,
     };
 }

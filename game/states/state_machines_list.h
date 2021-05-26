@@ -15,8 +15,8 @@ namespace Verse::State
 {
 
     struct PlayerStates {
-        int coyote_timeout = 10;
-        int grace_timeout = 10;
+        int coyote_timeout = 100;
+        int grace_timeout = 100;
         
         PlayerStates() = default;
         PlayerStates(int p_coyote, int p_grace) : coyote_timeout(p_coyote), grace_timeout(p_grace) {}

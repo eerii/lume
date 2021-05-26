@@ -5,12 +5,12 @@ scene:
   size: [768, 180]
   spawn:
    - [32, 64]
-   - [610, 110]
+#  - [610, 110]
 
 entities:
   lantern:
     light:
-      pos: [200, 160]
+      pos: [600, 160]
       radius: 50
   tile_bg_1:
     tilemap:
@@ -30,10 +30,19 @@ entities:
       pos: [14, 61]
       tex_size: [7, 7]
       layer: 10
+  water:
+    collider:
+      transform: [189, 168, 70, 5]
+      layer: water
+    texture:
+      res: res/graphics/water_test.png
+      transform: [189, 168, 70, 5]
+      layer: 0
+      
 #  to_test_3:
 #    collider:
 #      transform: [150, 120, 30, 30]
-#      layer: event
+#      layer: scene
 #    texture:
 #      res: res/graphics/ground.png
 #      transform: [150, 120, 30, 30]
@@ -44,7 +53,7 @@ entities:
 #  to_test_2:
 #    collider:
 #      transform: [100, 70, 30, 30]
-#      layer: event
+#      layer: scene
 #    texture:
 #      res: res/graphics/ground3.png
 #      transform: [100, 70, 30, 30]

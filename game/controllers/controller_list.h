@@ -10,6 +10,8 @@
 #define PLAYER_CONTROLLER [&c, eid, move]() -> bool {return Controller::Player::controller(c, eid, move);};
 #define FREE_ACTOR_CONTROLLER [&c, eid, move]() -> bool {return Controller::FreeActor::controller(c, eid, move);};
 
+#define PLAYER_DAMAGE [&c]() -> void {return Controller::Player::respawn(c);};
+
 #include "camera_actor_controller.h"
 #include "camera_free_controller.h"
 
