@@ -17,7 +17,8 @@ namespace Verse::State::Player
     struct ReleaseJumpEvent {};
     struct PeakJumpEvent {};
     struct FallEvent {};
-    struct FastFallEvent {};
+    struct DownEvent {};
+    struct ReleaseDownEvent {};
     struct TouchGroundEvent {};
     struct TimeoutEvent {
         ui64 time;
@@ -28,11 +29,15 @@ namespace Verse::State::Player
     struct FallingState;
     struct FallingCoyoteState;
     struct FallingButJumpingState;
+    struct FallingFasterState;
+    struct FallingFasterButJumpingState;
+    struct CrouchingState;
 
     struct GroundedState : Do<
         Default<Nothing>,
         On<JumpEvent, To<JumpingState>>,
-        On<FallEvent, To<FallingCoyoteState>>
+        On<FallEvent, To<FallingCoyoteState>>,
+        On<DownEvent, To<CrouchingState>>
     > {};
 
     struct JumpingState : Do<
@@ -44,7 +49,8 @@ namespace Verse::State::Player
     struct FallingState : Do<
         Default<Nothing>,
         On<JumpEvent, To<FallingButJumpingState>>,
-        On<TouchGroundEvent, To<GroundedState>>
+        On<TouchGroundEvent, To<GroundedState>>,
+        On<DownEvent, To<FallingFasterState>>
     > {};
 
     struct FallingCoyoteState : Default<Nothing> {
@@ -58,18 +64,15 @@ namespace Verse::State::Player
             enter_time = time();
         }
         
-        Maybe<To<FallingState>> handle(const TimeoutEvent& e) {
-            if (e.time > enter_time + grace_time) {
+        Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
+            if (e.time > enter_time + grace_time)
                 return To<FallingState>();
-            }
-            else {
-                return Nothing();
-            }
+            return Nothing();
         }
         
-        To<JumpingState> handle(const JumpEvent& e) { return To<JumpingState>(); };
+        To<JumpingState> handle(const JumpEvent &e) { return To<JumpingState>(); };
         
-        To<GroundedState> handle(const TouchGroundEvent& e) { return To<GroundedState>(); };
+        To<GroundedState> handle(const TouchGroundEvent &e) { return To<GroundedState>(); };
     };
 
     struct FallingButJumpingState : Default<Nothing> {
@@ -83,23 +86,60 @@ namespace Verse::State::Player
             enter_time = time();
         }
         
-        Maybe<To<FallingState>> handle(const TimeoutEvent& e) {
-            if (e.time > enter_time + grace_time) {
+        Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
+            if (e.time > enter_time + grace_time)
                 return To<FallingState>();
-            }
-            else {
-                return Nothing();
-            }
+            return Nothing();
         }
         
-        To<JumpingState> handle(const TouchGroundEvent& e) { return To<JumpingState>(); };
+        To<JumpingState> handle(const TouchGroundEvent &e) { return To<JumpingState>(); };
+        
+        To<FallingFasterButJumpingState> handle(const DownEvent &e) { return To<FallingFasterButJumpingState>(); };
     };
+
+    struct FallingFasterState : Do<
+        Default<Nothing>,
+        On<JumpEvent, To<FallingFasterButJumpingState>>,
+        On<TouchGroundEvent, To<GroundedState>>,
+        On<ReleaseDownEvent, To<FallingState>>
+    > {};
+
+    struct FallingFasterButJumpingState : Default<Nothing> {
+        using Default::handle;
+        
+        ui64 grace_time;
+        ui64 enter_time;
+        FallingFasterButJumpingState(ui64 p_time) : grace_time(p_time) {};
+        
+        void onEnter(const JumpEvent &e) {
+            enter_time = time();
+        }
+        
+        Maybe<To<FallingFasterState>> handle(const TimeoutEvent &e) {
+            if (e.time > enter_time + grace_time)
+                return To<FallingFasterState>();
+            return Nothing();
+        }
+        
+        To<JumpingState> handle(const TouchGroundEvent &e) { return To<JumpingState>(); };
+        
+        //TODO: Keep the same timer as before and don't reset it
+        To<FallingButJumpingState> handle(const ReleaseDownEvent &e) { return To<FallingButJumpingState>(); };
+    };
+
+    struct CrouchingState : Do<
+        Default<Nothing>,
+        On<JumpEvent, To<JumpingState>>,
+        On<FallEvent, To<FallingCoyoteState>>,
+        On<ReleaseDownEvent, To<GroundedState>>
+    > {};
 
     MAKE_STRING(JumpEvent)
     MAKE_STRING(ReleaseJumpEvent)
     MAKE_STRING(PeakJumpEvent)
     MAKE_STRING(FallEvent)
-    MAKE_STRING(FastFallEvent)
+    MAKE_STRING(DownEvent)
+    MAKE_STRING(ReleaseDownEvent)
     MAKE_STRING(TouchGroundEvent)
     MAKE_STRING(TimeoutEvent)
 
@@ -108,8 +148,12 @@ namespace Verse::State::Player
     MAKE_STRING(FallingState)
     MAKE_STRING(FallingCoyoteState)
     MAKE_STRING(FallingButJumpingState)
+    MAKE_STRING(FallingFasterState)
+    MAKE_STRING(FallingFasterButJumpingState)
+    MAKE_STRING(CrouchingState)
 
-    using JumpSM = StateMachine<GroundedState, JumpingState, FallingState, FallingCoyoteState, FallingButJumpingState>;
+    using JumpSM = StateMachine<GroundedState, JumpingState, FallingState, FallingCoyoteState, FallingButJumpingState,
+                                FallingFasterState, FallingFasterButJumpingState, CrouchingState>;
 
 }
 

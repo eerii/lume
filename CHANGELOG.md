@@ -2,7 +2,13 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.7]** ~ Water _2021-05-24_
+### **[0.1.8]** ~ State and Animation _2021-05-26_
+#### Added
+- Created player Move state machine
+#### Changed
+- Modified Jump state machine with new states: falling faster and crouching
+
+### **[0.1.7]** ~ Water _2021-05-26_
 #### Added
 - Spawn points
 - Choose closest spawn point

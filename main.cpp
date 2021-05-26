@@ -11,13 +11,18 @@
 
 #include "r_textures.h"
 
+//#include "state_machines_list.h"
+//#include "state_table.h"
+
 using namespace Verse;
+//using namespace State;
+//using namespace Player;
 
 int main(int argc, const char * argv[]) {
     
     Config config = {
         .name = "Proxecto Lume",
-        .version = "0.1.7",
+        .version = "0.1.8",
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -58,6 +63,12 @@ int main(int argc, const char * argv[]) {
         log::error("Failed to get the active camera!");
     
     config.active_scene = scene;
+    
+    
+    //Types eventTypes = Types<JumpEvent, ReleaseJumpEvent, PeakJumpEvent, FallEvent, DownEvent, ReleaseDownEvent, TouchGroundEvent, TimeoutEvent>{};
+    //std::cout << generatePrettyTransitionTable(JumpSM::getStateTypes(), eventTypes).c_str() << std::endl;
+    //Types eventTypes = Types<MoveEvent, StopMovingEvent>{};
+    //std::cout << generatePrettyTransitionTable(MoveSM::getStateTypes(), eventTypes).c_str() << std::endl;
     
     
     while (running)

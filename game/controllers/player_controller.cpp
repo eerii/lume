@@ -31,7 +31,7 @@ namespace {
     Component::Collider* collider;
     Component::Light* light;
 
-    PlayerStates state(COYOTE_TIMEOUT, GRACE_TIMEOUT);
+    PlayerStates state(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: CHANGE FOR ACTOR VALUES
 
     ui64 jump_time = 0;
     ui64 coyote_time = 0;
