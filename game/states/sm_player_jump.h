@@ -58,10 +58,10 @@ namespace Verse::State::Player
     struct FallingCoyoteState : Default<Nothing> {
         using Default::handle;
         
-        ui64 grace_time;
-        ui64 enter_time;
+        ui32 grace_time;
+        ui32 enter_time;
         FallingCoyoteState() = default;
-        FallingCoyoteState(ui64 p_time) : grace_time(p_time) {};
+        FallingCoyoteState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const FallEvent &e) {
             enter_time = time();
@@ -81,10 +81,10 @@ namespace Verse::State::Player
     struct FallingButJumpingState : Default<Nothing> {
         using Default::handle;
         
-        ui64 grace_time;
-        ui64 enter_time;
+        ui32 grace_time;
+        ui32 enter_time;
         FallingButJumpingState() = default;
-        FallingButJumpingState(ui64 p_time) : grace_time(p_time) {};
+        FallingButJumpingState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const JumpEvent &e) {
             enter_time = time();
@@ -111,10 +111,10 @@ namespace Verse::State::Player
     struct FallingFasterButJumpingState : Default<Nothing> {
         using Default::handle;
         
-        ui64 grace_time;
-        ui64 enter_time;
+        ui32 grace_time;
+        ui32 enter_time;
         FallingFasterButJumpingState() = default;
-        FallingFasterButJumpingState(ui64 p_time) : grace_time(p_time) {};
+        FallingFasterButJumpingState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const JumpEvent &e) {
             enter_time = time();

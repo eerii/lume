@@ -89,8 +89,8 @@ void Gui::menu(Config &c) {
         ImGui::SetCursorPos(ImVec2(ImGui::GetIO().DisplaySize.x - size.x, 0));
         
         if (ImGui::BeginMenu(fps_menu.c_str())) {
-            ImGui::Text("physics time: %d ms", c.physics_time);
-            ImGui::Text("render time: %d ms", c.render_time);
+            ImGui::Text("physics time: %f ms", c.physics_time);
+            ImGui::Text("render time: %f ms", c.render_time);
             
             if (ImGui::Selectable("vsync", &c.use_vsync)) {
                 Graphics::Window::updateVsync(c);
