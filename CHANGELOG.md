@@ -9,7 +9,7 @@
 - Player Controller can return the name of the current states
 - Player GUI
 - Implemented Jump SM in the controller
-- Timers!
+- Timers, adapted to game speed and with no extra treads
 #### Changed
 - Modified Jump state machine with new states: falling faster and crouching
 - PlayerState is now a pointer inside Player Controller

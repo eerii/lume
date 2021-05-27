@@ -59,16 +59,16 @@ namespace Verse::State::Player
         using Default::handle;
         
         ui32 grace_time;
-        ui32 enter_time;
+        ui32 timer;
         FallingCoyoteState() = default;
         FallingCoyoteState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const FallEvent &e) {
-            enter_time = time();
+            timer = setTimer(grace_time);
         }
         
         Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
-            if ((time() - enter_time) * e.game_speed > grace_time)
+            if (checkTimer(timer, e.game_speed))
                 return To<FallingState>();
             return Nothing();
         }
@@ -82,16 +82,16 @@ namespace Verse::State::Player
         using Default::handle;
         
         ui32 grace_time;
-        ui32 enter_time;
+        ui32 timer;
         FallingButJumpingState() = default;
         FallingButJumpingState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const JumpEvent &e) {
-            enter_time = time();
+            timer = setTimer(grace_time);
         }
         
         Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
-            if ((time() - enter_time) * e.game_speed > grace_time)
+            if (checkTimer(timer, e.game_speed))
                 return To<FallingState>();
             return Nothing();
         }
@@ -112,16 +112,16 @@ namespace Verse::State::Player
         using Default::handle;
         
         ui32 grace_time;
-        ui32 enter_time;
+        ui32 timer;
         FallingFasterButJumpingState() = default;
         FallingFasterButJumpingState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const JumpEvent &e) {
-            enter_time = time();
+            timer = setTimer(grace_time);
         }
         
         Maybe<To<FallingFasterState>> handle(const TimeoutEvent &e) {
-            if ((time() - enter_time) * e.game_speed > grace_time)
+            if (checkTimer(timer, e.game_speed))
                 return To<FallingFasterState>();
             return Nothing();
         }

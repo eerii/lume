@@ -132,6 +132,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     //JUMP GRACE
     if (tried_jumping and state->jump.is(JumpingState()))
         actor->vel.y = -jump_impulse;
+    //TODO: Check if jump released for this :)
         
     
     //ANIMATION
