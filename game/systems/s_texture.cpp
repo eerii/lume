@@ -4,15 +4,18 @@
 
 #include "s_texture.h"
 
+#include "time.h"
 #include "r_renderer.h"
 #include "r_pipeline.h"
+
+#include "log.h"
 
 using namespace Verse;
 
 namespace {
-    float animation_speed = (float)Graphics::getRefreshRate() / 6.0f; //3 FPS
-    int frame_count = 0;
+    ui32 timer = 0;
     str curr_key = "";
+    ui16 queue_left = 0;
 
     float v[16] = {
          0.0,  1.0,  0.0,  1.0,
@@ -23,29 +26,46 @@ namespace {
 }
 
 void System::Texture::render(Config &c) {
-    if (frame_count * c.game_speed < animation_speed)
-        frame_count++;
-    
     for (EntityID e : SceneView<Component::Texture>(*c.active_scene)) {
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
         
         if (anim != nullptr) {
+            if (timer == 0)
+                timer = setTimer(anim->frames[anim->curr_key].ms[anim->curr_frame]);
+            
             if (curr_key == "")
                 curr_key = anim->curr_key;
-            if (frame_count * c.game_speed >= animation_speed or frame_count == -1) {
-                frame_count = -1;
-                if (anim->curr_frame < anim->frames[anim->curr_key].size() - 1) {
-                    anim->curr_frame++;
-                } else {
+            
+            if (checkTimer(timer, c.game_speed) or (queue_left == 0 and anim->queue.size() > 0)) {
+                queue_left = (ui16)anim->queue.size();
+                
+                anim->curr_frame = (anim->curr_frame < anim->frames[anim->curr_key].index.size() - 1) ? anim->curr_frame + 1 : 0;
+                curr_key = anim->curr_key;
+                
+                if (anim->queue.size() > 0) {
+                    curr_key = anim->queue[0];
+                    anim->queue.erase(anim->queue.begin());
+                    anim->curr_key = curr_key;
                     anim->curr_frame = 0;
                 }
+                
+                timer = setTimer(anim->frames[curr_key].ms[anim->curr_frame]);
             }
-            if (curr_key != anim->curr_key) {
+            
+            if (queue_left == 0 and curr_key != anim->curr_key) {
                 curr_key = anim->curr_key;
                 anim->curr_frame = 0;
-                frame_count = -1;
+                anim->change_now = false;
+                stopTimer(timer);
+                timer = setTimer(anim->frames[curr_key].ms[anim->curr_frame]);
             }
+            
+            Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(e);
+            if (fire != nullptr and fire->vertical_offsets.size() > 0)
+                fire->offset.y = fire->initial_offset.y - fire->vertical_offsets[anim->frames[curr_key].index[anim->curr_frame]];
+            
+            //log::info("%s %s %d %d %d", curr_key.c_str(), anim->curr_key.c_str(), time(), anim->queue.size(), queue_left);
         }
         
         Vec2 size = Vec2((anim != nullptr) ? anim->size : 1, (int)tex->layer.size());
@@ -58,8 +78,8 @@ void System::Texture::render(Config &c) {
             if (anim != nullptr and
                 anim->frames.size() > 0 and
                 anim->frames.count(curr_key) > 0 and
-                anim->frames[curr_key].size() > anim->curr_frame)
-                vertices[2] += (float)anim->frames[curr_key][anim->curr_frame] / (float)size.x;
+                anim->frames[curr_key].index.size() > anim->curr_frame)
+                vertices[2] += (float)anim->frames[curr_key].index[anim->curr_frame] / (float)size.x;
             
             if (tex->is_reversed) {
                 vertices[2][0] = vertices[2][1];

@@ -2,7 +2,7 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.8]** ~ State and Animation _2021-05-26_
+### **[0.1.8]** ~ State and Animation _2021-05-28_
 #### Added
 - Created player Move state machine
 - Implemented Move SM in the controller
@@ -10,9 +10,14 @@
 - Player GUI
 - Implemented Jump SM in the controller
 - Timers, adapted to game speed and with no extra treads
+- Jump squish animations
+- Custom fps animations
+- Queue animations
 #### Changed
 - Modified Jump state machine with new states: falling faster and crouching
 - PlayerState is now a pointer inside Player Controller
+- Greatly improved player animation, with state machines
+- Flame offset modified from s_texture too (might change in the future)
 #### Fixed
 - Walk animation stopping when falling 1 block
 

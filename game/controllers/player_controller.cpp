@@ -32,10 +32,10 @@ namespace {
     State::PlayerStates* state;
 
     bool tried_jumping = false;
+    bool previously_on_air = false;
     bool falling_tiny_bit = false;
 
-    int flame_offsets[18] = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 0, 0, 1, 1, 1, 2 };
-    int flame_horizonal_offset = 0;
+    int flame_horizontal_offset = 0;
     Vec2 flame_initial_offset = Vec2(-1, -1);
 
     int light_strength = 100;
@@ -54,6 +54,8 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         anim = c.active_scene->getComponent<Component::Animation>(eid);
         tex = c.active_scene->getComponent<Component::Texture>(eid);
         fire = c.active_scene->getComponent<Component::Fire>(eid);
+        fire->vertical_offsets = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 0, 0, 1, 1, 0, 0 }; //TODO: Serialize
+        fire->initial_offset = Vec2(-1, -1);
         light = c.active_scene->getComponent<Component::Light>(eid);
     }
     
@@ -91,18 +93,11 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     if (actor->vel.y > 0 and state->jump.is(JumpingState()))
         state->jump.handle(PeakJumpEvent());
     
-    if (state->jump.is(GroundedState()) or state->jump.is(CrouchingState()))
-        falling_tiny_bit = false;
+    previously_on_air = not (state->jump.is(GroundedState()) or state->jump.is(CrouchingState()));
+    falling_tiny_bit = (previously_on_air) ? falling_tiny_bit : false;
         
     state->jump.handle(TimeoutEvent(c.game_speed));
     tried_jumping = state->jump.is(FallingButJumpingState()) or state->jump.is(FallingFasterButJumpingState());
-    
-    
-    //FLAME
-    if (anim->frames[anim->curr_key].size() > anim->curr_frame)
-        fire->offset = flame_initial_offset - Vec2(flame_horizonal_offset, flame_offsets[anim->frames[anim->curr_key][anim->curr_frame]]);
-    else
-        fire->offset = flame_initial_offset;
     
     
     //LIGHT
@@ -130,27 +125,39 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //JUMP GRACE
-    if (tried_jumping and state->jump.is(JumpingState()))
+    if (tried_jumping and state->jump.is(JumpingState())) {
         actor->vel.y = -jump_impulse;
+        falling_tiny_bit = false;
+        anim->queue.push_back("jump_end_short");
+        anim->queue.push_back("jump_start_short");
+    }
     //TODO: Check if jump released for this :)
         
     
     //ANIMATION
     if (state->move.is(IdleState())) {
         anim->curr_key = curr_idle_anim;
-        flame_horizonal_offset = 0;
+        flame_horizontal_offset = 0;
     }
     if (state->move.is(MovingState()) or state->move.is(AcceleratingState()) or state->move.is(DeceleratingState())) {
         anim->curr_key = "walk_1";
-        flame_horizonal_offset = tex->is_reversed ? 1 : -1;
+        flame_horizontal_offset = (previously_on_air and not falling_tiny_bit) ? 0 : (tex->is_reversed ? 1 : -1);
         
         if (state->jump.is(FallingCoyoteState()))
             falling_tiny_bit = checkGroundDown(c, eid, TINY_BIT);
     }
+    
     if (state->jump.is(JumpingState()))
         anim->curr_key = "jump_up";
     if (not falling_tiny_bit and (state->jump.is(FallingState()) or state->jump.is(FallingCoyoteState()) or state->jump.is(FallingButJumpingState())))
         anim->curr_key = "jump_down";
+    if (not falling_tiny_bit and previously_on_air and (state->jump.is(GroundedState()) or state->jump.is(CrouchingState())))
+        anim->queue.push_back("jump_end");
+    
+    
+    //FLAME
+    fire->offset.x = flame_initial_offset.x - flame_horizontal_offset;
+    
     
     return moving;
 }
@@ -169,8 +176,11 @@ void Controller::Player::jump() {
     
     state->jump.handle(JumpEvent());
     
-    if (state->jump.is(JumpingState()))
+    if (state->jump.is(JumpingState())) {
         actor->vel.y = -jump_impulse;
+        falling_tiny_bit = false;
+        anim->queue.push_back("jump_start");
+    }
 }
 
 void Controller::Player::releaseJump() {

@@ -10,16 +10,21 @@
 
 namespace Verse::Component
 {
+    struct Frame {
+        std::vector<ui16> index;
+        std::vector<ui16> ms;
+        bool change_instantly;
+    };
+
     struct Animation {
         str curr_key;
         ui8 curr_frame = 0;
-        std::map<str, std::vector<ui16>> frames;
+        
+        std::vector<str> queue;
+        bool change_now = false;
+        
+        std::map<str, Frame> frames;
         
         ui16 size;
-        ui16 calculate_size() const {
-            ui16 s = 0;
-            for (auto const& [k, f] : frames) { s += f.size(); }
-            return s;
-        };
     };
 }
