@@ -25,7 +25,7 @@ entities:
   tile_blocks:
     collider: tile #tilemap collider
     tilemap:
-      res: res/graphics/ground3.png
+      res: res/graphics/ground.png
       tiles: res/levels/2.png
       pos: [14, 61]
       tex_size: [7, 7]
@@ -35,21 +35,9 @@ entities:
       transform: [189, 168, 70, 5]
       layer: water
     texture:
-      res: res/graphics/water_test.png
+      res: res/graphics/water.png
       transform: [189, 168, 70, 5]
       layer: 0
-      
-#  to_test_3:
-#    collider:
-#      transform: [150, 120, 30, 30]
-#      layer: scene
-#    texture:
-#      res: res/graphics/ground.png
-#      transform: [150, 120, 30, 30]
-#      layer: 0
-#    scene_transition:
-#      scene: test_scene_3
-#      pos: [32, 64]
 #  to_test_2:
 #    collider:
 #      transform: [100, 70, 30, 30]

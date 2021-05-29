@@ -16,8 +16,7 @@ using namespace Verse;
 namespace {
     std::vector<str> available_scenes {
         "test_scene",
-        "test_scene_2",
-        "test_scene_3"
+        "test_scene_2"
     };
 }
 #endif

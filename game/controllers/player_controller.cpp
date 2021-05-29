@@ -6,7 +6,7 @@
 
 #include "game.h"
 #include "input.h"
-#include "time.h"
+#include "ftime.h"
 #include "log.h"
 
 #include "s_collider.h"
@@ -54,7 +54,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         anim = c.active_scene->getComponent<Component::Animation>(eid);
         tex = c.active_scene->getComponent<Component::Texture>(eid);
         fire = c.active_scene->getComponent<Component::Fire>(eid);
-        fire->vertical_offsets = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 0, 0, 1, 1, 0, 0 }; //TODO: Serialize
+        fire->vertical_offsets = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 0, 0, 0 }; //TODO: Serialize
         fire->initial_offset = Vec2(-1, -1);
         light = c.active_scene->getComponent<Component::Light>(eid);
     }

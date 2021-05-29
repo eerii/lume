@@ -6,7 +6,7 @@
 
 #include "state_machine.h"
 #include "static_str.h"
-#include "time.h"
+#include "ftime.h"
 
 #define MAKE_STRING(TYPE) [[maybe_unused]] static constexpr auto make_string(Types<TYPE>) { return Str{#TYPE}; };
 

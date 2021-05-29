@@ -3,7 +3,7 @@
       transform: [32, 64, 9, 14]
       layer: actor
     texture:
-      res: res/graphics/lume_test.png
+      res: res/graphics/lume.png
       transform: [32, 64, 11, 14]
       layer:
         body: 0
@@ -26,10 +26,10 @@
           index: [5, 6]
           fps: 3
         walk_1:
-          index: [14, 15, 13, 14, 15, 12]
+          index: [12, 13, 14]
           fps: 6
         walk_2:
-          index: [12, 15, 17, 13, 15, 17]
+          index: [12, 13, 14]
           fps: 6
         jump_start:
           index: [7]

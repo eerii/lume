@@ -4,7 +4,7 @@
 
 #include "s_light.h"
 
-#include "time.h"
+#include "ftime.h"
 
 #define LIGHT_PERIOD 5
 #define LIGHT_VARIATION 5

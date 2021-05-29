@@ -4,7 +4,7 @@
 
 #include "s_texture.h"
 
-#include "time.h"
+#include "ftime.h"
 #include "r_renderer.h"
 #include "r_pipeline.h"
 

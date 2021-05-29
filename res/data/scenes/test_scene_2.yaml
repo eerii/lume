@@ -12,7 +12,7 @@ entities:
   tile_blocks:
     collider: tile #tilemap collider
     tilemap:
-      res: res/graphics/ground3.png
+      res: res/graphics/ground.png
       tiles: res/levels/1.png
       pos: [14, 90]
       tex_size: [7, 7]
