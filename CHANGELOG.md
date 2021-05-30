@@ -7,6 +7,8 @@
 #### Added
 - Light cleaning function when switching scene
 - Animation cleaning
+- Player loses light toggle
+- Player respawns when losing all the light
 #### Changed
 - Improved light processing and moved it to s_light
 - Moved back flame offsets to player_controller, cleaner now

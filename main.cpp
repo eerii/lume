@@ -53,7 +53,9 @@ int main(int argc, const char * argv[]) {
         .background_color = {0.0, 0.0, 0.0, 1.0},
         
         .gravity = 800,
-        .gravity_dir = Vec2f(0, 1)
+        .gravity_dir = Vec2f(0, 1),
+        
+        .player_loses_light = false,
     };
     
     log::debug("Starting main");

@@ -37,7 +37,7 @@ namespace {
     bool falling_tiny_bit = false;
 
     int light_strength = 100;
-    ui32 light_time = 0;
+    ui32 light_timer = 0;
     str curr_idle_anim = "idle_1";
 
     float previous_game_speed = 1.0f;
@@ -101,18 +101,21 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //LIGHT
-    light->radius = light_strength;
-    if (light_time > 500) {
-        light_time = 0;
-        //TODO: ENABLE light_strength -= 1;
+    if (light_timer == 0)
+        light_timer = setTimer(500);
+    
+    if (checkTimer(light_timer)) {
+        if (c.player_loses_light)
+            light_strength--;
+        light_timer = setTimer(500);
         curr_idle_anim = (light_strength > 75) ? "idle_1" : (light_strength > 50) ? "idle_2" : (light_strength > 25) ? "idle_3" : "idle_4";
-    } else {
-        light_time += Time::delta * c.game_speed;
     }
     
-    if (light_strength == 0) {
-        light_strength = 100;
+    if (light_strength < 0) {
+        respawn(c);
     }
+    
+    light->radius = light_strength;
     
     
     //FALL OFF THE LEVEL
@@ -200,6 +203,8 @@ void Controller::Player::respawn(Config &c) {
     collider->transform = closest_spawn;
     actor->vel = Vec2f(0,0);
     state->jump.handle(FallEvent());
+    
+    light_strength = 100;
 }
 
 bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {

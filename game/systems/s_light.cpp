@@ -29,8 +29,9 @@ void System::Light::render(Config &c, ui8 pid) {
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         
         float variation = sin(Time::current * 0.001f * LIGHT_PERIOD * c.game_speed) * LIGHT_VARIATION;
+        float radius_with_var = ((light->radius + variation) > 2.0f) ? light->radius + variation : 2.0f; //Prevent visual errors
         
-        light_sources[e] = glm::vec4(light->pos.x, light->pos.y, light->radius + variation, light->radius * LIGHT_CENTER_RADIUS);
+        light_sources[e] = glm::vec4(light->pos.x, light->pos.y, radius_with_var, light->radius * LIGHT_CENTER_RADIUS);
         if (tex != nullptr)
             light_sources[e] += glm::vec4(tex->transform.x, tex->transform.y, 0, 0);
         
