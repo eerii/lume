@@ -2,7 +2,7 @@
 
 ## **0.2** ~ Light
 
-### **[0.1.9]** ~ Emscripten _2021-05-29_
+### **[0.1.9]** ~ Web _2021-05-30_
 #### Added
 - Emscripten initial support
 - Disable GUI though preprocessor directive and curr_state
@@ -10,6 +10,7 @@
 - Web Support (WebGL 2, works in Firefox, not Safari)
 - Noise texture is RGBA for web, Grayscale for PC
 - Automatically update shaders for WebGL
+- OpenGL error handling
 #### Changed
 - Renamed time to ftime
 
