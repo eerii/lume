@@ -2,6 +2,17 @@
 
 ## **0.2** ~ Light
 
+
+### **[0.1.10]** ~ More light _2021-05-30_
+#### Added
+- Light cleaning function when switching scene
+#### Changed
+- Improved light processing and moved it to s_light
+#### Fixed
+- Lights didn't move and were permanent when switching scenes
+
+---
+
 ### **[0.1.9]** ~ Web _2021-05-30_
 #### Added
 - Emscripten initial support
@@ -13,6 +24,8 @@
 - OpenGL error handling
 #### Changed
 - Renamed time to ftime
+
+---
 
 ### **[0.1.8]** ~ State and Animation _2021-05-28_
 #### Added
@@ -33,6 +46,8 @@
 #### Fixed
 - Walk animation stopping when falling 1 block
 
+---
+
 ### **[0.1.7]** ~ Water _2021-05-26_
 #### Added
 - Spawn points
@@ -44,6 +59,8 @@
 - Collision now returns a bitset with all the collision masks
 #### Fixed
 - Bug where the game crashed if hitting the transition from above without any input
+
+---
 
 ### **[0.1.6]** ~ Scenes _2021-05-24_
 #### Added
@@ -57,6 +74,8 @@
 - Handle scene loading and unloading on change
 #### Fixed
 - Fire was a block for a few seconds when changing scene
+
+---
 
 ### **[0.1.5]** ~ Fixes and State Machine _2021-05-15_
 #### Added
@@ -77,6 +96,8 @@
 - Used a lot more pointer checks and error messages
 - Finally fixed memory leaks!
 
+---
+
 ### **[0.1.4]** ~ Procedural Animation _2021-05-12_
 #### Added
 - Fire component
@@ -88,6 +109,8 @@
 #### Changed
 - Camera component and system
 - Palettes with primary and secondary colors
+
+---
 
 ### **[0.1.3]** ~ Serialization _2021-05-07_
 #### Added
@@ -103,17 +126,23 @@
 #### Fixed
 - Now when you delete an entity, and create a new one, it has the propper name and not the previous one
 
+---
+
 ### **[0.1.2]** ~ New rendering pipeline _2021-05-04_
 #### Changed
 - Completely redesigned rendering pipeline. Now it renders in low res, applies post processing and camera movement, then upscales it and add the remaining camera move (smooth cam but keeping it pixel perfect). Finally it places it in the middle of the screen and adds the background
 - New and more clear mvp
 - Separated the shaders into several pieces
 
+---
+
 ### **[0.1.1]** ~ Fresa _2021-05-04_
 #### Added
 - 3D preliminary rendering
 #### Changed
 - Separated engine for more games
+
+---
 
 ###  **[0.1.0]** ~ Brainstorm _2021-03-21_
 

@@ -8,6 +8,7 @@
 #include "log.h"
 
 #include "s_tilemap.h"
+#include "s_light.h"
 #include "player_controller.h"
 
 using namespace Verse;
@@ -94,6 +95,7 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
         }
         
         Controller::Player::resetState(c);
+        System::Light::clean();
         System::Tilemap::init(c);
     }
 }

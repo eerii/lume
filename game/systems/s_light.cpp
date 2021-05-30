@@ -4,7 +4,10 @@
 
 #include "s_light.h"
 
+#include <map>
+
 #include "ftime.h"
+#include "r_opengl.h"
 
 #define LIGHT_PERIOD 5
 #define LIGHT_VARIATION 5
@@ -12,40 +15,44 @@
 
 using namespace Verse;
 
+
+
+#include "log.h"
+
 namespace {
-    std::vector<EntityID> light_entities;
-    std::vector<glm::vec4> light_sources;
+    std::map<EntityID, glm::vec4> light_sources;
 }
 
-void System::Light::render(Config &c) {
+void System::Light::render(Config &c, ui8 pid) {
     for (EntityID e : SceneView<Component::Light>(*c.active_scene)) {
         Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         
-        //TODO: THIS ITERATOR MISSES ONE LIGHT!!!
-        std::vector<EntityID>::iterator it = std::find(light_entities.begin(), light_entities.end(), e);
-        if (it != light_entities.end()) {
-            long i = it - light_entities.begin();
-            
-            light_sources[i][0] = light->pos.x;
-            light_sources[i][1] = light->pos.y;
-            if (tex != nullptr) { //This is to render the light relative to the texture
-                light_sources[i][0] += tex->transform.x;
-                light_sources[i][1] += tex->transform.y;
-            }
-            
-            light_sources[i].x /= c.resolution.x;
-            light_sources[i].y = 1.0f - light_sources[i].y / c.resolution.y;
-            
-            light_sources[i][2] = (light->radius + sin(Time::current * 0.001f * LIGHT_PERIOD * c.game_speed) * LIGHT_VARIATION) / c.resolution.y;
-            light_sources[i][3] = light_sources[i][2] * LIGHT_CENTER_RADIUS;
-        } else {
-            light_entities.push_back(e);
-            light_sources.push_back({light->pos.x, light->pos.y, light->radius, light->radius * LIGHT_CENTER_RADIUS});
-        }
+        float variation = sin(Time::current * 0.001f * LIGHT_PERIOD * c.game_speed) * LIGHT_VARIATION;
+        
+        light_sources[e] = glm::vec4(light->pos.x, light->pos.y, light->radius + variation, light->radius * LIGHT_CENTER_RADIUS);
+        if (tex != nullptr)
+            light_sources[e] += glm::vec4(tex->transform.x, tex->transform.y, 0, 0);
+        
+        light_sources[e].x /= c.resolution.x;
+        light_sources[e].y = 1.0f - light_sources[e].y / c.resolution.y;
+        light_sources[e].z /= c.resolution.x;
+        light_sources[e].w /= c.resolution.x;
+        
+        light_sources[e].x += (0.5 - (c.active_camera->pos.x / c.resolution.x));
+        light_sources[e].y -= (0.5 - (c.active_camera->pos.y / c.resolution.y));
     }
+    
+    std::vector<glm::vec4> light_data;
+    for (const auto& [_, l] : light_sources) {
+        light_data.push_back(l);
+    }
+    
+    glUniform4fv(glGetUniformLocation(pid, "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_data.data()));
+    glUniform1i(glGetUniformLocation(pid, "light_size"), (int)(light_sources.size()));
+    glUniform1f(glGetUniformLocation(pid, "light_distortion"), (float)c.resolution.x / (float)c.resolution.y);
 }
 
-std::vector<glm::vec4> System::Light::getLight() {
-    return light_sources;
+void System::Light::clean() {
+    light_sources = {};
 }

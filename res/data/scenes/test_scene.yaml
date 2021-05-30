@@ -10,8 +10,24 @@ scene:
 entities:
   lantern:
     light:
-      pos: [600, 160]
+      pos: [210, 145]
       radius: 50
+  lantern2:
+    light:
+      pos: [300, 100]
+      radius: 100
+  lantern3:
+    light:
+      pos: [400, 180]
+      radius: 70
+  lantern4:
+    light:
+      pos: [500, 160]
+      radius: 50
+  lantern5:
+    light:
+      pos: [630, 130]
+      radius: 80
   tile_bg_1:
     tilemap:
       res:
