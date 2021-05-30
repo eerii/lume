@@ -6,10 +6,13 @@
 ### **[0.1.10]** ~ More light _2021-05-30_
 #### Added
 - Light cleaning function when switching scene
+- Animation cleaning
 #### Changed
 - Improved light processing and moved it to s_light
+- Moved back flame offsets to player_controller, cleaner now
 #### Fixed
 - Lights didn't move and were permanent when switching scenes
+- Animation crashing when scene changed
 
 ---
 

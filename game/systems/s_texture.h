@@ -9,4 +9,6 @@
 namespace Verse::System::Texture
 {
     void render(Config &c);
+    str getCurrKey();
+    void clean();
 }

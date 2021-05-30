@@ -10,6 +10,7 @@
 #include "log.h"
 
 #include "s_collider.h"
+#include "s_texture.h"
 
 #define TINY_BIT 8
 
@@ -35,14 +36,15 @@ namespace {
     bool previously_on_air = false;
     bool falling_tiny_bit = false;
 
-    int flame_horizontal_offset = 0;
-    Vec2 flame_initial_offset = Vec2(-1, -1);
-
     int light_strength = 100;
     ui32 light_time = 0;
     str curr_idle_anim = "idle_1";
 
     float previous_game_speed = 1.0f;
+
+    Vec2 f_off = Vec2(-1, -1);
+    int fv_off[18] = {0, 0, 0, -1, 0, -1, 1, -1, -1, -1, -1, 1, -1, -1, 0, 0, 0, 0};
+    int fh_off[18] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
 }
 
 bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func actor_move) {
@@ -54,8 +56,6 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         anim = c.active_scene->getComponent<Component::Animation>(eid);
         tex = c.active_scene->getComponent<Component::Texture>(eid);
         fire = c.active_scene->getComponent<Component::Fire>(eid);
-        fire->vertical_offsets = { 0, 0, 0, 1, 0, 1, -1, 1, 1, 1, 1, -1, 1, 1, 0, 0, 0, 0 }; //TODO: Serialize
-        fire->initial_offset = Vec2(-1, -1);
         light = c.active_scene->getComponent<Component::Light>(eid);
     }
     
@@ -137,12 +137,9 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     //ANIMATION
     if (state->move.is(IdleState())) {
         anim->curr_key = curr_idle_anim;
-        flame_horizontal_offset = 0;
     }
     if (state->move.is(MovingState()) or state->move.is(AcceleratingState()) or state->move.is(DeceleratingState())) {
         anim->curr_key = "walk_1";
-        flame_horizontal_offset = (previously_on_air and not falling_tiny_bit) ? 0 : (tex->is_reversed ? 1 : -1);
-        
         if (state->jump.is(FallingCoyoteState()))
             falling_tiny_bit = checkGroundDown(c, eid, TINY_BIT);
     }
@@ -156,8 +153,9 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //FLAME
-    fire->offset.x = flame_initial_offset.x - flame_horizontal_offset;
-    
+    ui16 curr_index = (anim->frames.find(System::Texture::getCurrKey()) != anim->frames.end()) ?
+                       anim->frames[System::Texture::getCurrKey()].index[anim->curr_frame] : 0;
+    fire->offset = f_off + Vec2(fh_off[curr_index] * (tex->is_reversed ? -1 : 1), fv_off[curr_index]);
     
     return moving;
 }

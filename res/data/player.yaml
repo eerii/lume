@@ -52,7 +52,7 @@
         jump_end_short:
           index: [11]
           fps: 18
-      curr_key: idle
+      curr_key: idle_1
       default_fps: 3
       size: 18
     actor:

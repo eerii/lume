@@ -11,8 +11,6 @@ namespace Verse::Component
     struct Fire {
         Rect2 transform;
         Vec2 offset;
-        Vec2 initial_offset;
-        std::vector<int> vertical_offsets = {};
         
         ui32 flame_tex, p_tex;
         ui8* p_data;

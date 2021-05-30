@@ -13,7 +13,6 @@ namespace Verse::Component
     struct Frame {
         std::vector<ui16> index;
         std::vector<ui16> ms;
-        bool change_instantly;
     };
 
     struct Animation {

@@ -58,12 +58,8 @@ void System::Texture::render(Config &c) {
                 anim->curr_frame = 0;
                 anim->change_now = false;
                 stopTimer(timer);
-                timer = setTimer(anim->frames[curr_key].ms[anim->curr_frame]); //TODO: Crashes when changing scene
+                timer = setTimer(anim->frames[curr_key].ms[anim->curr_frame]);
             }
-            
-            Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(e);
-            if (fire != nullptr and fire->vertical_offsets.size() > 0)
-                fire->offset.y = fire->initial_offset.y - fire->vertical_offsets[anim->frames[curr_key].index[anim->curr_frame]];
             
             //log::info("%s %s %d %d %d", curr_key.c_str(), anim->curr_key.c_str(), time(), anim->queue.size(), queue_left);
         }
@@ -96,4 +92,15 @@ void System::Texture::render(Config &c) {
             Graphics::Renderer::renderTexture(c, tex->tex_id, model, glm::value_ptr(vertices), tex->layer[i]);
         }
     }
+}
+
+str Verse::System::Texture::getCurrKey() {
+    return curr_key;
+}
+
+void Verse::System::Texture::clean() {
+    curr_key = "";
+    stopTimer(timer);
+    timer = 0;
+    queue_left = 0;
 }
