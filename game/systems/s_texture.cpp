@@ -58,7 +58,7 @@ void System::Texture::render(Config &c) {
                 anim->curr_frame = 0;
                 anim->change_now = false;
                 stopTimer(timer);
-                timer = setTimer(anim->frames[curr_key].ms[anim->curr_frame]);
+                timer = setTimer(anim->frames[curr_key].ms[anim->curr_frame]); //TODO: Crashes when changing scene
             }
             
             Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(e);

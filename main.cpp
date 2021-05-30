@@ -11,6 +11,10 @@
 
 #include "r_textures.h"
 
+#ifdef __EMSCRIPTEN__
+#include "emscripten.h"
+#endif
+
 //#include "state_machines_list.h"
 //#include "state_table.h"
 
@@ -18,11 +22,21 @@ using namespace Verse;
 //using namespace State;
 //using namespace Player;
 
+namespace {
+    Config config;
+}
+
+#ifdef __EMSCRIPTEN__
+void game_loop_emscripten() {
+    Game::update(config);
+}
+#endif
+
 int main(int argc, const char * argv[]) {
     
-    Config config = {
+    config = {
         .name = "Proxecto Lume",
-        .version = "0.1.8",
+        .version = "0.1.9",
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -42,7 +56,8 @@ int main(int argc, const char * argv[]) {
         .gravity_dir = Vec2f(0, 1)
     };
     
-    Serialization::initYAML();
+    log::debug("Starting main");
+    
     bool running = Game::init(config);
     Component::registerComponents();
     
@@ -71,8 +86,13 @@ int main(int argc, const char * argv[]) {
     //std::cout << generatePrettyTransitionTable(MoveSM::getStateTypes(), eventTypes).c_str() << std::endl;
     
     
+#ifdef __EMSCRIPTEN__
+    while (true)
+        emscripten_set_main_loop(game_loop_emscripten, 0, 1);
+#else
     while (running)
         running = Game::update(config);
+#endif
     
     
     Game::stop();

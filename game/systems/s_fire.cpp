@@ -17,7 +17,11 @@ namespace {
 }
 
 void System::Fire::init(Component::Fire *fire) {
+#ifndef __EMSCRIPTEN__
     fire->p_data = (ui8*)malloc((fire->transform.w+1) * (fire->transform.h+1));
+#else
+    fire->p_data = (ui8*)malloc((fire->transform.w+1) * (fire->transform.h+1) * 4);
+#endif
 }
 
 void System::Fire::render(Config &c) {

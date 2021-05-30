@@ -4,6 +4,8 @@
 
 #include "gui.h"
 
+#ifndef DISABLE_GUI
+
 #include "input.h"
 
 #include "imgui_impl_sdl.h"
@@ -99,3 +101,5 @@ void Gui::render() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
+
+#endif

@@ -28,8 +28,9 @@ uniform bool is_background;
 uniform bool use_grayscale;
 
 float smooth_min(float a, float b, float k) {
-    float h = max(k-abs(a-b), 0) / k;
-    return min(a,b) - h*h*h*k*1/6.0;
+    float h = max(k-abs(a-b), 0.0) / k;
+    float v = float(h*h*h*k);
+    return min(a,b) - v/6.0;
 }
 
 void main() {
@@ -45,7 +46,7 @@ void main() {
         float light_dithering = 0.0;
         
         for (int i = 0; i < light_size; i++) {
-            if (light[i].w <= 0)
+            if (light[i].w <= 0.0)
                 break;
             vec2 to_light = abs(light[i].xy - f_tex_coord);
             to_light.x *= light_distortion;

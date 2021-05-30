@@ -4,6 +4,12 @@
 
 #pragma once
 
+#ifdef __EMSCRIPTEN__
+#define DISABLE_GUI
+#endif
+
+#ifndef DISABLE_GUI
+
 #include "config.h"
 #include "imgui.h"
 
@@ -14,3 +20,5 @@ namespace Verse::Gui
     void prerender(Config &c, SDL_Window* window);
     void render();
 }
+
+#endif

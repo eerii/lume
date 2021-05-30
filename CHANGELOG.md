@@ -2,6 +2,17 @@
 
 ## **0.2** ~ Light
 
+### **[0.1.9]** ~ Emscripten _2021-05-29_
+#### Added
+- Emscripten initial support
+- Disable GUI though preprocessor directive and curr_state
+- Makefile for web
+- Web Support (WebGL 2, works in Firefox, not Safari)
+- Noise texture is RGBA for web, Grayscale for PC
+- Automatically update shaders for WebGL
+#### Changed
+- Renamed time to ftime
+
 ### **[0.1.8]** ~ State and Animation _2021-05-28_
 #### Added
 - Created player Move state machine
