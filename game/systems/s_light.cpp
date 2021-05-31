@@ -40,8 +40,8 @@ void System::Light::render(Config &c, ui8 pid) {
         light_sources[e].z /= c.resolution.x;
         light_sources[e].w /= c.resolution.x;
         
-        light_sources[e].x += (0.5 - (c.active_camera->pos.x / c.resolution.x));
-        light_sources[e].y -= (0.5 - (c.active_camera->pos.y / c.resolution.y));
+        light_sources[e].x += (0.5 - ((float)floor(c.active_camera->pos.x) / c.resolution.x));
+        light_sources[e].y -= (0.5 - ((float)floor(c.active_camera->pos.y) / c.resolution.y));
     }
     
     std::vector<glm::vec4> light_data;

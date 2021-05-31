@@ -32,7 +32,7 @@ bool Controller::Camera::Free::controller(Config &c, EntityID eid) {
     if (Input::pressed(Input::Key::U) and cam->scale > 0.25f)
         cam->scale -= 0.25f;
     
-    cam->pos = cam->target_pos.to_float();
+    cam->pos = cam->target_pos;
     
     Vec2 pixel_perfect_move = Vec2(floor(0.5f * c.resolution.x - cam->pos.x), floor(0.5f * c.resolution.y - cam->pos.y));
     Vec2f extra_move = (((c.resolution * 0.5f).to_float() - cam->pos) - pixel_perfect_move.to_float()) * c.render_scale;

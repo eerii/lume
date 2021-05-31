@@ -75,7 +75,6 @@
       bounds: scene
       focus: [72, 90]
       look_ahead: 32
-      la_speed: 1
     fire:
       transform: [32, 64, 11, 11]
       res: res/graphics/flame.png

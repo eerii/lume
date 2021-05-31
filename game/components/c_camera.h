@@ -10,17 +10,12 @@
 namespace Verse::Component
 {
     struct Camera {
-        Vec2 target_pos;
+        Vec2f target_pos;
         Vec2f pos;
         Vec2f vel;
         
         Rect2 bounds;
-        Vec2 focus_size;
-        float l,r,t,b;
         float scale = 1.0f;
-        
-        float look_ahead;
-        float la_speed;
         
         glm::mat4 m_pixel;
         glm::mat4 m_extra;

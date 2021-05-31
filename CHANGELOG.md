@@ -15,6 +15,7 @@
 #### Fixed
 - Lights didn't move and were permanent when switching scenes
 - Animation crashing when scene changed
+- Fixed lookahead
 
 ---
 

@@ -10,4 +10,5 @@ namespace Verse::Controller::Camera::Actor
 {
     bool controller(Config &c, EntityID eid);
     void checkBounds(Config &c, Component::Camera* cam);
+    void lookahead(Config &c, Component::Camera* cam, int input);
 }

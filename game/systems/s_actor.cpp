@@ -49,8 +49,8 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
         actor->vel.y = actor->max_fall_speed;
     
     Vec2f total = actor->remainder + actor->vel * c.physics_delta;
-    Vec2f to_move = Vec2f((int)total.x, (int)total.y);
-    actor->remainder = total - to_move;
+    Vec2 to_move = Vec2(floor(total.x), floor(total.y));
+    actor->remainder = total - to_move.to_float();
     
     //MoveX
     int sx = sign(to_move.x);
@@ -132,11 +132,6 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
 #ifdef TEXTURE
     Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
     texture->transform = collider->transform.pos();
-#endif
-#ifdef CAMERA
-    Component::Camera* camera = c.active_scene->getComponent<Component::Camera>(eid);
-    if (camera != nullptr)
-        camera->target_pos = collider->transform.pos();
 #endif
 #ifdef FIRE
     Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
