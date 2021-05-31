@@ -8,26 +8,6 @@ scene:
 #  - [610, 110]
 
 entities:
-  lantern:
-    light:
-      pos: [210, 145]
-      radius: 50
-  lantern2:
-    light:
-      pos: [300, 100]
-      radius: 100
-  lantern3:
-    light:
-      pos: [400, 180]
-      radius: 70
-  lantern4:
-    light:
-      pos: [500, 160]
-      radius: 50
-  lantern5:
-    light:
-      pos: [630, 130]
-      radius: 80
   tile_bg_1:
     tilemap:
       res:
@@ -54,6 +34,22 @@ entities:
       res: res/graphics/water.png
       transform: [189, 168, 70, 5]
       layer: 0
+  checkpoint:
+    collider:
+      transform: [400, 149, 1, 10]
+      layer: checkpoint
+    texture:
+      res: res/graphics/water.png
+      transform: [400, 149, 1, 10]
+      layer: 1
+  checkpoint:
+    collider:
+      transform: [624, 121, 1, 10]
+      layer: checkpoint
+    texture:
+      res: res/graphics/water.png
+      transform: [624, 121, 1, 10]
+      layer: 1
 #  to_test_2:
 #    collider:
 #      transform: [100, 70, 30, 30]

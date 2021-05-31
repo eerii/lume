@@ -20,5 +20,6 @@ namespace Verse::Component
         EVENT,
         SCENE,
         WATER,
+        CHECKPOINT,
     };
 }

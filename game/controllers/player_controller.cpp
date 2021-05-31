@@ -205,9 +205,9 @@ void Controller::Player::respawn(Config &c) {
     auto closest_vec = [=](Vec2 v1, Vec2 v2) -> bool {
         return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x); };
     
-    Vec2 closest_spawn = *std::min_element(c.active_scene->spawn.cbegin(), c.active_scene->spawn.cend(), closest_vec);
+    Vec2 closest_checkpoint = *std::min_element(c.active_scene->checkpoints.cbegin(), c.active_scene->checkpoints.cend(), closest_vec);
+    collider->transform = closest_checkpoint;
     
-    collider->transform = closest_spawn;
     actor->vel = Vec2f(0,0);
     state->jump.handle(FallEvent());
     

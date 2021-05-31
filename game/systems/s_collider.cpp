@@ -6,9 +6,17 @@
 
 #include "s_tilemap.h"
 #include "s_scene_transition.h"
+#include "s_fire.h"
 #include "r_renderer.h"
+#include "r_textures.h"
+
+#include "log.h"
 
 using namespace Verse;
+
+namespace {
+
+}
 
 std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityID eid) {
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
@@ -89,15 +97,47 @@ std::bitset<MAX_COLLISION_LAYERS> System::Collider::checkCollisions(Config &c, E
                 continue;
             }
             
+            collision_layers.set(c_col->layer);
+            
             //Scene Transition
-            Component::SceneTransition* c_transition = c.active_scene->getComponent<Component::SceneTransition>(e);
-            if (c_transition != nullptr) {
+            if (c_col->layer == Component::ColliderLayers::SCENE) {
+                Component::SceneTransition* c_transition = c.active_scene->getComponent<Component::SceneTransition>(e);
                 System::SceneTransition::handle(c, c_transition);
-                collision_layers.set(Component::ColliderLayers::SCENE);
                 continue;
             }
             
-            collision_layers.set(c_col->layer);
+            //Checkpoint
+            if (c_col->layer == Component::ColliderLayers::CHECKPOINT) {
+                //TODO: MOVE TO EXTERNAL FUNCTION
+                auto it = std::find(c.active_scene->checkpoints.begin(), c.active_scene->checkpoints.end(), c_col->transform.pos());
+                if (it == c.active_scene->checkpoints.end())
+                    c.active_scene->checkpoints.push_back(c_col->transform.pos() - collider->transform.size() * 0.5f);
+                
+                Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(e);
+                if (fire == nullptr) {
+                    fire = c.active_scene->addComponent<Component::Fire>(e);
+                    Vec2 offset = Vec2(c_col->transform.w * 0.5f - 5.5, -c_col->transform.h);
+                    fire->transform = Rect2(c_col->transform.pos() + offset, Vec2(11, 11));
+                    fire->dir = Vec2::j;
+                    fire->fps = 3;
+                    fire->freq = 16;
+                    fire->octaves = 16;
+                    fire->seed = (rand() / RAND_MAX) % 1000;
+                    fire->layer = 0;
+                    Graphics::Texture::loadTexture("res/graphics/flame.png", fire->flame_tex);
+                    System::Fire::init(fire);
+                }
+                
+                Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
+                if (light == nullptr) {
+                    light = c.active_scene->addComponent<Component::Light>(e);
+                    light->pos = Vec2(c_col->transform.w * 0.5f, -c_col->transform.h * 0.5f);
+                    light->radius = 50;
+                }
+                
+                collision_layers.reset(Component::ColliderLayers::CHECKPOINT);
+                continue;
+            }
         }
     }
     

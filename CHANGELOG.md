@@ -12,6 +12,7 @@
 - Walk end animation
 - Customizable border size for renderer (for smooth camera)
 - Camera shake
+- Checkpoints with light and fire (have to move instantiation from s_collider)
 #### Changed
 - Improved light processing and moved it to s_light
 - Moved back flame offsets to player_controller, cleaner now
@@ -19,6 +20,7 @@
 - Lights didn't move and were permanent when switching scenes
 - Animation crashing when scene changed
 - Fixed lookahead and camera smooth follow
+- Lights didn't take into account the scene border so they were displaced
 
 ---
 

@@ -45,7 +45,7 @@ void Gui::menu(Config &c) {
                         if (ImGui::Selectable(scene_name, is_selected)) {
                             Scene* s = new Scene();
                             Serialization::loadScene(name, s, c);
-                            System::SceneTransition::handle(c, s, s->spawn[0]);
+                            System::SceneTransition::handle(c, s, s->checkpoints[0]);
                         }
                         
                         if (is_selected)
