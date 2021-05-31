@@ -87,7 +87,7 @@ void System::Texture::render(Config &c) {
             vertices = glm::transpose(vertices);
             
             Rect2 dst = Rect2((tex->transform.pos() + tex->offset[i]), tex->transform.size());
-            glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos() - Vec2(1,1), dst.size());
+            glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos() - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size());
             
             Graphics::Renderer::renderTexture(c, tex->tex_id, model, glm::value_ptr(vertices), tex->layer[i]);
         }

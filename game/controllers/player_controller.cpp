@@ -11,6 +11,7 @@
 
 #include "s_collider.h"
 #include "s_texture.h"
+#include "s_camera.h"
 
 #define TINY_BIT 8
 
@@ -100,6 +101,11 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     tried_jumping = state->jump.is(FallingButJumpingState()) or state->jump.is(FallingFasterButJumpingState());
     
     
+    //TEST CAMERA SHAKE
+    if (Input::pressed(Input::Key::C))
+        System::Camera::shake(c, 3000, 1.5f);
+    
+    
     //LIGHT
     if (light_timer == 0)
         light_timer = setTimer(500);
@@ -138,10 +144,11 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         
     
     //ANIMATION
-    if (state->move.is(IdleState())) {
+    bool on_ground = state->jump.is(GroundedState()) or state->jump.is(CrouchingState());
+    if (state->move.is(IdleState()) or state->move.is(DeceleratingState())) {
         anim->curr_key = curr_idle_anim;
     }
-    if (state->move.is(MovingState()) or state->move.is(AcceleratingState()) or state->move.is(DeceleratingState())) {
+    if (state->move.is(MovingState()) or state->move.is(AcceleratingState())) {
         anim->curr_key = "walk_1";
         if (state->jump.is(FallingCoyoteState()))
             falling_tiny_bit = checkGroundDown(c, eid, TINY_BIT);
@@ -151,7 +158,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         anim->curr_key = "jump_up";
     if (not falling_tiny_bit and (state->jump.is(FallingState()) or state->jump.is(FallingCoyoteState()) or state->jump.is(FallingButJumpingState())))
         anim->curr_key = "jump_down";
-    if (not falling_tiny_bit and previously_on_air and (state->jump.is(GroundedState()) or state->jump.is(CrouchingState())))
+    if (not falling_tiny_bit and previously_on_air and on_ground)
         anim->queue.push_back("jump_end");
     
     

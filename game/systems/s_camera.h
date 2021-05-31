@@ -10,4 +10,5 @@ namespace Verse::System::Camera
 {
     void init(Component::Camera* camera);
     void update(Config &c);
+    void shake(Config &c, ui16 ms, float strength);
 }

@@ -31,6 +31,9 @@
         walk_2:
           index: [12, 13, 14]
           fps: 6
+        walk_end:
+          index: [15]
+          fps: 12
         jump_start:
           index: [7]
           fps: 12

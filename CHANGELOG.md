@@ -9,13 +9,16 @@
 - Animation cleaning
 - Player loses light toggle
 - Player respawns when losing all the light
+- Walk end animation
+- Customizable border size for renderer (for smooth camera)
+- Camera shake
 #### Changed
 - Improved light processing and moved it to s_light
 - Moved back flame offsets to player_controller, cleaner now
 #### Fixed
 - Lights didn't move and were permanent when switching scenes
 - Animation crashing when scene changed
-- Fixed lookahead
+- Fixed lookahead and camera smooth follow
 
 ---
 
