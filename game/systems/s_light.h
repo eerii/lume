@@ -9,5 +9,4 @@
 namespace Verse::System::Light
 {
     void render(Config &c, ui8 pid);
-    void clean();
 }

@@ -79,6 +79,16 @@ void Gui::menu(Config &c) {
         }
         //---------------------------
         
+        //UTILIDADES
+        //---------------------------
+        if (ImGui::BeginMenu("utilidades")) {
+            ImGui::Checkbox("entities", &ActiveWindows::entities);
+            ImGui::Checkbox("test", &ActiveWindows::test);
+            
+            ImGui::EndMenu();
+        }
+        //---------------------------
+        
         //FPS
         //---------------------------
         str fps_menu = "fps: " + std::to_string(c.fps);

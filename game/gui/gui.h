@@ -15,6 +15,11 @@
 
 namespace Verse::Gui
 {
+    struct ActiveWindows {
+        static bool entities;
+        static bool test;
+    };
+
     void init(Config &c);
     void update(Config &c);
     void prerender(Config &c, SDL_Window* window);

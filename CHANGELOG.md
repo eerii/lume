@@ -3,6 +3,16 @@
 ## **0.2** ~ Light
 
 
+### **[0.1.11]** ~ SOMETHING _2021-06-01_
+#### Added
+- Improved entities GUI
+- Remove entities and components
+- Get component name function
+#### Changed
+- Light now cleans every frame
+
+---
+
 ### **[0.1.10]** ~ More light _2021-05-30_
 #### Added
 - Light cleaning function when switching scene

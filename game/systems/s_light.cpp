@@ -16,11 +16,9 @@
 
 using namespace Verse;
 
-namespace {
-    std::map<EntityID, glm::vec4> light_sources;
-}
-
 void System::Light::render(Config &c, ui8 pid) {
+    std::map<EntityID, glm::vec4> light_sources;
+    
     for (EntityID e : SceneView<Component::Light>(*c.active_scene)) {
         Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
@@ -50,8 +48,4 @@ void System::Light::render(Config &c, ui8 pid) {
     glUniform4fv(glGetUniformLocation(pid, "light"), (int)(light_sources.size()), reinterpret_cast<GLfloat *>(light_data.data()));
     glUniform1i(glGetUniformLocation(pid, "light_size"), (int)(light_sources.size()));
     glUniform1f(glGetUniformLocation(pid, "light_distortion"), (float)(c.resolution.x + 2*BORDER_WIDTH) / (float)(c.resolution.y + 2*BORDER_WIDTH));
-}
-
-void System::Light::clean() {
-    light_sources = {};
 }

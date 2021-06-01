@@ -4,34 +4,85 @@
 
 #include "gui_entities.h"
 
+#include "log.h"
+
 using namespace Verse;
 
+namespace {
+    ui32 n = 0;
+}
+
 void Gui::entities(Config &c) {
-    ImGui::Begin("Entity Manager");
+    ImGui::Begin("entities");
     
-    static ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_PadOuterX | ImGuiTableFlags_RowBg;
+    ImGui::Text("scene: %s", ((c.active_scene != nullptr) ? c.active_scene->name.c_str() : "NULL"));
+    ImGui::Text("number of entities: %d", n);
     
-    if (ImGui::BeginTable("Entities", 3, flags))
+    static ImGuiTableFlags flags = ImGuiTableFlags_PadOuterX | ImGuiTableFlags_RowBg;
+    
+    if (ImGui::BeginTable("inspector", 2, flags))
     {
-        ImGui::TableSetupColumn("Index", ImGuiTableColumnFlags_WidthFixed, 64.0f);
-        ImGui::TableSetupColumn("Name", ImGuiTableColumnFlags_WidthStretch);
-        ImGui::TableSetupColumn("Signature", ImGuiTableColumnFlags_WidthFixed);
+        ImGui::TableSetupColumn("entity", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableSetupColumn("property", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableHeadersRow();
         
-        for (EntityID ent : SceneView<>(*c.active_scene))
+        n = 0;
+        for (EntityID e : SceneView<>(*c.active_scene))
         {
-            Entity::EntityIndex index = Entity::getIndex(ent);
+            ImGui::PushID(e);
+            Entity::EntityIndex index = Entity::getIndex(e);
+            n++;
             
             ImGui::TableNextRow();
             
-            ImGui::TableNextColumn();
-            ImGui::Text("%d", index);
+            //Entity Name
+            ImGui::TableSetColumnIndex(0);
+            ImGui::AlignTextToFramePadding();
+            str entity_name = c.active_scene->entity_names[index];
+            bool node_open = ImGui::TreeNode(entity_name.c_str());
             
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", c.active_scene->entity_names[index].c_str());
+            //Properties
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Text("id: [%d]", index);
+            ImGui::SameLine();
+            str select_label = "select##" + std::to_string(e);
+            if (ImGui::SmallButton(select_label.c_str())) {
+                
+            }
+            ImGui::SameLine();
+            str remove_label = "remove##" + std::to_string(e);
+            if (ImGui::SmallButton(remove_label.c_str())) {
+                c.active_scene->removeEntity(e);
+            }
             
-            ImGui::TableNextColumn();
-            ImGui::Text("%s", c.active_scene->mask[index].to_string().c_str());
+            //Submenu
+            if(node_open) {
+                Signature mask = c.active_scene->mask[index];
+                for (int i = 0; i < MAX_COMPONENTS; i++) {
+                    if (mask[i] == 0)
+                        continue;
+                    
+                    ImGui::PushID(i);
+                    ImGui::TableNextRow();
+                    
+                    ImGui::TableSetColumnIndex(0);
+                    ImGui::AlignTextToFramePadding();
+                    str component_name = Component::getName(i);
+                    ImGui::Text("%s", component_name.c_str());
+                    ImGui::SameLine();
+                    str remove_component_label = "x##" + std::to_string(e) + std::to_string(i);
+                    if (ImGui::SmallButton(remove_component_label.c_str())) {
+                        c.active_scene->removeComponent(e, i);
+                    }
+                    
+                    ImGui::TableSetColumnIndex(1);
+                    
+                    ImGui::PopID();
+                }
+                ImGui::TreePop();
+            }
+            
+            ImGui::PopID();
         }
         ImGui::EndTable();
     }

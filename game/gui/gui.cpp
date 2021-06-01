@@ -12,11 +12,14 @@
 #include "imgui_impl_opengl3.h"
 
 #include "gui_menu.h"
-#include "gui_player.h"
+#include "gui_entities.h"
 
 using namespace Verse;
 
 struct ImVec3 { float x, y, z; ImVec3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) { x = _x; y = _y; z = _z; } };
+
+bool Gui::ActiveWindows::entities = false;
+bool Gui::ActiveWindows::test = false;
 
 void Gui::init(Config &c) {
     ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -92,9 +95,12 @@ void Gui::prerender(Config &c, SDL_Window* window) {
     ImGui::NewFrame();
     
     Gui::menu(c);
-    Gui::player(c);
     
-    //ImGui::ShowDemoWindow();
+    if (ActiveWindows::test)
+        ImGui::ShowDemoWindow();
+    
+    if (ActiveWindows::entities)
+        Gui::entities(c);
 }
 
 void Gui::render() {

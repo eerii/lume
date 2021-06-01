@@ -8,7 +8,6 @@
 #include "log.h"
 
 #include "s_tilemap.h"
-#include "s_light.h"
 #include "s_texture.h"
 #include "player_controller.h"
 
@@ -39,9 +38,11 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
         new_col->transform = new_pos;
         
         Component::Actor* prev_actor = prev_scene->getComponent<Component::Actor>(prev_player);
-        Component::Actor* new_actor = new_scene->getComponent<Component::Actor>(new_player);
-        new_actor->vel = prev_actor->vel;
-        new_actor->remainder = prev_actor->remainder;
+        if (prev_actor != nullptr) {
+            Component::Actor* new_actor = new_scene->getComponent<Component::Actor>(new_player);
+            new_actor->vel = prev_actor->vel;
+            new_actor->remainder = prev_actor->remainder;
+        }
         
         //TODO: Pass player component
         
@@ -96,7 +97,6 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
         }
         
         Controller::Player::resetState(c);
-        System::Light::clean();
         System::Texture::clean();
         System::Tilemap::init(c);
     }
