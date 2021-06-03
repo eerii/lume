@@ -5,6 +5,7 @@
 #pragma once
 
 #include "dtypes.h"
+#include <vector>
 
 namespace Verse::Component
 {
@@ -21,5 +22,14 @@ namespace Verse::Component
         SCENE,
         WATER,
         CHECKPOINT,
+    };
+
+    static std::vector<str> c_layers_name = {
+        "ground",
+        "actor",
+        "event",
+        "scene",
+        "water",
+        "checkpoint"
     };
 }

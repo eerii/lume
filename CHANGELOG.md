@@ -8,6 +8,8 @@
 - Improved entities GUI
 - Remove entities and components
 - Get component name function
+- Component GUI
+- Display Vec2 in ImGui
 #### Changed
 - Light now cleans every frame
 
