@@ -146,16 +146,12 @@ std::bitset<MAX_COLLISION_LAYERS> System::Collider::checkCollisions(Config &c, E
 
 
 void System::Collider::render(Config &c) {
-    /*for (EntityID e : SceneView<Component::Texture>(scene)) {
-        Component::Collider* collider = scene.getComponent<Component::Collider>(e);
-        Rect rect = Rect(collider->transform.pos * c.render_scale, collider->transform.size * c.render_scale);
+    for (EntityID e : SceneView<Component::Collider>(*c.active_scene)) {
+        Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(e);
         
-        if (collider->is_colliding) {
-            
-        } else {
-            
-        }
+        if (c.active_scene->getComponent<Component::Tilemap>(e) != nullptr)
+            continue;
         
-        //Draw rect
-    }*/
+        Graphics::Renderer::renderDebugCollider(c, collider->transform, collider->is_colliding);
+    }
 }

@@ -82,9 +82,9 @@ void Gui::entities(Config &c) {
 void c_collider(Config &c, EntityID e) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(e);
     
-    Verse::Gui::draw_vec2(col->transform.x, col->transform.y, "pos");
+    Verse::Gui::draw_vec2(col->transform.x, col->transform.y, "pos", e);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(col->transform.w, col->transform.h, "size");
+    Verse::Gui::draw_vec2(col->transform.w, col->transform.h, "size", e);
     ImGui::TableNextRow();
     
     ImGui::TableSetColumnIndex(0);
@@ -116,26 +116,27 @@ void c_texture(Config &c, EntityID e) {
     
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(tex->transform.x, tex->transform.y, "pos");
+    Verse::Gui::draw_vec2(tex->transform.x, tex->transform.y, "pos", e);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(tex->transform.w, tex->transform.h, "size");
+    Verse::Gui::draw_vec2(tex->transform.w, tex->transform.h, "size", e);
     ImGui::TableNextRow();
     
-    for (int i = 0; i < tex->offset.size(); i++) {
-        str label = "offset " + std::to_string(i);
-        Verse::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label);
+    ImGui::TableSetColumnIndex(0);
+    ImGui::AlignTextToFramePadding();
+    if (ImGui::TreeNode("layers")) {
         ImGui::TableNextRow();
         
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Text("layer %d", i);
+        for (int i = 0; i < tex->offset.size(); i++) {
+            str label = "offset " + std::to_string(i);
+            Verse::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label, e);
+            ImGui::TableNextRow();
+            
+            Verse::Gui::draw_int(tex->layer[i], "layer " + std::to_string(i), e);
+            ImGui::TableNextRow();
+        }
         
-        ImGui::TableSetColumnIndex(1);
-        str layer_label = "##layer" + std::to_string(e) + std::to_string(i);
-        ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
-        ImGui::DragInt(layer_label.c_str(), &tex->layer[i]);
-        ImGui::TableNextRow();
+        ImGui::TreePop();
     }
-    
 }
 
 void c_animation(Config &c, EntityID e) {
@@ -147,11 +148,35 @@ void c_tilemap(Config &c, EntityID e) {
 }
 
 void c_actor(Config &c, EntityID e) {
-    //Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(e);
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(e);
+    
+    Verse::Gui::draw_vec2(actor->vel.x, actor->vel.y, "vel", e);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(actor->remainder.x, actor->remainder.y, "remainder", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_int(actor->max_move_speed, "max move speed", e);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(actor->max_fall_speed, "max fall speed", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_int(actor->acc_ground, "acc (ground)", e);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(actor->friction_ground, "friction (ground)", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_bool(actor->has_gravity, "gravity", e);
+    
+    //TODO: Controller and collision mask
 }
 
 void c_light(Config &c, EntityID e) {
-    //Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
+    Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
+    
+    Verse::Gui::draw_vec2(light->pos.x, light->pos.y, "pos", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_float(light->radius, "radius", e);
 }
 
 void c_camera(Config &c, EntityID e) {

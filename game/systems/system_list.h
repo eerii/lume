@@ -19,6 +19,4 @@
 
 #define RENDER_SYSTEMS System::Tilemap::render(c); \
                        System::Texture::render(c); \
-                       System::Fire::render(c); \
-                       if (c.render_collision_boxes) \
-                           System::Collider::render(c); \
+                       System::Fire::render(c);

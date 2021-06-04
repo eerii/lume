@@ -27,11 +27,6 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     
-    /*if(not std::holds_alternative<bool>(state))
-        log::info(CURR_STATE(std::get<State::PlayerStates*>(state)->jump));*/
-    /*if(std::holds_alternative<State::PlayerStates*>(state))
-        std::get<State::PlayerStates*>(state)->jump.handle(State::Player::JumpEvent());*/
-    
     PlayerStates* p_state = nullptr;
     if (std::holds_alternative<PlayerStates*>(state))
         p_state = std::get<PlayerStates*>(state);

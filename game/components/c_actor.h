@@ -16,11 +16,11 @@ namespace Verse::Component
         Vec2f vel;
         Vec2f remainder;
         
-        int max_move_speed;
+        int max_move_speed; //TODO: Change to vec2
         int max_fall_speed;
         
         int acc_ground;
-        float friction_ground;
+        int friction_ground;
         
         bool has_gravity = true;
         

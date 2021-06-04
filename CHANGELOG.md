@@ -12,6 +12,7 @@
 - Display Vec2 in ImGui
 - Gui Input
 - Texture GUI
+- Render collision boxes
 #### Changed
 - Light now cleans every frame
 
