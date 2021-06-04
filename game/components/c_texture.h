@@ -12,6 +12,7 @@ namespace Verse::Component
     struct Texture {
         ui8* tex;
         ui32 tex_id;
+        str res;
         
         Rect2 transform;
         

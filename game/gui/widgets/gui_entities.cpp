@@ -4,6 +4,7 @@
 
 #include "gui_entities.h"
 #include "gui_types.h"
+#include "r_textures.h"
 
 #include "log.h"
 
@@ -84,17 +85,57 @@ void c_collider(Config &c, EntityID e) {
     Verse::Gui::draw_vec2(col->transform.x, col->transform.y, "pos");
     ImGui::TableNextRow();
     Verse::Gui::draw_vec2(col->transform.w, col->transform.h, "size");
-    
     ImGui::TableNextRow();
+    
     ImGui::TableSetColumnIndex(0);
     ImGui::Text("layer");
     
     ImGui::TableSetColumnIndex(1);
-    ImGui::Combo("test", col->layer, Component::c_layers_name);
+    str layer_label = "##collayer" + std::to_string(e);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    ImGui::Combo(layer_label.c_str(), col->layer, Component::c_layers_name);
 }
 
 void c_texture(Config &c, EntityID e) {
-    //Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
+    Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("res");
+    
+    ImGui::TableSetColumnIndex(1);
+    
+    float line_height = ImGui::GetStyle().FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
+    ImVec2 button_size = { line_height + 3.0f, line_height };
+    if (ImGui::Button("L", button_size))
+        Graphics::Texture::loadTexture(tex->res, tex);
+    
+    ImGui::SameLine();
+    str res_label = "##res" + std::to_string(e);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    ImGui::InputText(res_label.c_str(), &tex->res);
+    
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(tex->transform.x, tex->transform.y, "pos");
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(tex->transform.w, tex->transform.h, "size");
+    ImGui::TableNextRow();
+    
+    for (int i = 0; i < tex->offset.size(); i++) {
+        str label = "offset " + std::to_string(i);
+        Verse::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label);
+        ImGui::TableNextRow();
+        
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("layer %d", i);
+        
+        ImGui::TableSetColumnIndex(1);
+        str layer_label = "##layer" + std::to_string(e) + std::to_string(i);
+        ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+        ImGui::DragInt(layer_label.c_str(), &tex->layer[i]);
+        ImGui::TableNextRow();
+    }
+    
 }
 
 void c_animation(Config &c, EntityID e) {

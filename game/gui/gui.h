@@ -10,9 +10,11 @@
 
 #ifndef DISABLE_GUI
 
-#include "config.h"
 #include "imgui.h"
-#include "dtypes.h"
+#include "imgui_stdlib.h"
+
+#include "config.h"
+
 #include <vector>
 
 namespace Verse::Gui
@@ -26,6 +28,7 @@ namespace Verse::Gui
     void update(Config &c);
     void prerender(Config &c, SDL_Window* window);
     void render();
+    void addInputKey(SDL_Keycode k);
 }
 
 namespace ImGui

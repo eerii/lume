@@ -10,6 +10,8 @@
 - Get component name function
 - Component GUI
 - Display Vec2 in ImGui
+- Gui Input
+- Texture GUI
 #### Changed
 - Light now cleans every frame
 

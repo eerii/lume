@@ -22,7 +22,8 @@ bool Gui::ActiveWindows::entities = true;
 bool Gui::ActiveWindows::test = false;
 
 void Gui::init(Config &c) {
-    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    ImGuiIO& imgui_io = ImGui::GetIO();
+    imgui_io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     
     ImGuiStyle& style = ImGui::GetStyle();
     style.WindowBorderSize = 0;
@@ -87,6 +88,8 @@ void Gui::update(Config &c) {
     imgui_io.MouseDown[0] = Input::down(SDL_BUTTON_LEFT);
     imgui_io.MouseDown[1] = Input::down(SDL_BUTTON_RIGHT);
     imgui_io.MouseWheel = static_cast<float>(Input::mouseWheel());
+    
+    std::copy(std::begin(Input::state()->keyboard.down), std::end(Input::state()->keyboard.down), std::begin(imgui_io.KeysDown));
 }
 
 void Gui::prerender(Config &c, SDL_Window* window) {
@@ -106,6 +109,34 @@ void Gui::prerender(Config &c, SDL_Window* window) {
 void Gui::render() {
     ImGui::Render();
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void Gui::addInputKey(SDL_Keycode k) {
+    str key_name = SDL_GetKeyName(k);
+    bool shift = Input::down(Input::Key::LeftShift) or Input::down(Input::Key::LeftShift);
+    
+    if (key_name == "Space")
+        key_name = " ";
+    
+    if (shift) {
+        if (key_name == "-")
+            key_name = "_";
+        if (key_name == "1")
+            key_name = "!";
+        if (key_name == ",")
+            key_name = ";";
+        if (key_name == ".")
+            key_name = ":";
+        if (key_name == "+")
+            key_name = "*";
+    }
+    
+    if (key_name.size() == 1) {
+        if (not shift)
+            key_name[0] = std::tolower(key_name[0]);
+        
+        ImGui::GetIO().AddInputCharacter(key_name[0]);
+    }
 }
 
 #endif

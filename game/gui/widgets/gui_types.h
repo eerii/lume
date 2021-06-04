@@ -19,24 +19,24 @@ static void draw_vec2(int &x, int &y, str label, float reset = 0.0f) {
     
     float line_height = style.FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
     ImVec2 button_size = { line_height + 3.0f, line_height };
+    float width = (ImGui::GetColumnWidth() - button_size.x) * 0.5f - 1.5f;
     
     ImGui::TableSetColumnIndex(1);
-    ImGui::PushMultiItemsWidths(2, ImGui::CalcItemWidth());
     
     if (ImGui::Button("X", button_size))
         x = reset;
 
     ImGui::SameLine();
+    ImGui::SetNextItemWidth(width);
     ImGui::DragInt("##X", &x);
-    ImGui::PopItemWidth();
     ImGui::SameLine();
 
     if (ImGui::Button("Y", button_size))
         y = reset;
 
     ImGui::SameLine();
+    ImGui::SetNextItemWidth(width);
     ImGui::DragInt("##Y", &y);
-    ImGui::PopItemWidth();
     ImGui::SameLine();
     
     ImGui::PopID();
