@@ -50,6 +50,10 @@ entities:
       res: res/graphics/water.png
       transform: [624, 121, 1, 10]
       layer: 1
+  free_camera:
+    camera:
+      controller: free
+      pos: [150, 90]
 #  to_test_2:
 #    collider:
 #      transform: [100, 70, 30, 30]

@@ -5,6 +5,7 @@
 #include "gui_entities.h"
 #include "gui_types.h"
 #include "r_textures.h"
+#include "r_window.h"
 
 #include "log.h"
 
@@ -13,6 +14,8 @@ using namespace Verse;
 namespace {
     ui32 n = 0;
     std::map<str, std::function<void(Config&, EntityID)>> c_funcs;
+    Component::Camera* prev_cam;
+    Component::Camera* tile_cam;
 }
 
 void components(Config &c, Signature mask, EntityID e);
@@ -144,7 +147,34 @@ void c_animation(Config &c, EntityID e) {
 }
 
 void c_tilemap(Config &c, EntityID e) {
-    //Component::Tilemap* tile = c.active_scene->getComponent<Component::Tilemap>(e);
+    Component::Tilemap* tile = c.active_scene->getComponent<Component::Tilemap>(e);
+    
+    if (tile_cam == nullptr) {
+        for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
+            if (c.active_scene->getName(e) != "free_camera")
+                continue;
+            tile_cam = c.active_scene->getComponent<Component::Camera>(e);
+        }
+    }
+    
+    ImGui::TableSetColumnIndex(0);
+    if (c.tilemap_editor and c.current_tilemap_edit == tile) {
+        if (ImGui::Button("save")) {
+            c.tilemap_editor = false;
+            c.use_light = true;
+            c.current_tilemap_edit = nullptr;
+            c.active_camera = prev_cam;
+        }
+    } else {
+        if (ImGui::Button("edit")) {
+            c.tilemap_editor = true;
+            c.use_light = false;
+            c.current_tilemap_edit = tile;
+            prev_cam = c.active_camera;
+            tile_cam->pos = prev_cam->pos;
+            c.active_camera = tile_cam;
+        }
+    }
 }
 
 void c_actor(Config &c, EntityID e) {

@@ -18,5 +18,8 @@
                                System::Camera::update(c);
 
 #define RENDER_SYSTEMS System::Tilemap::render(c); \
-                       System::Texture::render(c); \
-                       System::Fire::render(c);
+                       if (not c.tilemap_editor) { \
+                           System::Texture::render(c); \
+                           System::Fire::render(c); \
+                       }
+                       

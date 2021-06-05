@@ -76,6 +76,7 @@ void Gui::menu(Config &c) {
             ImGui::Checkbox("use grayscale", &c.use_grayscale);
             ImGui::Checkbox("player light", &c.player_loses_light);
             ImGui::Checkbox("collision boxes", &c.render_collision_boxes);
+            ImGui::Checkbox("tilemap editor", &c.tilemap_editor);
             ImGui::EndMenu();
         }
         //---------------------------

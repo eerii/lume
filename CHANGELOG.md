@@ -13,6 +13,8 @@
 - Gui Input
 - Texture GUI
 - Render collision boxes
+- Window to scene coordinates
+- Tilemap editor
 #### Changed
 - Light now cleans every frame
 

@@ -26,7 +26,7 @@ void System::Camera::update(Config &c) {
     for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
         Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(e);
         if (cam != c.active_camera)
-            break;
+            continue;
         
         cam->controller();
         
