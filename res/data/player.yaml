@@ -70,6 +70,7 @@
         - scene
         - water
         - checkpoint
+        - platform
     light:
       pos: [5, 5]
       radius: 100

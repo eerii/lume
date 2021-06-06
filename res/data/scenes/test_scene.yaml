@@ -25,6 +25,14 @@ entities:
       pos: [14, 61]
       tex_size: [7, 7]
       layer: 10
+  platform:
+    collider:
+      transform: [130, 100, 40, 3]
+      layer: platform
+    texture:
+      res: res/graphics/ground.png
+      transform: [130, 100, 40, 3]
+      layer: 10
   water:
     collider:
       transform: [189, 168, 70, 5]

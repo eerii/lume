@@ -19,6 +19,7 @@ namespace Verse::Controller::Player
     void move(Config &c, bool right);
     void jump();
     void releaseJump();
+    void down(Config &c, EntityID eid);
     void respawn(Config &c);
     bool checkGroundDown(Config &c, EntityID eid, int down = 1);
 

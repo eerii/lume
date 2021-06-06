@@ -74,9 +74,6 @@ System::Collider::CollisionInfoPair System::Collider::checkTilemapCollision(Conf
         }
     }
     
-    if (tile_collisions.second.none())
-        test_col->is_colliding = false;
-    
     return tile_collisions;
 }
 
@@ -87,17 +84,26 @@ System::Collider::CollisionInfo System::Collider::checkCollisions(Config &c, Ent
     std::vector<EntityID> collisions = System::Collider::checkObjectCollisions(c, eid);
     
     if(collisions.size() > 0) {
+        bool has_tile_collisions = false;
+        bool has_regular_collisions = false;
+        
         for (const EntityID &e : collisions) {
             Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(e);
             
             Component::Tilemap* c_tile = c.active_scene->getComponent<Component::Tilemap>(e);
+            if (c_tile == nullptr)
+                has_regular_collisions = true;
             if (c_tile != nullptr) {
                 col_info[e] = System::Collider::checkTilemapCollision(c, e, collider).second;
+                if (col_info[e].any())
+                    has_tile_collisions = true;
                 continue;
             }
             
             col_info[e].set(c_col->layer);
         }
+        
+        collider->is_colliding = has_regular_collisions or has_tile_collisions;
     }
     
     return col_info;

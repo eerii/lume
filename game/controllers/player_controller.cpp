@@ -65,6 +65,12 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     if (previous_game_speed != c.game_speed)
         state->move.updateStates(IdleState(), AcceleratingState(100), MovingState(), DeceleratingState(EPSILON * c.game_speed)); //TODO: Change too
     
+    
+    //DOWN
+    if (Input::down(Input::Key::S))
+        down(c, eid);
+    
+    
     //MOVE
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
         move(c, false);
@@ -199,6 +205,20 @@ void Controller::Player::releaseJump() {
     
     if (state->jump.is(FallingState()) and -actor->vel.y > min_jump_impulse)
         actor->vel.y = -min_jump_impulse;
+}
+
+void Controller::Player::down(Config &c, EntityID eid) {
+    collider->transform += Vec2::j;
+    bool platform_down = false;
+    System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
+    for (System::Collider::CollisionInfoPair collision : collisions) {
+        if (collision.second[System::Collider::Layers::Platform]) {
+            platform_down = true;
+            state->jump.handle(FallEvent());
+        }
+    }
+    if (not platform_down)
+        collider->transform -= Vec2::j;
 }
 
 void Controller::Player::respawn(Config &c) {

@@ -148,28 +148,39 @@ ui8 System::Actor::collisions(Config &c, EntityID eid) {
         
         if (collision.second[System::Collider::Layers::Checkpoint]) {
             Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(collision.first);
+            
             Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(collision.first);
             Component::Light* light = c.active_scene->getComponent<Component::Light>(collision.first);
             
-            if (fire == nullptr) {
-                c.active_scene->checkpoints.push_back(c_col->transform.pos() - Vec2(0,4));
-                
-                fire = c.active_scene->addComponent<Component::Fire>(collision.first);
-                Vec2 offset = Vec2(c_col->transform.w * 0.5f - 5.5, -c_col->transform.h);
-                fire->transform = Rect2(c_col->transform.pos() + offset, Vec2(11, 11));
-                fire->dir = Vec2::j;
-                fire->fps = 3;
-                fire->freq = 16;
-                fire->octaves = 16;
-                fire->seed = (rand() / RAND_MAX) % 1000;
-                fire->layer = 0;
-                Graphics::Texture::loadTexture("res/graphics/flame.png", fire->flame_tex);
-                System::Fire::init(fire);
-                
-                light = c.active_scene->addComponent<Component::Light>(collision.first);
-                light->pos = Vec2(c_col->transform.w * 0.5f, -c_col->transform.h * 0.5f);
-                light->radius = 50;
-            }
+            c.active_scene->checkpoints.push_back(c_col->transform.pos() - Vec2(0,4));
+            
+            fire = c.active_scene->addComponent<Component::Fire>(collision.first);
+            Vec2 offset = Vec2(c_col->transform.w * 0.5f - 5.5, -c_col->transform.h);
+            fire->transform = Rect2(c_col->transform.pos() + offset, Vec2(11, 11));
+            fire->dir = Vec2::j;
+            fire->fps = 3;
+            fire->freq = 16;
+            fire->octaves = 16;
+            fire->seed = (rand() / RAND_MAX) % 1000;
+            fire->layer = 0;
+            Graphics::Texture::loadTexture("res/graphics/flame.png", fire->flame_tex);
+            System::Fire::init(fire);
+            
+            light = c.active_scene->addComponent<Component::Light>(collision.first);
+            light->pos = Vec2(c_col->transform.w * 0.5f, -c_col->transform.h * 0.5f);
+            light->radius = 50;
+            
+            c.active_scene->removeComponent<Component::Collider>(collision.first);
+        }
+        
+        if (collision.second[System::Collider::Layers::Platform]) {
+            Component::Collider* platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
+            Component::Collider* actor_collider = c.active_scene->getComponent<Component::Collider>(eid);
+            Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
+            
+            bool above = actor_collider->transform.y + actor_collider->transform.h <= platform_collider->transform.y + 1;
+            if (above and actor->vel.y > -1)
+                solid = true;
         }
         
         if (collision.second[System::Collider::Layers::Ground])

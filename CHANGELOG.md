@@ -3,7 +3,17 @@
 ## **0.2** ~ Light
 
 
-### **[0.1.11]** ~ SOMETHING _2021-06-01_
+### **[0.1.12]** ~ Platforms _2021-06-06_
+#### Added
+- Jump from bellow platform
+- Fall when pressing down
+#### Changed
+- Collider overhaul
+
+
+---
+
+### **[0.1.11]** ~ Editor _2021-06-06_
 #### Added
 - Improved entities GUI
 - Remove entities and components
@@ -16,7 +26,6 @@
 - Window to scene coordinates
 - Tilemap editor
 - Save scenes
-- Collider overhaul
 #### Changed
 - Light now cleans every frame
 
