@@ -11,8 +11,10 @@
 namespace Verse::Component
 {
     struct Tilemap {
+        std::vector<str> res;
         std::vector<ui32> tex_id;
         
+        str tile_res;
         std::vector<std::vector<ui8>> tiles;
         
         Vec2 tex_size;

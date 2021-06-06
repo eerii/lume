@@ -8,7 +8,7 @@
 
 #include "input.h"
 
-#define CAM_SPEED 200
+#define CAM_SPEED 256
 
 using namespace Verse;
 

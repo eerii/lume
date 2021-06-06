@@ -7,11 +7,10 @@
 #include "dtypes.h"
 #include <vector>
 
-namespace Verse::Component
+namespace Verse
 {
-    struct Collider {
-        Rect2 transform;
-        ui8 layer;
-        bool is_colliding;
+    static std::vector<str> scenes {
+        "test_scene",
+        "test_scene_2"
     };
 }

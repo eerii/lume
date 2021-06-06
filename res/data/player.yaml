@@ -6,11 +6,11 @@
       res: res/graphics/lume.png
       transform: [32, 64, 11, 14]
       layer:
-        body: 0
-        eyes: -2
+        - 0
+        - -2
       offset:
-        body: [-1, 0]
-        eyes: [-1, 0]
+        - [-1, 0]
+        - [-1, 0]
     animation:
       frames:
         idle_1:

@@ -5,7 +5,6 @@ scene:
   size: [768, 180]
   spawn:
    - [32, 64]
-#  - [610, 110]
 
 entities:
   tile_bg_1:
@@ -19,7 +18,7 @@ entities:
       tex_size: [7, 7]
       layer: 20
   tile_blocks:
-    collider: tile #tilemap collider
+    collider: tile
     tilemap:
       res: res/graphics/ground.png
       tiles: res/levels/2.png
@@ -34,7 +33,7 @@ entities:
       res: res/graphics/water.png
       transform: [189, 168, 70, 5]
       layer: 0
-  checkpoint:
+  checkpoint_1:
     collider:
       transform: [400, 149, 1, 10]
       layer: checkpoint
@@ -42,7 +41,7 @@ entities:
       res: res/graphics/water.png
       transform: [400, 149, 1, 10]
       layer: 1
-  checkpoint:
+  checkpoint_2:
     collider:
       transform: [624, 121, 1, 10]
       layer: checkpoint

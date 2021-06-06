@@ -64,8 +64,7 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
         
         int k = 0;
         for (int i = 0; i < tmap->tiles.size(); i++) {
-            for (int j = 0; j < tmap->tiles[i].size(); j++) {
-                if (tmap->tiles[i][j] == l) {
+            for (int j = 0; j < tmap->tiles[i].size(); j++) {                if (tmap->tiles[i][j] == l) {
                     src.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
                     std::array<float, 24> v = {
                         0.0,  1.0,  0.0,  1.0,
@@ -91,7 +90,7 @@ void System::Tilemap::render(Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(*c.active_scene)) {
         Component::Tilemap* tmap = c.active_scene->getComponent<Component::Tilemap>(e);
         
-        if (c.tilemap_editor and tmap != c.current_tilemap_edit)
+        if (c.tme_active and tmap != c.tme_curr_tmap)
             continue;
         
         int i = 0;
@@ -106,35 +105,35 @@ Vec2 System::Tilemap::calculateSize(Component::Tilemap* tmap) {
     Vec2 size;
     
     size.x = (int)(tmap->tiles[0].size() * tmap->tex_size.x);
-    size.y = (int)(tmap->tiles.size() * tmap->tex_size.y);
+    size.y = (int)((tmap->tiles.size() - 1) * tmap->tex_size.y);
     
     return size;
 }
 
 void System::Tilemap::renderEditor(Config &c) {
-    Vec2 t_size = calculateSize(c.current_tilemap_edit) - c.current_tilemap_edit->tex_size;
-    Vec2 t_pos = c.current_tilemap_edit->pos;
+    Vec2 t_size = calculateSize(c.tme_curr_tmap);
+    Vec2 t_pos = c.tme_curr_tmap->pos;
+    Graphics::Renderer::renderDebugCollider(c, Rect2(t_pos.x, t_pos.y, t_size.x, t_size.y+1), false);
     
     Vec2 m_pos = Graphics::Window::windowToScene(c, Input::mouse());
-    
     Vec2 rel_pos = m_pos - t_pos;
     
     if (rel_pos.x >= 0 and rel_pos.y >= 0 and rel_pos.x < t_size.x and rel_pos.y < t_size.y) {
-        Vec2 curr_tile = Vec2(floor((float)rel_pos.x / (float)c.current_tilemap_edit->tex_size.x),
-                              floor((float)rel_pos.y / (float)c.current_tilemap_edit->tex_size.y));
-        Vec2 curr_pos = t_pos + Vec2(curr_tile.x * c.current_tilemap_edit->tex_size.x,
-                                     curr_tile.y * c.current_tilemap_edit->tex_size.y);
+        Vec2 curr_tile = Vec2(floor((float)rel_pos.x / (float)c.tme_curr_tmap->tex_size.x),
+                              floor((float)rel_pos.y / (float)c.tme_curr_tmap->tex_size.y));
+        Vec2 curr_pos = t_pos + Vec2(curr_tile.x * c.tme_curr_tmap->tex_size.x,
+                                     curr_tile.y * c.tme_curr_tmap->tex_size.y);
         
-        Graphics::Renderer::renderDebugCollider(c, Rect2(curr_pos, c.current_tilemap_edit->tex_size), false);
+        Graphics::Renderer::renderDebugCollider(c, Rect2(curr_pos, c.tme_curr_tmap->tex_size), false);
         
         if (Input::down((ui8)Input::MouseButton::Left)) {
-            c.current_tilemap_edit->tiles[curr_tile.y][curr_tile.x] = 0;
-            createVertices(c, c.current_tilemap_edit);
+            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 0;
+            createVertices(c, c.tme_curr_tmap);
         }
         
         if (Input::down((ui8)Input::MouseButton::Right)) {
-            c.current_tilemap_edit->tiles[curr_tile.y][curr_tile.x] = 255;
-            createVertices(c, c.current_tilemap_edit);
+            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 255;
+            createVertices(c, c.tme_curr_tmap);
         }
     }
 }

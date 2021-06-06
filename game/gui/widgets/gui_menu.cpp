@@ -5,21 +5,13 @@
 #include "gui_menu.h"
 
 #include "serialization.h"
+#include "scene_list.h"
 
 #include "r_window.h"
 #include "s_tilemap.h"
 #include "s_scene_transition.h"
 
 using namespace Verse;
-
-#ifdef DEBUG
-namespace {
-    std::vector<str> available_scenes {
-        "test_scene",
-        "test_scene_2"
-    };
-}
-#endif
 
 void Gui::menu(Config &c) {
     ImGuiStyle& style = ImGui::GetStyle();
@@ -38,7 +30,7 @@ void Gui::menu(Config &c) {
                 
                 if (ImGui::BeginListBox(""))
                 {
-                    for (str name : available_scenes) {
+                    for (str name : scenes) {
                         const bool is_selected = (name == c.active_scene->name);
                         const char* scene_name = name.c_str();
                         
@@ -76,7 +68,6 @@ void Gui::menu(Config &c) {
             ImGui::Checkbox("use grayscale", &c.use_grayscale);
             ImGui::Checkbox("player light", &c.player_loses_light);
             ImGui::Checkbox("collision boxes", &c.render_collision_boxes);
-            ImGui::Checkbox("tilemap editor", &c.tilemap_editor);
             ImGui::EndMenu();
         }
         //---------------------------

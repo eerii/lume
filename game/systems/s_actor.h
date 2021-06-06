@@ -11,4 +11,11 @@ namespace Verse::System::Actor
 {
     void update(Config &c);
     bool move(Config &c, EntityID eid, State::StateType state);
+    ui8 collisions(Config &c, EntityID eid);
+
+    enum Colliding {
+        Solid,
+        Transparent,
+        Exit
+    };
 }

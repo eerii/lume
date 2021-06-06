@@ -12,6 +12,7 @@ namespace Verse::Component
         Rect2 transform;
         Vec2 offset;
         
+        str flame_tex_res;
         ui32 flame_tex, p_tex;
         ui8* p_data;
         

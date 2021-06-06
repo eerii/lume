@@ -5,11 +5,13 @@
 #pragma once
 
 #include "gui.h"
+#include <functional>
 
 namespace Verse::Gui
 {
 
-static void draw_vec2(int &x, int &y, str label, int eid, float reset = 0.0f) {
+static void draw_vec2(int &x, int &y, str label, EntityID eid = 0,
+                      std::function<void()> callback = []() {return;}, float reset = 0.0f) {
     ImGuiStyle& style = ImGui::GetStyle();
     
     ImGui::PushID(label.c_str());
@@ -28,7 +30,8 @@ static void draw_vec2(int &x, int &y, str label, int eid, float reset = 0.0f) {
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth() * 0.5f - button_size.x);
     str x_label = "##X" + std::to_string(eid);
-    ImGui::DragInt(x_label.c_str(), &x);
+    if (ImGui::DragInt(x_label.c_str(), &x))
+        callback();
     ImGui::SameLine();
 
     if (ImGui::Button("Y", button_size))
@@ -37,13 +40,16 @@ static void draw_vec2(int &x, int &y, str label, int eid, float reset = 0.0f) {
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
     str y_label = "##Y" + std::to_string(eid);
-    ImGui::DragInt(y_label.c_str(), &y);
+    if (ImGui::DragInt(y_label.c_str(), &y))
+        callback();
     ImGui::SameLine();
     
     ImGui::PopID();
 }
 
-static void draw_vec2(float &x, float &y, str label, int eid, float reset = 0.0f) {
+[[maybe_unused]]
+static void draw_vec2(float &x, float &y, str label, EntityID eid = 0,
+                      std::function<void()> callback = []() {return;}, float reset = 0.0f) {
     ImGuiStyle& style = ImGui::GetStyle();
     
     ImGui::PushID(label.c_str());
@@ -62,7 +68,8 @@ static void draw_vec2(float &x, float &y, str label, int eid, float reset = 0.0f
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth() * 0.5f - button_size.x);
     str x_label = "##X" + std::to_string(eid);
-    ImGui::DragFloat(x_label.c_str(), &x, 0.1f, -100000, 100000, "%.1f");
+    if (ImGui::DragFloat(x_label.c_str(), &x, 0.1f, -100000, 100000, "%.1f"))
+        callback();
     ImGui::SameLine();
 
     if (ImGui::Button("Y", button_size))
@@ -71,13 +78,15 @@ static void draw_vec2(float &x, float &y, str label, int eid, float reset = 0.0f
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
     str y_label = "##Y" + std::to_string(eid);
-    ImGui::DragFloat(y_label.c_str(), &y, 0.1f, -100000, 100000, "%.1f");
+    if (ImGui::DragFloat(y_label.c_str(), &y, 0.1f, -100000, 100000, "%.1f"))
+        callback();
     ImGui::SameLine();
     
     ImGui::PopID();
 }
 
-static void draw_int(int &i, str label, int eid) {
+[[maybe_unused]]
+static void draw_int(int &i, str label, EntityID eid = 0, std::function<void()> callback = []() {return;}) {
     ImGui::PushID(label.c_str());
     
     ImGui::TableSetColumnIndex(0);
@@ -86,12 +95,30 @@ static void draw_int(int &i, str label, int eid) {
     ImGui::TableSetColumnIndex(1);
     str i_label = "##" + label + std::to_string(eid);
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
-    ImGui::DragInt(i_label.c_str(), &i);
+    if (ImGui::DragInt(i_label.c_str(), &i))
+        callback();
     
     ImGui::PopID();
 }
 
-static void draw_float(float &f, str label, int eid) {
+[[maybe_unused]]
+static void draw_ui8(ui8 &i, str label, EntityID eid = 0, std::function<void()> callback = []() {return;}) {
+    ImGui::PushID(label.c_str());
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("%s", label.c_str());
+    
+    ImGui::TableSetColumnIndex(1);
+    str i_label = "##" + label + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    if (ImGui::DragInt(i_label.c_str(), reinterpret_cast<int*>(&i), 1, 0, 255))
+        callback();
+    
+    ImGui::PopID();
+}
+
+[[maybe_unused]]
+static void draw_float(float &f, str label, EntityID eid = 0, std::function<void()> callback = []() {return;}) {
     ImGui::PushID(label.c_str());
     
     ImGui::TableSetColumnIndex(0);
@@ -100,12 +127,14 @@ static void draw_float(float &f, str label, int eid) {
     ImGui::TableSetColumnIndex(1);
     str f_label = "##" + label + std::to_string(eid);
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
-    ImGui::DragFloat(f_label.c_str(), &f, 0.1f, -100000, 100000, "%.1f");
+    if (ImGui::DragFloat(f_label.c_str(), &f, 0.1f, -100000, 100000, "%.1f"))
+        callback();
     
     ImGui::PopID();
 }
 
-static void draw_bool(bool &b, str label, int eid) {
+[[maybe_unused]]
+static void draw_bool(bool &b, str label, EntityID eid = 0, std::function<void()> callback = []() {return;}) {
     ImGui::PushID(label.c_str());
     
     ImGui::TableSetColumnIndex(0);
@@ -113,7 +142,8 @@ static void draw_bool(bool &b, str label, int eid) {
     
     ImGui::TableSetColumnIndex(1);
     str i_label = "##" + label + std::to_string(eid);
-    ImGui::Checkbox(i_label.c_str(), &b);
+    if (ImGui::Checkbox(i_label.c_str(), &b))
+        callback();
     
     ImGui::PopID();
 }

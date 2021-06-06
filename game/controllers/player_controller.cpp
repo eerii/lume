@@ -219,9 +219,11 @@ bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {
     
     collider->transform += Vec2::j * down;
     
-    std::bitset<MAX_COLLISION_LAYERS> collision_layers = System::Collider::checkCollisions(c, eid);
-    if (collision_layers.any())
-        is_ground_down = true;
+    System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
+    for (System::Collider::CollisionInfoPair collision : collisions) {
+        if (collision.second.any())
+            is_ground_down = true;
+    }
     
     collider->transform -= Vec2::j * down;
     

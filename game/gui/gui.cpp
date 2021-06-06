@@ -13,12 +13,13 @@
 
 #include "gui_menu.h"
 #include "gui_entities.h"
+#include "gui_tilemap_editor.h"
 
 using namespace Verse;
 
 struct ImVec3 { float x, y, z; ImVec3(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f) { x = _x; y = _y; z = _z; } };
 
-bool Gui::ActiveWindows::entities = true;
+bool Gui::ActiveWindows::entities = false;
 bool Gui::ActiveWindows::test = false;
 
 void Gui::init(Config &c) {
@@ -104,6 +105,9 @@ void Gui::prerender(Config &c, SDL_Window* window) {
     
     if (ActiveWindows::entities)
         Gui::entities(c);
+    
+    if (c.tme_active)
+        Gui::tilemapEditor(c);
 }
 
 void Gui::render() {
@@ -113,12 +117,11 @@ void Gui::render() {
 
 void Gui::addInputKey(SDL_Keycode k) {
     str key_name = SDL_GetKeyName(k);
-    bool shift = Input::down(Input::Key::LeftShift) or Input::down(Input::Key::LeftShift);
     
     if (key_name == "Space")
         key_name = " ";
     
-    if (shift) {
+    if (Input::shift()) {
         if (key_name == "-")
             key_name = "_";
         if (key_name == "1")
@@ -129,10 +132,12 @@ void Gui::addInputKey(SDL_Keycode k) {
             key_name = ":";
         if (key_name == "+")
             key_name = "*";
+        if (key_name == "7")
+            key_name = "/";
     }
     
     if (key_name.size() == 1) {
-        if (not shift)
+        if (not Input::shift())
             key_name[0] = std::tolower(key_name[0]);
         
         ImGui::GetIO().AddInputCharacter(key_name[0]);
