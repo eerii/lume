@@ -43,6 +43,7 @@ int main(int argc, const char * argv[]) {
         .render_scale = 4,
         .enable_gui = true,
         .use_vsync = true,
+        .use_subpixel_cam = true,
         
         .game_speed = 1.0f,
         

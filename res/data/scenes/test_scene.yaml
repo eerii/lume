@@ -27,12 +27,21 @@ entities:
       layer: 10
   platform:
     collider:
-      transform: [130, 100, 40, 3]
+      transform: [220, 80, 32, 3]
       layer: platform
     texture:
       res: res/graphics/ground.png
-      transform: [130, 100, 40, 3]
+      transform: [220, 80, 32, 3]
       layer: 10
+    actor:
+      controller: moving_platform
+      max_move_speed: 50
+      has_gravity: false
+      collision_mask:
+        - actor
+      patrol:
+        - [80, 86]
+        - [260, 86]
   water:
     collider:
       transform: [189, 168, 70, 5]

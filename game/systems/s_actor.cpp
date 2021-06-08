@@ -42,7 +42,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     if (actor->vel.y > actor->max_fall_speed)
         actor->vel.y = actor->max_fall_speed;
     
-    Vec2f total = actor->remainder + actor->vel * c.physics_delta;
+    Vec2f total = actor->remainder + (actor->vel + actor->extra_vel) * c.physics_delta;
     Vec2 to_move = Vec2(floor(total.x), floor(total.y));
     actor->remainder = total - to_move.to_float();
     
@@ -51,7 +51,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.x != 0) {
         collider->transform += Vec2::i * sx;
         
-        ui8 colliding = collisions(c, eid);
+        ui8 colliding = collisions(c, eid, state);
         
         if (colliding == Colliding::Exit)
             return false;
@@ -71,7 +71,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
             if (to_move.y == 0) {
                 collider->transform += Vec2::j;
                 
-                ui8 colliding = collisions(c, eid);
+                ui8 colliding = collisions(c, eid, state);
                 
                 if (colliding == Colliding::Exit)
                     return false;
@@ -89,7 +89,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.y != 0) {
         collider->transform += Vec2::j * sy;
         
-        ui8 colliding = collisions(c, eid);
+        ui8 colliding = collisions(c, eid, state);
         
         if (colliding == Colliding::Exit)
             return false;
@@ -108,7 +108,8 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
         if (colliding == Colliding::Transparent) {
             to_move.y -= sy;
             
-            p_state->jump.handle(Player::FallEvent());
+            if (p_state != nullptr)
+                p_state->jump.handle(Player::FallEvent());
         }
     }
     
@@ -125,7 +126,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     return true;
 }
 
-ui8 System::Actor::collisions(Config &c, EntityID eid) {
+ui8 System::Actor::collisions(Config &c, EntityID eid, State::StateType state, bool perform_actions) {
     System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
     
     bool solid = false;
@@ -135,18 +136,20 @@ ui8 System::Actor::collisions(Config &c, EntityID eid) {
         if (collision.second[System::Collider::Layers::Scene]) {
             Component::SceneTransition* c_transition = c.active_scene->getComponent<Component::SceneTransition>(collision.first);
             if (c_transition != nullptr) {
-                System::SceneTransition::handle(c, c_transition);
+                if (perform_actions)
+                    System::SceneTransition::handle(c, c_transition);
                 return Colliding::Exit;
             }
         }
         
         if (collision.second[System::Collider::Layers::Water]) {
             Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
-            actor->damage();
+            if (perform_actions)
+                actor->damage();
             return Colliding::Exit;
         }
         
-        if (collision.second[System::Collider::Layers::Checkpoint]) {
+        if (collision.second[System::Collider::Layers::Checkpoint] and perform_actions) {
             Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(collision.first);
             
             Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(collision.first);

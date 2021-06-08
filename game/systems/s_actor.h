@@ -11,7 +11,8 @@ namespace Verse::System::Actor
 {
     void update(Config &c);
     bool move(Config &c, EntityID eid, State::StateType state);
-    ui8 collisions(Config &c, EntityID eid);
+    ui8 collisions(Config &c, EntityID eid, State::StateType state, bool perform_actions = true);
+    void checkMovingPlatform(Config &c, EntityID eid);
 
     enum Colliding {
         Solid,

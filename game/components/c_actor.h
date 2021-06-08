@@ -14,6 +14,7 @@ namespace Verse::Component
 {
     struct Actor {
         Vec2f vel;
+        Vec2f extra_vel;
         Vec2f remainder;
         
         int max_move_speed; //TODO: Change to vec2
@@ -21,6 +22,8 @@ namespace Verse::Component
         
         int acc_ground;
         int friction_ground;
+        int friction_air;
+        int friction_extra;
         
         bool has_gravity = true;
         
@@ -28,5 +31,8 @@ namespace Verse::Component
         std::function<void()> damage;
         
         std::bitset<MAX_COLLISION_LAYERS> collision_mask;
+        
+        std::vector<Vec2> patrol_points;
+        int current_patrol_point;
     };
 }

@@ -238,7 +238,21 @@ void c_light(Config &c, EntityID e) {
 }
 
 void c_camera(Config &c, EntityID e) {
-    //Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(e);
+    Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(e);
+    
+    Verse::Gui::draw_vec2(cam->target_pos.x, cam->target_pos.y, "target pos", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->vel.x, cam->vel.y, "vel", e);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->remainder.x, cam->remainder.y, "remainder", e);
+    ImGui::TableNextRow();
+    
+    //TODO: Controller, bounds
 }
 
 void c_fire(Config &c, EntityID e) {

@@ -13,7 +13,10 @@
 using namespace Verse;
 
 namespace {
-    Vec2f shake_vec = Vec2f(0,0);
+    Vec2 pixel_perfect_move;
+    Vec2f extra_move;
+
+    Vec2f shake_vec;
     ui32 shake_timer = 0;
     float shake_strength;
 }
@@ -30,10 +33,13 @@ void System::Camera::update(Config &c) {
         
         cam->controller();
         
-        cam->pos += cam->vel * c.physics_delta;
+        Vec2f total = cam->remainder + cam->vel * c.physics_delta;
+        Vec2 to_move = Vec2(floor(total.x), floor(total.y));
+        cam->pos += to_move;
+        cam->remainder = total - to_move.to_float();
         
-        Vec2 pixel_perfect_move = Vec2(floor(0.5f * c.resolution.x - cam->pos.x), floor(0.5f * c.resolution.y - cam->pos.y));
-        Vec2f extra_move = (((c.resolution.to_float() * 0.5f) - cam->pos) - pixel_perfect_move.to_float()) * c.render_scale;
+        pixel_perfect_move = Vec2(floor(0.5f * c.resolution.x - cam->pos.x), floor(0.5f * c.resolution.y - cam->pos.y));
+        extra_move = (c.use_subpixel_cam) ? -cam->remainder * c.render_scale : Vec2f(0,0);
         
         if(checkTimer(shake_timer)) {
             shake_vec = Vec2f(0,0);

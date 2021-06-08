@@ -12,6 +12,7 @@
 #include "s_collider.h"
 #include "s_texture.h"
 #include "s_camera.h"
+#include "s_actor.h"
 
 #define TINY_BIT 8
 
@@ -71,6 +72,13 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         down(c, eid);
     
     
+    //GROUNDED
+    if (state->jump.is(GroundedState())) {
+        if (not checkGroundDown(c, eid))
+            state->jump.handle(FallEvent());
+    }
+    
+    
     //MOVE
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
         move(c, false);
@@ -85,14 +93,11 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     if (state->move.is(MovingState()))
         actor->vel.x = sign(actor->vel.x) * actor->max_move_speed;
-    
-    if (state->move.is(DeceleratingState()))
-        actor->vel.x -= actor->friction_ground * c.physics_delta * sign(actor->vel.x); //TODO: Add friction air
         
     
     //JUMP
     if (Input::pressed(Input::Key::Space))
-        jump();
+        jump(c, eid);
     
     if (Input::released(Input::Key::Space))
         releaseJump();
@@ -136,7 +141,25 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //ACTOR MOVE FUNCTION
-    bool moving = actor_move(c, eid, state);
+    actor_move(c, eid, state);
+    bool on_ground = state->jump.is(GroundedState()) or state->jump.is(CrouchingState());
+    
+    
+    //FRICTION
+    {
+        int friction = (on_ground) ? actor->friction_ground : actor->friction_air;
+        if (state->move.is(DeceleratingState()))
+            actor->vel.x -= friction * c.physics_delta * sign(actor->vel.x);
+        
+        int friction_extra = (on_ground) ? actor->friction_ground : actor->friction_extra;
+        if (getMovingPlatformVelocity(c, eid).x != 0)
+            friction_extra = 0;
+        
+        actor->extra_vel.x = (abs(actor->extra_vel.x) > 10) ?
+                              actor->extra_vel.x - friction_extra * c.physics_delta * sign(actor->extra_vel.x) : 0;
+        actor->extra_vel.y = (abs(actor->extra_vel.y) > 10) ?
+                              actor->extra_vel.y - friction_extra * c.physics_delta * sign(actor->extra_vel.y) : 0;
+    }
     
     
     //JUMP GRACE
@@ -150,7 +173,6 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         
     
     //ANIMATION
-    bool on_ground = state->jump.is(GroundedState()) or state->jump.is(CrouchingState());
     if (state->move.is(IdleState()) or state->move.is(DeceleratingState())) {
         anim->curr_key = curr_idle_anim;
     }
@@ -164,7 +186,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         anim->curr_key = "jump_up";
     if (not falling_tiny_bit and (state->jump.is(FallingState()) or state->jump.is(FallingCoyoteState()) or state->jump.is(FallingButJumpingState())))
         anim->curr_key = "jump_down";
-    if (not falling_tiny_bit and previously_on_air and on_ground)
+    if (not falling_tiny_bit and previously_on_air and on_ground) //TODO: Platform check
         anim->queue.push_back("jump_end");
     
     
@@ -173,7 +195,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
                        anim->frames[System::Texture::getCurrKey()].index[anim->curr_frame] : 0;
     fire->offset = f_off + Vec2(fh_off[curr_index] * (tex->is_reversed ? -1 : 1), fv_off[curr_index]);
     
-    return moving;
+    return true;
 }
 
 void Controller::Player::move(Config &c, bool right) {
@@ -184,7 +206,7 @@ void Controller::Player::move(Config &c, bool right) {
     state->move.handle(MoveEvent(right ? 1 : -1, actor->vel.x));
 }
 
-void Controller::Player::jump() {
+void Controller::Player::jump(Config &c, EntityID eid) {
     if (state->jump.is(JumpingState()))
         return;
     
@@ -194,6 +216,9 @@ void Controller::Player::jump() {
         actor->vel.y = -jump_impulse;
         falling_tiny_bit = false;
         anim->queue.push_back("jump_start");
+        
+        actor->extra_vel.x += getMovingPlatformVelocity(c, eid).x * (2.5f - 0.3f * abs(actor->vel.x / actor->max_move_speed));
+        state->move.handle(MoveEvent(sign(actor->extra_vel.x), actor->extra_vel.x));
     }
 }
 
@@ -235,19 +260,36 @@ void Controller::Player::respawn(Config &c) {
 }
 
 bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {
-    bool is_ground_down = false;
-    
     collider->transform += Vec2::j * down;
-    
-    System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
-    for (System::Collider::CollisionInfoPair collision : collisions) {
-        if (collision.second.any())
-            is_ground_down = true;
-    }
-    
+    ui8 colliding = System::Actor::collisions(c, eid, state, false);
     collider->transform -= Vec2::j * down;
     
-    return is_ground_down;
+    return colliding == System::Actor::Colliding::Solid;
+}
+
+Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
+    Vec2f vel = Vec2f(0,0);
+    
+    collider->transform += Vec2::j;
+    
+    System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
+    for (System::Collider::CollisionInfoPair collision : collision_info) {
+        if (collision.second[System::Collider::Layers::Platform]) {
+            Component::Collider* platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
+            Component::Collider* actor_collider = c.active_scene->getComponent<Component::Collider>(eid);
+            
+            bool above = actor_collider->transform.y + actor_collider->transform.h <= platform_collider->transform.y + 1;
+            if (above) {
+                Component::Actor* platform_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
+                if (platform_actor != nullptr)
+                    vel = platform_actor->vel;
+            }
+        }
+    }
+    
+    collider->transform -= Vec2::j;
+    
+    return vel;
 }
 
 str Controller::Player::getCurrentJumpState() {
