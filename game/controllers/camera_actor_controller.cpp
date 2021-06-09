@@ -4,6 +4,7 @@
 
 #include "camera_actor_controller.h"
 
+#include "game.h"
 #include "input.h"
 #include "log.h"
 #include "ftime.h"
@@ -20,6 +21,7 @@ namespace {
     Vec2 la_bounds = Vec2(60, 40);
 
     int input = 0;
+    float distances[4] = {0,0,0,0};
 }
 
 bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
@@ -46,9 +48,15 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     
     
     cam->target_pos = collider->transform.pos() + collider->transform.size() * 0.5f;
-    if (platform_actor != nullptr and actor->patrol_points.size() > 0) {
-        int next_patrol_point = (actor->current_patrol_point + 1) % actor->patrol_points.size();
+    if (platform_actor != nullptr and platform_actor->patrol_points.size() > 0) {
+        int next_patrol_point = (platform_actor->current_patrol_point + 1) % platform_actor->patrol_points.size();
         cam->target_pos = platform_actor->patrol_points[next_patrol_point];
+        cam->vel.x = platform_actor->vel.x;
+        
+        if (c.game_speed != 0)
+            c.timestep_modifier = 1.0f / ((float)platform_actor->max_move_speed * TIMESTEP * 0.001f * c.game_speed);
+        
+        return true;
     }
     
     int prev_input = input;
@@ -65,11 +73,19 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     
     checkBounds(c, cam);
     
-    float distance = cam->target_pos.x - cam->pos.x;
-    cam->vel.x = (platform_actor == nullptr) ? sign(distance) * pow(abs(distance), 1.5f) : sign(distance) * platform_actor->max_move_speed;
+    distances[3] = distances[2];
+    distances[2] = distances[1];
+    distances[1] = distances[0];
+    distances[0] = cam->target_pos.x - cam->pos.x;
+    double distance = (distances[0] + distances[1] + distances[2] + distances[3]) * 0.25;
+    
+    cam->vel.x = distance * 5;
     
     if (abs(distance) < CAM_EPSILON)
         cam->vel.x = 0;
+    
+    if (c.game_speed != 0)
+        c.timestep_modifier = 1.0f / ((float)actor->max_move_speed * TIMESTEP * 0.001f * c.game_speed);
     
     return true;
 }

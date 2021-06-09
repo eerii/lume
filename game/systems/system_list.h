@@ -17,8 +17,7 @@
 #define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
                                System::Camera::update(c);
 
-#define RENDER_SYSTEMS System::Camera::update(c); \
-                       System::Tilemap::render(c); \
+#define RENDER_SYSTEMS System::Tilemap::render(c); \
                        if (not c.tme_active) { \
                            System::Texture::render(c); \
                            System::Fire::render(c); \

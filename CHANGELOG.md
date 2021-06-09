@@ -3,12 +3,16 @@
 ## **0.2** ~ Light
 
 
-### **[0.1.12]** ~ Platforms _2021-06-06_
+### **[0.1.12]** ~ Platforms _2021-06-09_
 #### Added
 - Jump from bellow platform
 - Fall when pressing down
+- Moving platforms
 #### Changed
 - Collider overhaul
+- **Complete camera overhaul**
+- Adaptive physics timestep depending on velocity (prevents camera jitter)
+- Lookahead improvements
 
 
 ---

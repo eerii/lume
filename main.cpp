@@ -46,6 +46,7 @@ int main(int argc, const char * argv[]) {
         .use_subpixel_cam = true,
         
         .game_speed = 1.0f,
+        .timestep_modifier = 1.0f,
         
         .use_grayscale = false,
         .use_light = true,

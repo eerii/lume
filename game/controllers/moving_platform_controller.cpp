@@ -34,8 +34,6 @@ bool Controller::MovingPlatform::controller(Config &c, EntityID eid, actor_move_
             float extra_padding_going_up = (actor->vel.y < 0) ? actor->vel.y * c.physics_delta : 0;
             bool above = riding_col->transform.y + riding_col->transform.h <= col->transform.y + 1 - extra_padding_going_up;
             if (above) {
-                Vec2f to_move = actor->remainder + actor->vel * c.physics_delta;
-                Vec2 movement = Vec2(floor(to_move.x), floor(to_move.y));
                 riding_actor->extra_vel = actor->vel;
             }
         }
