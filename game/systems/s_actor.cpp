@@ -113,15 +113,12 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
         }
     }
     
-#ifdef TEXTURE
     Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
     texture->transform = collider->transform.pos();
-#endif
-#ifdef FIRE
+    
     Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
     if (fire != nullptr)
         fire->transform = collider->transform.pos() + fire->offset;
-#endif
         
     return true;
 }
@@ -185,6 +182,9 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, State::StateType state, b
             if (above and actor->vel.y > -1)
                 solid = true;
         }
+        
+        if (collision.second[System::Collider::Layers::SolidPlatform])
+            solid = true;
         
         if (collision.second[System::Collider::Layers::Ground])
             solid = true;

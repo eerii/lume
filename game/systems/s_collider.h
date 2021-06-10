@@ -20,6 +20,7 @@ namespace Verse::System::Collider
         Water,
         Checkpoint,
         Platform,
+        SolidPlatform,
     };
 
     static std::vector<str> layers_name = {
@@ -30,6 +31,7 @@ namespace Verse::System::Collider
         "water",
         "checkpoint",
         "platform",
+        "solid_platform"
     };
 
     std::vector<EntityID> checkObjectCollisions(Config &c, EntityID eid);

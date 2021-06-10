@@ -274,7 +274,7 @@ Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
     
     System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
     for (System::Collider::CollisionInfoPair collision : collision_info) {
-        if (collision.second[System::Collider::Layers::Platform]) {
+        if (collision.second[System::Collider::Layers::Platform] or collision.second[System::Collider::Layers::SolidPlatform]) {
             Component::Collider* platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
             Component::Collider* actor_collider = c.active_scene->getComponent<Component::Collider>(eid);
             

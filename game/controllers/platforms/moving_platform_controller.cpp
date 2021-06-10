@@ -6,21 +6,21 @@
 
 #include "s_collider.h"
 
-#define EPSILON actor->max_move_speed * c.physics_delta
+#define EPSILON 1
 
 using namespace Verse;
 
 bool Controller::MovingPlatform::controller(Config &c, EntityID eid, actor_move_func move) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
+    Component::Patrol* patrol = c.active_scene->getComponent<Component::Patrol>(eid);
     
-    if (actor->patrol_points.size() > 0) {
-        int next_patrol_point = (actor->current_patrol_point + 1) % actor->patrol_points.size();
-        Vec2f difference = (actor->patrol_points[next_patrol_point] - col->transform.pos()).to_float();
+    if (patrol->points.size() > 0) {
+        int next_patrol_point = (patrol->current + 1) % patrol->points.size();
+        Vec2f difference = (patrol->points[next_patrol_point] - col->transform.pos()).to_float();
         actor->vel = difference.normal() * actor->max_move_speed;
-        if (difference.length() <= EPSILON) {
-            actor->current_patrol_point = next_patrol_point;
-        }
+        if (difference.length() <= EPSILON)
+            patrol->current = next_patrol_point;
     }
     
     Vec2 offset = (actor->vel.y > 0) ? Vec2(0, floor(actor->vel.y * c.physics_delta)) : Vec2(0,0);

@@ -9,6 +9,7 @@
 #include "log.h"
 #include "ftime.h"
 #include "s_collider.h"
+#include "controller_list.h"
 
 #define CAM_EPSILON 0.5f
 #define LA_SPEED 2.5f
@@ -30,27 +31,30 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     
-    
     Component::Collider* platform_collider = nullptr;
     Component::Actor* platform_actor = nullptr;
+    Component::Patrol* platform_patrol = nullptr;
+    
     collider->transform += Vec2::j;
     System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
     for (System::Collider::CollisionInfoPair collision : collision_info) {
-        if (collision.second[System::Collider::Layers::Platform]) {
+        if (collision.second[System::Collider::Layers::Platform] or collision.second[System::Collider::Layers::SolidPlatform]) {
             platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
             
             bool above = collider->transform.y + collider->transform.h <= platform_collider->transform.y + 1;
-            if (above)
+            if (above) {
                 platform_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
+                platform_patrol = c.active_scene->getComponent<Component::Patrol>(collision.first);
+            }
         }
     }
     collider->transform -= Vec2::j;
     
     
     cam->target_pos = collider->transform.pos() + collider->transform.size() * 0.5f;
-    if (platform_actor != nullptr and platform_actor->patrol_points.size() > 0) {
-        int next_patrol_point = (platform_actor->current_patrol_point + 1) % platform_actor->patrol_points.size();
-        cam->target_pos = platform_actor->patrol_points[next_patrol_point];
+    if (platform_patrol != nullptr and platform_patrol->points.size() > 0) {
+        int next_patrol_point = (platform_patrol->current + 1) % platform_patrol->points.size();
+        cam->target_pos = platform_patrol->points[next_patrol_point];
         cam->vel.x = platform_actor->vel.x;
         
         if (c.game_speed != 0)
@@ -68,8 +72,7 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     if (input != prev_input)
         cam->vel.x = 0;
     
-    if (platform_actor == nullptr)
-        lookahead(c, cam, input);
+    lookahead(c, cam, input);
     
     checkBounds(c, cam);
     

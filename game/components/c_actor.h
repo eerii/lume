@@ -31,8 +31,5 @@ namespace Verse::Component
         std::function<void()> damage;
         
         std::bitset<MAX_COLLISION_LAYERS> collision_mask;
-        
-        std::vector<Vec2> patrol_points;
-        int current_patrol_point;
     };
 }

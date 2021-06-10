@@ -8,6 +8,9 @@
 - Jump from bellow platform
 - Fall when pressing down
 - Moving platforms
+- Timer component
+- Patrol component
+- Falling platforms
 #### Changed
 - Collider overhaul
 - **Complete camera overhaul**

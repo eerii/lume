@@ -13,6 +13,8 @@
 #include "c_camera.h"
 #include "c_fire.h"
 #include "c_scene_transition.h"
+#include "c_timer.h"
+#include "c_patrol.h"
 #include "c_player.h"
 
 #define COMPONENTS logComponentID(Collider); \
@@ -24,15 +26,6 @@
                    logComponentID(Camera); \
                    logComponentID(Fire); \
                    logComponentID(SceneTransition); \
+                   logComponentID(Timer); \
+                   logComponentID(Patrol); \
                    logComponentID(Player); \
-
-#define COLLIDER
-#define TEXTURE
-#define ANIMATION
-#define ACTOR
-#define TILEMAP
-#define LIGHT
-#define CAMERA
-#define FIRE
-#define SCENE_TRANSITION
-#define PLAYER

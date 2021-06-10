@@ -25,7 +25,7 @@ entities:
       pos: [14, 61]
       tex_size: [7, 7]
       layer: 10
-  platform:
+  platform_moving:
     collider:
       transform: [220, 80, 32, 3]
       layer: platform
@@ -39,9 +39,27 @@ entities:
       has_gravity: false
       collision_mask:
         - actor
-      patrol:
+    patrol:
+      points:
         - [80, 86]
         - [260, 86]
+  platform_falling:
+    collider:
+      transform: [336, 100, 28, 7]
+      layer: solid_platform
+    texture:
+      res: res/graphics/water.png
+      transform: [336, 100, 28, 7]
+      layer: 10
+    actor:
+      controller: falling_platform
+      max_move_speed: 200
+      has_gravity: false
+      collision_mask:
+        - actor
+        - ground
+    timer:
+      ms: 500
   water:
     collider:
       transform: [189, 168, 70, 5]

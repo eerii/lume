@@ -73,6 +73,7 @@
         - water
         - checkpoint
         - platform
+        - solid_platform
     light:
       pos: [5, 5]
       radius: 100
