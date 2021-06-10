@@ -60,6 +60,19 @@ entities:
         - ground
     timer:
       ms: 500
+  platform_switch:
+    collider:
+      transform: [450, 140, 28, 7]
+      layer: platform
+    texture:
+      res: res/graphics/ground.png
+      transform: [450, 140, 28, 7]
+      layer: 10
+    actor:
+      controller: switch_platform
+      has_gravity: false
+    timer:
+      ms: 1500
   water:
     collider:
       transform: [189, 168, 70, 5]

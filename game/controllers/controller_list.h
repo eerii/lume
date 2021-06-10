@@ -20,6 +20,8 @@
 
 #include "moving_platform_controller.h"
 #include "falling_platform_controller.h"
+#include "switch_platform_controller.h"
 
 #define MOVING_PLATFORM_CONTROLLER [&c, eid, move]() -> bool {return Controller::MovingPlatform::controller(c, eid, move);};
 #define FALLING_PLATFORM_CONTROLLER [&c, eid, move]() -> bool {return Controller::FallingPlatform::controller(c, eid, move);};
+#define SWITCH_PLATFORM_CONTROLLER [&c, eid, move]() -> bool {return Controller::SwitchPlatform::controller(c, eid, move);};

@@ -11,6 +11,8 @@
 - Timer component
 - Patrol component
 - Falling platforms
+- Solid and transparent platforms
+- Switch platform
 #### Changed
 - Collider overhaul
 - **Complete camera overhaul**
