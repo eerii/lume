@@ -39,7 +39,7 @@ void System::Camera::update(Config &c) {
         cam->remainder = total - to_move.to_float();
         
         pixel_perfect_move = Vec2(0.5f * c.resolution.x - cam->pos.x, 0.5f * c.resolution.y - cam->pos.y);
-        extra_move = (c.use_subpixel_cam) ? -cam->remainder * c.render_scale : Vec2f(0,0);
+        extra_move = (c.use_subpixel_cam) ? Vec2f(-cam->remainder.x, cam->remainder.y) * c.render_scale : Vec2f(0,0);
         
         if(checkTimer(shake_timer)) {
             shake_vec = Vec2f(0,0);
