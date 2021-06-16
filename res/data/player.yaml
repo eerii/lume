@@ -88,7 +88,6 @@
       res: res/graphics/flame.png
       dir: [0, 1]
       fps: 3
-      freq: 16
-      octaves: 16
-      seed: 256
+      freq: 2
+      levels: 4
       layer: -1

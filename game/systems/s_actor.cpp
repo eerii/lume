@@ -160,8 +160,6 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, State::StateType state, b
             fire->dir = Vec2::j;
             fire->fps = 3;
             fire->freq = 16;
-            fire->octaves = 16;
-            fire->seed = (rand() / RAND_MAX) % 1000;
             fire->layer = 0;
             Graphics::Texture::loadTexture("res/graphics/flame.png", fire->flame_tex);
             System::Fire::init(fire);

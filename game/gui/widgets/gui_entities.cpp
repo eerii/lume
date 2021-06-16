@@ -267,8 +267,6 @@ void c_fire(Config &c, EntityID e) {
     
     Verse::Gui::draw_float(fire->freq, "freq", e);
     ImGui::TableNextRow();
-    Verse::Gui::draw_ui8(fire->octaves, "octaves", e);
-    ImGui::TableNextRow();
     Verse::Gui::draw_vec2(fire->dir.x, fire->dir.y, "dir", e);
     ImGui::TableNextRow();
     
