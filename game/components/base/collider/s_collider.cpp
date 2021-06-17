@@ -51,10 +51,10 @@ System::Collider::CollisionInfoPair System::Collider::checkTilemapCollision(Conf
     Component::Collider* tile_col = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Tilemap* tilemap = c.active_scene->getComponent<Component::Tilemap>(eid);
     
-    Vec2 rel_pos = test_col->transform.pos() - tile_col->transform.pos();
+    Vec2 rel_pos = test_col->transform.pos - tile_col->transform.pos;
     Vec2 upleft = Vec2(floor(rel_pos.x / tilemap->tex_size.x), floor(rel_pos.y / tilemap->tex_size.y));
-    Vec2 downright = Vec2(floor((rel_pos.x + test_col->transform.w - 1) / tilemap->tex_size.x),
-                          floor((rel_pos.y + test_col->transform.h - 1) / tilemap->tex_size.y));
+    Vec2 downright = Vec2(floor((rel_pos.x + *test_col->transform.w - 1) / tilemap->tex_size.x),
+                          floor((rel_pos.y + *test_col->transform.h - 1) / tilemap->tex_size.y));
     
     System::Collider::CollisionInfoPair tile_collisions;
     tile_collisions.first = eid;

@@ -26,10 +26,12 @@ bool Controller::FallingPlatform::controller(Config &c, EntityID eid, actor_move
         actor->has_gravity = true;
     }
     
-    if (actor->has_gravity and actor->vel.y == 0 and checkGroundBelow(c, eid))
+    if (actor->has_gravity and actor->vel.y == 0 and checkGroundBelow(c, eid)) {
+        c.active_scene->removeComponent<Component::Timer>(eid);
         c.active_scene->removeComponent<Component::Actor>(eid);
+    }
     
-    if (col->transform.y > 500)
+    if (*col->transform.y > 500)
         c.active_scene->removeEntity(eid);
     
     return true;

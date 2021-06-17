@@ -43,7 +43,7 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
         if (collision.second[System::Collider::Layers::Platform] or collision.second[System::Collider::Layers::SolidPlatform]) {
             platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
             
-            bool above = collider->transform.y + collider->transform.h <= platform_collider->transform.y + 1;
+            bool above = *collider->transform.y + *collider->transform.h <= *platform_collider->transform.y + 1;
             if (above) {
                 platform_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
                 platform_patrol = c.active_scene->getComponent<Component::Patrol>(collision.first);
@@ -63,7 +63,7 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     }
     
     
-    cam->target_pos = collider->transform.pos() + collider->transform.size() * 0.5f;
+    cam->target_pos = collider->transform.pos + collider->transform.size * 0.5f;
     
     int prev_input = input;
     input = 0;
@@ -109,16 +109,16 @@ void Controller::Camera::Actor::lookahead(Config &c, Component::Camera *cam, int
 
 void Controller::Camera::Actor::checkBounds(Config &c, Component::Camera* cam) {
     if (cam->bounds.w != 0) {
-        if (cam->target_pos.x + (0.5f * c.resolution.x) > cam->bounds.x + 0.5f * cam->bounds.w)
-            cam->target_pos.x = cam->bounds.x + 0.5f * cam->bounds.w - 0.5f * c.resolution.x;
-        if (cam->target_pos.x - (0.5f * c.resolution.x) < cam->bounds.x - 0.5f * cam->bounds.w)
-            cam->target_pos.x = cam->bounds.x - 0.5f * cam->bounds.w + 0.5f * c.resolution.x;
+        if (cam->target_pos.x + (0.5f * c.resolution.x) > *cam->bounds.x + 0.5f * *cam->bounds.w)
+            cam->target_pos.x = *cam->bounds.x + 0.5f * *cam->bounds.w - 0.5f * c.resolution.x;
+        if (cam->target_pos.x - (0.5f * c.resolution.x) < *cam->bounds.x - 0.5f * *cam->bounds.w)
+            cam->target_pos.x = *cam->bounds.x - 0.5f * *cam->bounds.w + 0.5f * c.resolution.x;
     }
     
     if (cam->bounds.h != 0) {
-        if (cam->target_pos.y + (0.5f * c.resolution.y) > cam->bounds.y + 0.5f * cam->bounds.h)
-            cam->target_pos.y = cam->bounds.y + 0.5f * cam->bounds.h - 0.5f * c.resolution.y;
-        if (cam->target_pos.y - (0.5f * c.resolution.y) < cam->bounds.y - 0.5f * cam->bounds.h)
-            cam->target_pos.y = cam->bounds.y - 0.5f * cam->bounds.h + 0.5f * c.resolution.y;
+        if (cam->target_pos.y + (0.5f * c.resolution.y) > *cam->bounds.y + 0.5f * *cam->bounds.h)
+            cam->target_pos.y = *cam->bounds.y + 0.5f * *cam->bounds.h - 0.5f * c.resolution.y;
+        if (cam->target_pos.y - (0.5f * c.resolution.y) < *cam->bounds.y - 0.5f * *cam->bounds.h)
+            cam->target_pos.y = *cam->bounds.y - 0.5f * *cam->bounds.h + 0.5f * c.resolution.y;
     }
 }

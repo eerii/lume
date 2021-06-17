@@ -18,12 +18,12 @@ namespace {
 
 void System::Fire::init(Component::Fire *fire) {
 #ifndef __EMSCRIPTEN__
-    fire->p_data = (ui8*)malloc((fire->transform.w+1) * (fire->transform.h+1));
+    fire->p_data = (ui8*)malloc((*fire->transform.w+1) * (*fire->transform.h+1));
 #else
-    fire->p_data = (ui8*)malloc((fire->transform.w+1) * (fire->transform.h+1) * 4);
+    fire->p_data = (ui8*)malloc((*fire->transform.w+1) * (*fire->transform.h+1) * 4);
 #endif
     
-    Graphics::Texture::createGradient(fire->transform.w, fire->g_tex);
+    Graphics::Texture::createGradient(*fire->transform.w, fire->g_tex);
 }
 
 void System::Fire::render(Config &c) {
@@ -36,7 +36,7 @@ void System::Fire::render(Config &c) {
         fire->noise_time += ((float)Time::delta / 1000.0f) * c.game_speed;
         if (fire->noise_time > (1.0f / (float)fire->fps)) {
             fire->noise_offset++;
-            Graphics::Texture::createPerlinNoise(fire->transform.size(),
+            Graphics::Texture::createPerlinNoise(fire->transform.size,
                                                  fire->dir * fire->noise_offset,
                                                  fire->freq,
                                                  fire->levels,

@@ -28,14 +28,12 @@ bool Controller::SwitchPlatform::controller(Config &c, EntityID eid, actor_move_
             platform_layer[eid] = col->layer;
             col->layer = System::Collider::Layers::Disabled;
             
-            tex->transform.w = 0; //TODO: Unactive texture animation?
-            tex->transform.h = 0;
+            tex->transform.size = Vec2::zero; //TODO: Unactive texture animation?
         } else {
             col->layer = platform_layer[eid];
             platform_layer.erase(eid);
             
-            tex->transform.w = col->transform.w;
-            tex->transform.h = col->transform.h;
+            tex->transform.size = col->transform.size;
         }
     }
     

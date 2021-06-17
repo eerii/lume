@@ -28,7 +28,7 @@ void System::Light::render(Config &c, ui8 pid) {
         
         light_sources[e] = glm::vec4(light->pos.x, light->pos.y, radius_with_var, light->radius * LIGHT_CENTER_RADIUS);
         if (tex != nullptr)
-            light_sources[e] += glm::vec4(tex->transform.x, tex->transform.y, 0, 0);
+            light_sources[e] += glm::vec4(*tex->transform.x, *tex->transform.y, 0, 0);
         
         light_sources[e].x /= c.resolution.x + 2.0f*BORDER_WIDTH;
         light_sources[e].y = 1.0f - light_sources[e].y / (c.resolution.y + 2.0f*BORDER_WIDTH);

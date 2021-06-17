@@ -139,7 +139,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //FALL OFF THE LEVEL
-    if (collider->transform.y > 500) //TODO: Change
+    if (*collider->transform.y > 500) //TODO: Change
         respawn(c);
     
     
@@ -251,7 +251,7 @@ void Controller::Player::down(Config &c, EntityID eid) {
 
 void Controller::Player::respawn(Config &c) {
     auto closest_vec = [=](Vec2 v1, Vec2 v2) -> bool {
-        return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x); };
+        return abs(v1.x - *collider->transform.x) < abs(v2.x - *collider->transform.x); };
     
     Vec2 closest_checkpoint = *std::min_element(c.active_scene->checkpoints.cbegin(), c.active_scene->checkpoints.cend(), closest_vec);
     collider->transform = closest_checkpoint;
@@ -281,7 +281,7 @@ Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
             Component::Collider* platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
             Component::Collider* actor_collider = c.active_scene->getComponent<Component::Collider>(eid);
             
-            bool above = actor_collider->transform.y + actor_collider->transform.h <= platform_collider->transform.y + 1;
+            bool above = *actor_collider->transform.y + *actor_collider->transform.h <= *platform_collider->transform.y + 1;
             if (above) {
                 Component::Actor* platform_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
                 if (platform_actor != nullptr)
