@@ -11,7 +11,7 @@
 #define COYOTE_TIMEOUT 100
 #define GRACE_TIMEOUT 150
 
-typedef bool (*actor_move_func)(Verse::Config&, Verse::EntityID, Verse::State::StateType);
+typedef bool (*actor_move_func)(Verse::Config&, Verse::EntityID);
 
 namespace Verse::Controller::Player
 {
@@ -26,5 +26,5 @@ namespace Verse::Controller::Player
 
     str getCurrentJumpState();
     str getCurrentMoveState();
-    void resetState(Config &c);
+    void resetState(Config &c, EntityID eid);
 }

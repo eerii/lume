@@ -5,6 +5,7 @@
 #pragma once
 
 #include "config.h"
+#include "serialization.h"
 #include <map>
 
 namespace Verse::System::Collider
@@ -40,4 +41,6 @@ namespace Verse::System::Collider
     CollisionInfoPair checkTilemapCollision(Config &c, EntityID eid, Component::Collider* test_col);
     CollisionInfo checkCollisions(Config &c, EntityID eid);
     void render(Config &c);
+
+    void load(EntityID eid, YAML::Node &entity, struct Scene *s, Config &c);
 }

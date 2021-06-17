@@ -4,28 +4,37 @@
 
 #pragma once
 
+//Base
 #include "c_collider.h"
+#include "c_actor.h"
+#include "c_state.h"
 #include "c_texture.h"
 #include "c_animation.h"
-#include "c_actor.h"
 #include "c_tilemap.h"
-#include "c_light.h"
 #include "c_camera.h"
-#include "c_fire.h"
-#include "c_scene_transition.h"
+#include "c_light.h"
 #include "c_timer.h"
 #include "c_patrol.h"
+
+//Extra
+#include "c_fire.h"
+#include "c_scene_transition.h"
 #include "c_player.h"
 
 #define COMPONENTS logComponentID(Collider); \
+                   logComponentID(Actor); \
+                   logComponentID(State); \
                    logComponentID(Texture); \
                    logComponentID(Animation); \
-                   logComponentID(Actor); \
                    logComponentID(Tilemap); \
-                   logComponentID(Light); \
                    logComponentID(Camera); \
-                   logComponentID(Fire); \
-                   logComponentID(SceneTransition); \
+                   logComponentID(Light); \
                    logComponentID(Timer); \
                    logComponentID(Patrol); \
+                   logComponentID(Fire); \
+                   logComponentID(SceneTransition); \
                    logComponentID(Player); \
+
+#define USE_C_FIRE
+#define USE_C_SCENE_TRANSITION
+#define USE_C_PLAYER

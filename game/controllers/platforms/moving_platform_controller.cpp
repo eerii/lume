@@ -40,7 +40,7 @@ bool Controller::MovingPlatform::controller(Config &c, EntityID eid, actor_move_
     }
     col->transform += Vec2::j + offset;
     
-    move(c, eid, false);
+    move(c, eid);
     
     return true;
 }

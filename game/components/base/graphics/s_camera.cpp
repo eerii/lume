@@ -9,6 +9,7 @@
 #include "ftime.h"
 #include "log.h"
 #include "r_renderer.h"
+#include "controller_list.h"
 
 using namespace Verse;
 
@@ -63,4 +64,28 @@ void System::Camera::shake(Config &c, ui16 ms, float strength) {
         log::warn("You tried to use camera shake with a higher shake than the border width. Please adjust one of them.");
         shake_strength = c.render_scale * BORDER_WIDTH;
     }
+}
+
+void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Camera* camera = s->addComponent<Component::Camera>(eid);
+    if (entity["camera"]["pos"])
+        camera->pos = entity["camera"]["pos"].as<Vec2>();
+    camera->bounds = Rect2(0,0,0,0);
+    if (entity["camera"]["bounds"]) {
+        if (entity["camera"]["bounds"].IsMap()) {
+            camera->bounds = entity["camera"]["bounds"].as<Rect2>();
+        } else {
+            if (entity["camera"]["bounds"].as<str>() == "scene")
+                camera->bounds = Rect2(s->size * 0.5f, s->size);
+            if (entity["camera"]["bounds"].as<str>() == "none")
+                camera->bounds = Rect2(0,0,0,0);
+        }
+    }
+    if (entity["camera"]["controller"]) {
+        if (entity["camera"]["controller"].as<str>() == "actor")
+            camera->controller = CAMERA_ACTOR_CONTROLLER;
+        if (entity["camera"]["controller"].as<str>() == "free")
+            camera->controller = CAMERA_FREE_CONTROLLER;
+    }
+    System::Camera::init(camera);
 }

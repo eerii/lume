@@ -51,3 +51,28 @@ void System::Fire::render(Config &c) {
         Graphics::Renderer::renderFire(c, fire->transform, fire->p_tex, fire->g_tex, fire->flame_tex, fire->layer);
     }
 }
+
+void System::Fire::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Fire* fire = s->addComponent<Component::Fire>(eid);
+    if (entity["fire"]["transform"])
+        fire->transform = entity["fire"]["transform"].as<Rect2>();
+    if (entity["fire"]["offset"])
+        fire->offset = entity["fire"]["offset"].as<Vec2>();
+    if (entity["fire"]["dir"])
+        fire->dir = entity["fire"]["dir"].as<Vec2>();
+    if (entity["fire"]["fps"])
+        fire->fps = (ui8)entity["fire"]["fps"].as<int>();
+    if (entity["fire"]["freq"])
+        fire->freq = entity["fire"]["freq"].as<float>();
+    if (entity["fire"]["levels"])
+        fire->levels = entity["fire"]["levels"].as<int>();
+    if (not entity["fire"]["res"]) {
+        log::error("You created a fire component for " + s->getName(eid) + " but it has no res for the texture");
+        s->removeEntity(eid);
+        return;
+    }
+    fire->layer = (entity["fire"]["layer"]) ? entity["fire"]["layer"].as<int>() : 0;
+    fire->flame_tex_res = entity["fire"]["res"].as<str>();
+    Graphics::Texture::loadTexture(fire->flame_tex_res, fire->flame_tex);
+    System::Fire::init(fire);
+}

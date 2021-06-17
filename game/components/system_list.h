@@ -4,15 +4,22 @@
 
 #pragma once
 
-#include "s_collider.h"
-#include "s_texture.h"
-#include "s_actor.h"
-#include "s_tilemap.h"
-#include "s_light.h"
-#include "s_camera.h"
-#include "s_fire.h"
-
 #include "component_list.h"
+
+//Base
+#include "s_collider.h"
+#include "s_actor.h"
+#include "s_texture.h"
+#include "s_animation.h"
+#include "s_tilemap.h"
+#include "s_camera.h"
+#include "s_light.h"
+#include "s_timer.h"
+#include "s_patrol.h"
+
+//Extra
+#include "s_fire.h"
+#include "s_scene_transition.h"
 
 #define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
                                System::Camera::update(c);

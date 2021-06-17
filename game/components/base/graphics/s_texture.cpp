@@ -7,6 +7,7 @@
 #include "ftime.h"
 #include "r_renderer.h"
 #include "r_pipeline.h"
+#include "r_textures.h"
 
 #include "log.h"
 
@@ -94,13 +95,44 @@ void System::Texture::render(Config &c) {
     }
 }
 
-str Verse::System::Texture::getCurrKey() {
-    return curr_key;
-}
-
-void Verse::System::Texture::clean() {
+void System::Texture::clean() {
     curr_key = "";
     stopTimer(timer);
     timer = 0;
     queue_left = 0;
+}
+
+str System::Texture::getCurrKey() {
+    return curr_key;
+}
+
+void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Texture* texture = s->addComponent<Component::Texture>(eid);
+    if (not entity["texture"]["res"]) {
+        log::error("You created a texture component for " + s->getName(eid) + " but it has no res for the texture");
+        s->removeEntity(eid);
+        return;
+    }
+    texture->res = entity["texture"]["res"].as<str>();
+    Graphics::Texture::loadTexture(texture->res, texture);
+    if (entity["texture"]["transform"])
+        texture->transform = entity["texture"]["transform"].as<Rect2>();
+    if (entity["texture"]["offset"]) {
+        if (entity["texture"]["offset"].IsSequence()) {
+            texture->offset = entity["texture"]["offset"].as<std::vector<Vec2>>();
+        } else {
+            texture->offset.push_back(entity["texture"]["offset"].as<Vec2>());
+        }
+    } else {
+        texture->offset.push_back(Vec2(0,0));
+    }
+    if (entity["texture"]["layer"]) {
+        if (entity["texture"]["layer"].IsSequence()) {
+            texture->layer = entity["texture"]["layer"].as<std::vector<int>>();
+        } else {
+            texture->layer.push_back(entity["texture"]["layer"].as<int>());
+        }
+    } else {
+        texture->layer.push_back(0);
+    }
 }

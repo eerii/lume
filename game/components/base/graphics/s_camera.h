@@ -5,10 +5,13 @@
 #pragma once
 
 #include "config.h"
+#include "serialization.h"
 
 namespace Verse::System::Camera
 {
     void init(Component::Camera* camera);
     void update(Config &c);
     void shake(Config &c, ui16 ms, float strength);
+
+    void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
 }

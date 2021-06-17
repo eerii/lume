@@ -35,8 +35,11 @@
 - Window to scene coordinates
 - Tilemap editor
 - Save scenes
+- Component State
 #### Changed
 - Light now cleans every frame
+- Moved from serialization to each component
+- From passing state to actor, created state component
 
 ---
 

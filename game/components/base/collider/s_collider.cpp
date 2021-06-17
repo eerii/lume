@@ -11,10 +11,6 @@
 
 using namespace Verse;
 
-namespace {
-
-}
-
 std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityID eid) {
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     if (collider == nullptr)
@@ -121,20 +117,29 @@ void System::Collider::render(Config &c) {
     }
 }
 
-/*if (tiles.w == 0)
-    tiles = Rect2(i * tilemap->tex_size.x, j * tilemap->tex_size.y, tilemap->tex_size.x, tilemap->tex_size.y);
-
-if (i * tilemap->tex_size.x < tiles.x) {
-    tiles.w += tiles.x - i * tilemap->tex_size.x;
-    tiles.x = i * tilemap->tex_size.x;
+void System::Collider::load(EntityID eid, YAML::Node &entity, struct Scene *s, Config &c) {
+    Component::Collider* collider = s->addComponent<Component::Collider>(eid);
+    if (entity["collider"].IsMap()) {
+        if (entity["collider"]["transform"])
+            collider->transform = entity["collider"]["transform"].as<Rect2>();
+        collider->layer = System::Collider::Layers::Ground;
+        if (entity["collider"]["layer"]) {
+            auto it = std::find(System::Collider::layers_name.begin(),
+                                System::Collider::layers_name.end(),
+                                entity["collider"]["layer"].as<str>());
+            if (it != System::Collider::layers_name.end())
+                collider->layer = std::distance(System::Collider::layers_name.begin(), it);
+        }
+    } else {
+        if (entity["collider"].as<str>() == "tile") {
+            Component::Tilemap* tilemap = s->getComponent<Component::Tilemap>(eid);
+            if (not (entity["tilemap"]["pos"] and tilemap != nullptr)) {
+                log::error("You tried to add a tilemap collider for " + s->getName(eid) + ", but it doesn't have a tilemap component");
+                s->removeEntity(eid);
+                return;
+            }
+            collider->transform = Rect2(tilemap->pos, System::Tilemap::calculateSize(tilemap));
+            collider->layer = System::Collider::Layers::Ground;
+        }
+    }
 }
-if (j * tilemap->tex_size.y < tiles.y) {
-    tiles.h += tiles.y - j * tilemap->tex_size.y;
-    tiles.y = j * tilemap->tex_size.y;
-}
-if (i * tilemap->tex_size.x >= tiles.x + tilemap->tex_size.x) {
-    tiles.w += i * tilemap->tex_size.x - tiles.x;
-}
-if (j * tilemap->tex_size.y >= tiles.y + tilemap->tex_size.y) {
-    tiles.h += j * tilemap->tex_size.y - tiles.y;
-}*/

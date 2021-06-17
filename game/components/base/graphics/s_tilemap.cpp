@@ -11,33 +11,11 @@
 
 #include "r_pipeline.h"
 #include "r_renderer.h"
+#include "r_textures.h"
 #include "r_window.h"
 #include "stb_image.h"
 
 using namespace Verse;
-
-std::vector<std::vector<ui8>> System::Tilemap::load(str path) {
-    std::vector<std::vector<ui8>> tiles = {{}};
-
-    int w, h, ch;
-    ui8* map = stbi_load(path.c_str(), &w, &h, &ch, STBI_grey);
-    int pitch = w * sizeof(ui8);
-    
-    if (map == nullptr) {
-        log::error("The tilemap has no pixels");
-        return tiles;
-    }
-    
-    for (int j = 0; j < h; j++) {
-        tiles.push_back({});
-        for (int i = 0; i < w; i++) {
-            ui8 *color = (ui8*)map + j * pitch + i;
-            tiles[j].push_back(*color);
-        }
-    }
-    
-    return tiles;
-}
 
 void System::Tilemap::init(Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(*c.active_scene)) {
@@ -108,6 +86,54 @@ Vec2 System::Tilemap::calculateSize(Component::Tilemap* tmap) {
     size.y = (int)((tmap->tiles.size() - 1) * tmap->tex_size.y);
     
     return size;
+}
+
+std::vector<std::vector<ui8>> System::Tilemap::loadFromImage(str path) {
+    std::vector<std::vector<ui8>> tiles = {{}};
+
+    int w, h, ch;
+    ui8* map = stbi_load(path.c_str(), &w, &h, &ch, STBI_grey);
+    int pitch = w * sizeof(ui8);
+    
+    if (map == nullptr) {
+        log::error("The tilemap has no pixels");
+        return tiles;
+    }
+    
+    for (int j = 0; j < h; j++) {
+        tiles.push_back({});
+        for (int i = 0; i < w; i++) {
+            ui8 *color = (ui8*)map + j * pitch + i;
+            tiles[j].push_back(*color);
+        }
+    }
+    
+    return tiles;
+}
+
+void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Tilemap* tilemap = s->addComponent<Component::Tilemap>(eid);
+    if (not entity["tilemap"]["tiles"]) {
+        log::error("You created a tilemap component for " + s->getName(eid) + " but it has no tile attribute");
+        s->removeEntity(eid);
+        return;
+    }
+    tilemap->tile_res = entity["tilemap"]["tiles"].as<str>();
+    tilemap->tiles = System::Tilemap::loadFromImage(tilemap->tile_res);
+    if (not entity["tilemap"]["res"]) {
+        log::error("You created a tilemap component for " + s->getName(eid) + " but it has no res for the texture");
+        s->removeEntity(eid);
+        return;
+    }
+    tilemap->res = (entity["tilemap"]["res"].IsScalar()) ?
+                    std::vector<str>({entity["tilemap"]["res"].as<str>()}) :
+                    entity["tilemap"]["res"].as<std::vector<str>>();
+    Graphics::Texture::loadTexture(tilemap->res, tilemap);
+    if (entity["tilemap"]["pos"])
+        tilemap->pos = entity["tilemap"]["pos"].as<Vec2>();
+    if (entity["tilemap"]["tex_size"])
+        tilemap->tex_size = entity["tilemap"]["tex_size"].as<Vec2>();
+    tilemap->layer = (entity["tilemap"]["layer"]) ? entity["tilemap"]["layer"].as<int>() : 0;
 }
 
 void System::Tilemap::renderEditor(Config &c) {

@@ -5,10 +5,13 @@
 #pragma once
 
 #include "config.h"
+#include "serialization.h"
 
 namespace Verse::System::Texture
 {
     void render(Config &c);
-    str getCurrKey();
     void clean();
+    str getCurrKey();
+    
+    void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
 }

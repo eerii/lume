@@ -10,6 +10,7 @@
 #include "s_scene_transition.h"
 #include "s_fire.h"
 #include "r_textures.h"
+#include "controller_list.h"
 
 using namespace Verse;
 using namespace State;
@@ -22,13 +23,14 @@ void System::Actor::update(Config &c) {
     }
 }
 
-bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
+bool System::Actor::move(Config &c, EntityID eid) {
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     
     PlayerStates* p_state = nullptr;
-    if (std::holds_alternative<PlayerStates*>(state))
-        p_state = std::get<PlayerStates*>(state);
+    Component::State* state = c.active_scene->getComponent<Component::State>(eid);
+    if (state != nullptr and std::holds_alternative<PlayerStates*>(state->state))
+        p_state = std::get<PlayerStates*>(state->state);
 
     //Gravity
     bool grounded = (p_state != nullptr) ?
@@ -51,7 +53,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.x != 0) {
         collider->transform += Vec2::i * sx;
         
-        ui8 colliding = collisions(c, eid, state);
+        ui8 colliding = collisions(c, eid);
         
         if (colliding == Colliding::Exit)
             return false;
@@ -71,7 +73,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
             if (to_move.y == 0) {
                 collider->transform += Vec2::j;
                 
-                ui8 colliding = collisions(c, eid, state);
+                ui8 colliding = collisions(c, eid);
                 
                 if (colliding == Colliding::Exit)
                     return false;
@@ -89,7 +91,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     while (to_move.y != 0) {
         collider->transform += Vec2::j * sy;
         
-        ui8 colliding = collisions(c, eid, state);
+        ui8 colliding = collisions(c, eid);
         
         if (colliding == Colliding::Exit)
             return false;
@@ -123,7 +125,7 @@ bool System::Actor::move(Config &c, EntityID eid, State::StateType state) {
     return true;
 }
 
-ui8 System::Actor::collisions(Config &c, EntityID eid, State::StateType state, bool perform_actions) {
+ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
     System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
     
     bool solid = false;
@@ -189,4 +191,55 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, State::StateType state, b
     }
     
     return solid ? Colliding::Solid : Colliding::Transparent;
+}
+
+void System::Actor::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Actor* actor = s->addComponent<Component::Actor>(eid);
+    if (entity["actor"]["controller"]) {
+        actor_move_func move = &System::Actor::move;
+        if (entity["actor"]["controller"].as<str>() == "player") {
+            actor->controller = PLAYER_CONTROLLER;
+            actor->damage = PLAYER_DAMAGE;
+        }
+        if (entity["actor"]["controller"].as<str>() == "free")
+            actor->controller = FREE_ACTOR_CONTROLLER;
+        if (entity["actor"]["controller"].as<str>() == "moving_platform")
+            actor->controller = MOVING_PLATFORM_CONTROLLER;
+        if (entity["actor"]["controller"].as<str>() == "falling_platform")
+            actor->controller = FALLING_PLATFORM_CONTROLLER;
+        if (entity["actor"]["controller"].as<str>() == "switch_platform")
+            actor->controller = SWITCH_PLATFORM_CONTROLLER;
+    }
+    if (entity["actor"]["max_move_speed"])
+        actor->max_move_speed = entity["actor"]["max_move_speed"].as<int>();
+    if (entity["actor"]["max_fall_speed"])
+        actor->max_fall_speed = entity["actor"]["max_fall_speed"].as<int>();
+    if (entity["actor"]["max_move_speed"] and not entity["actor"]["max_fall_speed"])
+        actor->max_fall_speed = entity["actor"]["max_move_speed"].as<int>();
+    if (entity["actor"]["acc_ground"])
+        actor->acc_ground = entity["actor"]["acc_ground"].as<int>();
+    if (entity["actor"]["friction_ground"])
+        actor->friction_ground = entity["actor"]["friction_ground"].as<int>();
+    if (entity["actor"]["friction_air"])
+        actor->friction_air = entity["actor"]["friction_air"].as<int>();
+    if (entity["actor"]["friction_extra"])
+        actor->friction_extra = entity["actor"]["friction_extra"].as<int>();
+    if (entity["actor"]["friction_air"] and not entity["actor"]["friction_extra"])
+        actor->friction_extra = entity["actor"]["friction_air"].as<int>();
+    if (entity["actor"]["has_gravity"])
+        actor->has_gravity = entity["actor"]["has_gravity"].as<bool>();
+    if (entity["actor"]["collision_mask"]) {
+        if (entity["actor"]["collision_mask"].IsScalar()) {
+            auto it = std::find(System::Collider::layers_name.begin(), System::Collider::layers_name.end(),
+                                entity["actor"]["collision_mask"].as<str>());
+            if (it != System::Collider::layers_name.end())
+                actor->collision_mask.set(std::distance(System::Collider::layers_name.begin(), it));
+        } else {
+            for (str m : entity["actor"]["collision_mask"].as<std::vector<str>>()) {
+                auto it = std::find(System::Collider::layers_name.begin(), System::Collider::layers_name.end(), m);
+                if (it != System::Collider::layers_name.end())
+                    actor->collision_mask.set(std::distance(System::Collider::layers_name.begin(), it));
+            }
+        }
+    }
 }

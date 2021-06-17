@@ -32,7 +32,8 @@ namespace {
     Component::Collider* collider;
     Component::Light* light;
 
-    State::PlayerStates* state;
+    Component::State* c_state;
+    State::PlayerStates * state;
 
     bool tried_jumping = false;
     bool previously_on_air = false;
@@ -51,7 +52,7 @@ namespace {
 
 bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func actor_move) {
     if (scene != c.active_scene or collider == nullptr or actor == nullptr or anim == nullptr or
-        tex == nullptr or fire == nullptr or light == nullptr) {
+        tex == nullptr or fire == nullptr or light == nullptr or c_state == nullptr) {
         scene = c.active_scene;
         collider = c.active_scene->getComponent<Component::Collider>(eid);
         actor = c.active_scene->getComponent<Component::Actor>(eid);
@@ -59,10 +60,12 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
         tex = c.active_scene->getComponent<Component::Texture>(eid);
         fire = c.active_scene->getComponent<Component::Fire>(eid);
         light = c.active_scene->getComponent<Component::Light>(eid);
+        c_state = c.active_scene->getComponent<Component::State>(eid);
     }
     
     if (state == nullptr)
-        resetState(c); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon and change in delete state pls
+        resetState(c, eid); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon and change in delete state pls
+    
     if (previous_game_speed != c.game_speed)
         state->move.updateStates(IdleState(), AcceleratingState(100), MovingState(), DeceleratingState(EPSILON * c.game_speed)); //TODO: Change too
     
@@ -141,7 +144,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //ACTOR MOVE FUNCTION
-    actor_move(c, eid, state);
+    actor_move(c, eid);
     bool on_ground = state->jump.is(GroundedState()) or state->jump.is(CrouchingState());
     
     
@@ -261,7 +264,7 @@ void Controller::Player::respawn(Config &c) {
 
 bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {
     collider->transform += Vec2::j * down;
-    ui8 colliding = System::Actor::collisions(c, eid, state, false);
+    ui8 colliding = System::Actor::collisions(c, eid, false);
     collider->transform -= Vec2::j * down;
     
     return colliding == System::Actor::Colliding::Solid;
@@ -300,7 +303,14 @@ str Controller::Player::getCurrentMoveState() {
     return (state == nullptr) ? "" : CURR_STATE(state->move);
 }
 
-void Controller::Player::resetState(Config &c) {
+void Controller::Player::resetState(Config &c, EntityID eid) {
     delete state;
     state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON * c.game_speed); //TODO: Change
+    
+    c_state = c.active_scene->getComponent<Component::State>(eid);
+    if (c_state == nullptr) {
+        log::error("The state component in the player is null!");
+        return;
+    }
+    c_state->state = state;
 }

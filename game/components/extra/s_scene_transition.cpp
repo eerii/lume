@@ -96,8 +96,19 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
             }
         }
         
-        Controller::Player::resetState(c);
+        Controller::Player::resetState(c, new_player);
         System::Texture::clean();
         System::Tilemap::init(c);
     }
+}
+
+void System::SceneTransition::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::SceneTransition* transition = s->addComponent<Component::SceneTransition>(eid);
+    if (not entity["scene_transition"]["scene"]) {
+        log::error("You created a scene transition component for " + s->getName(eid) + " but it has no scene url");
+        s->removeEntity(eid);
+        return;
+    }
+    transition->scene_name = entity["scene_transition"]["scene"].as<str>();
+    transition->to_pos =  entity["scene_transition"]["pos"] ? entity["scene_transition"]["pos"].as<Vec2>() : Vec2(0,0);
 }

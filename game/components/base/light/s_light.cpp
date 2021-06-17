@@ -49,3 +49,11 @@ void System::Light::render(Config &c, ui8 pid) {
     glUniform1i(glGetUniformLocation(pid, "light_size"), (int)(light_sources.size()));
     glUniform1f(glGetUniformLocation(pid, "light_distortion"), (float)(c.resolution.x + 2*BORDER_WIDTH) / (float)(c.resolution.y + 2*BORDER_WIDTH));
 }
+
+void System::Light::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Light* light = s->addComponent<Component::Light>(eid);
+    if (entity["light"]["pos"])
+        light->pos = entity["light"]["pos"].as<Vec2>();
+    if (entity["light"]["radius"])
+        light->radius = entity["light"]["radius"].as<int>();
+}
