@@ -11,6 +11,9 @@
 #include "r_renderer.h"
 #include "controller_list.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 using namespace Verse;
 
 namespace {
@@ -88,4 +91,10 @@ void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
             camera->controller = CAMERA_FREE_CONTROLLER;
     }
     System::Camera::init(camera);
+}
+
+void System::Camera::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    
+#endif
 }

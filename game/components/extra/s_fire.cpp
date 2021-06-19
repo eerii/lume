@@ -10,6 +10,9 @@
 #include "r_textures.h"
 #include "r_renderer.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 using namespace Verse;
 
 namespace {
@@ -75,4 +78,10 @@ void System::Fire::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     fire->flame_tex_res = entity["fire"]["res"].as<str>();
     Graphics::Texture::loadTexture(fire->flame_tex_res, fire->flame_tex);
     System::Fire::init(fire);
+}
+
+void System::Fire::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    
+#endif
 }

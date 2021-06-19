@@ -15,7 +15,16 @@
 #include "r_window.h"
 #include "stb_image.h"
 
+#include "gui.h"
+#include "gui_types.h"
+#include "gui_tilemap_editor.h"
+
 using namespace Verse;
+
+namespace {
+    Component::Camera* prev_cam; //TODO: CHANGE
+    Component::Camera* tile_cam;
+}
 
 void System::Tilemap::init(Config &c) {
     for (EntityID e : SceneView<Component::Tilemap>(*c.active_scene)) {
@@ -84,6 +93,34 @@ Vec2 System::Tilemap::calculateSize(Component::Tilemap* tmap) {
     return size;
 }
 
+void System::Tilemap::renderEditor(Config &c) {
+    Vec2 t_size = calculateSize(c.tme_curr_tmap);
+    Vec2 t_pos = c.tme_curr_tmap->pos;
+    Graphics::Renderer::renderDebugCollider(c, Rect2(t_pos.x, t_pos.y, t_size.x, t_size.y+1), false);
+    
+    Vec2 m_pos = Graphics::Window::windowToScene(c, Input::mouse());
+    Vec2 rel_pos = m_pos - t_pos;
+    
+    if (rel_pos.x >= 0 and rel_pos.y >= 0 and rel_pos.x < t_size.x and rel_pos.y < t_size.y) {
+        Vec2 curr_tile = Vec2(floor((float)rel_pos.x / (float)c.tme_curr_tmap->tex_size.x),
+                              floor((float)rel_pos.y / (float)c.tme_curr_tmap->tex_size.y));
+        Vec2 curr_pos = t_pos + Vec2(curr_tile.x * c.tme_curr_tmap->tex_size.x,
+                                     curr_tile.y * c.tme_curr_tmap->tex_size.y);
+        
+        Graphics::Renderer::renderDebugCollider(c, Rect2(curr_pos, c.tme_curr_tmap->tex_size), false);
+        
+        if (Input::down((ui8)Input::MouseButton::Left)) {
+            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 0;
+            createVertices(c, c.tme_curr_tmap);
+        }
+        
+        if (Input::down((ui8)Input::MouseButton::Right)) {
+            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 255;
+            createVertices(c, c.tme_curr_tmap);
+        }
+    }
+}
+
 std::vector<std::vector<ui8>> System::Tilemap::loadFromImage(str path) {
     std::vector<std::vector<ui8>> tiles = {{}};
 
@@ -132,30 +169,123 @@ void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     tilemap->layer = (entity["tilemap"]["layer"]) ? entity["tilemap"]["layer"].as<int>() : 0;
 }
 
-void System::Tilemap::renderEditor(Config &c) {
-    Vec2 t_size = calculateSize(c.tme_curr_tmap);
-    Vec2 t_pos = c.tme_curr_tmap->pos;
-    Graphics::Renderer::renderDebugCollider(c, Rect2(t_pos.x, t_pos.y, t_size.x, t_size.y+1), false);
+void System::Tilemap::save(Component::Tilemap *tile, str path, std::vector<str> &key) {
+    key[2] = "tilemap";
     
-    Vec2 m_pos = Graphics::Window::windowToScene(c, Input::mouse());
-    Vec2 rel_pos = m_pos - t_pos;
+    key[3] = "res";
+    if (tile->res.size() == 1)
+        Serialization::appendYAML(path, key, (str)tile->res[0], true);
+    else
+        Serialization::appendYAML(path, key, tile->res, true);
     
-    if (rel_pos.x >= 0 and rel_pos.y >= 0 and rel_pos.x < t_size.x and rel_pos.y < t_size.y) {
-        Vec2 curr_tile = Vec2(floor((float)rel_pos.x / (float)c.tme_curr_tmap->tex_size.x),
-                              floor((float)rel_pos.y / (float)c.tme_curr_tmap->tex_size.y));
-        Vec2 curr_pos = t_pos + Vec2(curr_tile.x * c.tme_curr_tmap->tex_size.x,
-                                     curr_tile.y * c.tme_curr_tmap->tex_size.y);
-        
-        Graphics::Renderer::renderDebugCollider(c, Rect2(curr_pos, c.tme_curr_tmap->tex_size), false);
-        
-        if (Input::down((ui8)Input::MouseButton::Left)) {
-            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 0;
-            createVertices(c, c.tme_curr_tmap);
-        }
-        
-        if (Input::down((ui8)Input::MouseButton::Right)) {
-            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 255;
-            createVertices(c, c.tme_curr_tmap);
+    key[3] = "tiles";
+    Serialization::appendYAML(path, key, (str)tile->tile_res, true);
+    
+    key[3] = "pos";
+    Serialization::appendYAML(path, key, tile->pos, true);
+    
+    key[3] = "tex_size";
+    Serialization::appendYAML(path, key, tile->tex_size, true);
+    
+    key[3] = "layer";
+    Serialization::appendYAML(path, key, tile->layer, true);
+}
+
+void System::Tilemap::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    Component::Tilemap* tile = c.active_scene->getComponent<Component::Tilemap>(eid);
+    
+    if (tile_cam == nullptr) {
+        for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
+            if (c.active_scene->getName(e) != "free_camera")
+                continue;
+            tile_cam = c.active_scene->getComponent<Component::Camera>(e); //TODO: CHANGE THIS AND SPAWN A CAMERA
         }
     }
+    
+    Gui::tilemapEditor(c, eid);
+    
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("level");
+    
+    ImGui::TableSetColumnIndex(1);
+    float line_height = ImGui::GetStyle().FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
+    ImVec2 button_size = { line_height + 3.0f, line_height };
+    str button_label = "L##tile" + std::to_string(eid);
+    if (ImGui::Button(button_label.c_str(), button_size)) {
+        std::vector<std::vector<ui8>> loaded_tiles = loadFromImage(tile->tile_res);
+        if (loaded_tiles.size() > 1) {
+            tile->tiles = loaded_tiles;
+            System::Tilemap::createVertices(c, tile);
+        }
+    }
+    
+    ImGui::SameLine();
+    str tileres_label = "##tileres" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    ImGui::InputText(tileres_label.c_str(), &tile->tile_res);
+    ImGui::TableNextRow();
+    
+    
+    for (int i = 0; i < tile->res.size(); i++) {
+        str label = "res " + std::to_string(i);
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("%s", label.c_str());
+        
+        ImGui::TableSetColumnIndex(1);
+        float line_height = ImGui::GetStyle().FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
+        ImVec2 button_size = { line_height + 3.0f, line_height };
+        
+        button_label = "L##res" + std::to_string(i) + std::to_string(eid);
+        if (ImGui::Button(button_label.c_str(), button_size)) {
+            Graphics::Texture::loadTexture(tile->res, tile);
+        }
+        
+        ImGui::SameLine();
+        button_label = "X##res" + std::to_string(i) + std::to_string(eid);
+        if (ImGui::Button(button_label.c_str(), button_size)) {
+            tile->res.erase(tile->res.begin() + i);
+            Graphics::Texture::loadTexture(tile->res, tile);
+        }
+        
+        ImGui::SameLine();
+        str res_label = "##res" + std::to_string(i) + std::to_string(eid);
+        ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+        ImGui::InputText(res_label.c_str(), &tile->res[i]);
+        ImGui::TableNextRow();
+    }
+    
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::AlignTextToFramePadding();
+    
+    if (ImGui::SmallButton("add res")) {
+        tile->res.push_back(tile->res[0]);
+        Graphics::Texture::loadTexture(tile->res, tile);
+        System::Tilemap::createVertices(c, tile);
+    }
+    
+    ImGui::SameLine();
+    
+    if (c.tme_active and c.tme_curr_tmap == tile) {
+        if (ImGui::SmallButton("save")) {
+            c.tme_active = false;
+            c.use_light = true;
+            c.tme_curr_tmap = nullptr;
+            c.tme_curr_id = 0;
+            c.active_camera = prev_cam;
+        }
+    } else {
+        if (ImGui::SmallButton("edit")) {
+            c.tme_active = true;
+            c.use_light = false;
+            c.tme_curr_tmap = tile;
+            c.tme_curr_id = eid;
+            prev_cam = c.active_camera;
+            tile_cam->pos = prev_cam->pos;
+            c.active_camera = tile_cam;
+        }
+    }
+#endif
 }

@@ -12,6 +12,9 @@
 #include "r_textures.h"
 #include "controller_list.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 using namespace Verse;
 using namespace State;
 
@@ -242,4 +245,10 @@ void System::Actor::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
             }
         }
     }
+}
+
+void System::Actor::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    
+#endif
 }

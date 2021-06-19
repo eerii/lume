@@ -8,6 +8,8 @@
 #include "r_renderer.h"
 
 #include "log.h"
+#include "gui.h"
+#include "gui_types.h"
 
 using namespace Verse;
 
@@ -142,4 +144,39 @@ void System::Collider::load(EntityID eid, YAML::Node &entity, struct Scene *s, C
             collider->layer = System::Collider::Layers::Ground;
         }
     }
+}
+
+void System::Collider::save(Component::Collider *col, str path, std::vector<str> &key, bool tile) {
+    key[2] = "collider";
+    
+    if (tile) {
+        std::vector<str> tile_key = {key[0], key[1], key[2]};
+        Serialization::appendYAML(path, tile_key, (str)"tile", true);
+        return;
+    }
+    
+    key[3] = "transform";
+    Serialization::appendYAML(path, key, col->transform, true);
+    
+    key[3] = "layer";
+    Serialization::appendYAML(path, key, (str)System::Collider::layers_name[col->layer], true);
+}
+
+void System::Collider::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
+    
+    Verse::Gui::draw_vec2(*col->transform.x, *col->transform.y, "pos", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(*col->transform.w, *col->transform.h, "size", eid);
+    ImGui::TableNextRow();
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("layer");
+    
+    ImGui::TableSetColumnIndex(1);
+    str layer_label = "##collayer" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    ImGui::Combo(layer_label.c_str(), col->layer, System::Collider::layers_name);
+#endif
 }

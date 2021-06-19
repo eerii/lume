@@ -11,6 +11,9 @@
 
 #include "log.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 using namespace Verse;
 
 namespace {
@@ -135,4 +138,72 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     } else {
         texture->layer.push_back(0);
     }
+}
+
+void System::Texture::save(Component::Texture *tex, str path, std::vector<str> &key) {
+    key[2] = "texture";
+    
+    key[3] = "res";
+    Serialization::appendYAML(path, key, (str)tex->res, true);
+    
+    key[3] = "transform";
+    Serialization::appendYAML(path, key, tex->transform, true);
+    
+    key[3] = "layer";
+    if (tex->layer.size() == 1)
+        Serialization::appendYAML(path, key, tex->layer[0], true);
+    else
+        Serialization::appendYAML(path, key, tex->layer, true);
+    
+    key[3] = "offset";
+    if (tex->offset.size() == 1) {
+        if (tex->offset[0] != Vec2(0,0))
+            Serialization::appendYAML(path, key, tex->offset[0], true);
+    } else {
+        Serialization::appendYAML(path, key, tex->offset, true);
+    }
+}
+
+void System::Texture::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(eid);
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("res");
+    
+    ImGui::TableSetColumnIndex(1);
+    float line_height = ImGui::GetStyle().FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
+    ImVec2 button_size = { line_height + 3.0f, line_height };
+    if (ImGui::Button("L", button_size))
+        Graphics::Texture::loadTexture(tex->res, tex);
+    
+    ImGui::SameLine();
+    str res_label = "##res" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    ImGui::InputText(res_label.c_str(), &tex->res);
+    
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(*tex->transform.x, *tex->transform.y, "pos", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(*tex->transform.w, *tex->transform.h, "size", eid);
+    ImGui::TableNextRow();
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::AlignTextToFramePadding();
+    if (ImGui::TreeNode("layers")) {
+        ImGui::TableNextRow();
+        
+        for (int i = 0; i < tex->offset.size(); i++) {
+            str label = "offset " + std::to_string(i);
+            Verse::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label, eid);
+            ImGui::TableNextRow();
+            
+            Verse::Gui::draw_int(tex->layer[i], "layer " + std::to_string(i), eid);
+            ImGui::TableNextRow();
+        }
+        
+        ImGui::TreePop();
+    }
+#endif
 }

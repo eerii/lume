@@ -14,6 +14,7 @@ namespace Verse::System::Actor
     ui8 collisions(Config &c, EntityID eid, bool perform_actions = true);
 
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
+    void gui(Config &c, EntityID eid);
 
     enum Colliding {
         Solid,

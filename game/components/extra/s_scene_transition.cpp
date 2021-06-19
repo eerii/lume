@@ -11,6 +11,9 @@
 #include "s_texture.h"
 #include "player_controller.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 using namespace Verse;
 
 void System::SceneTransition::handle(Config &c, Component::SceneTransition* transition) {
@@ -111,4 +114,10 @@ void System::SceneTransition::load(EntityID eid, YAML::Node &entity, Scene *s, C
     }
     transition->scene_name = entity["scene_transition"]["scene"].as<str>();
     transition->to_pos =  entity["scene_transition"]["pos"] ? entity["scene_transition"]["pos"].as<Vec2>() : Vec2(0,0);
+}
+
+void System::SceneTransition::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    
+#endif
 }

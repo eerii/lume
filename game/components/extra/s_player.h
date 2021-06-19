@@ -7,11 +7,8 @@
 #include "config.h"
 #include "serialization.h"
 
-namespace Verse::System::Fire
+namespace Verse::System::Player
 {
-    void init(Component::Fire* fire);
-    void render(Config &c);
-
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
     void gui(Config &c, EntityID eid);
 }

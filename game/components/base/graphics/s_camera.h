@@ -14,4 +14,5 @@ namespace Verse::System::Camera
     void shake(Config &c, ui16 ms, float strength);
 
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
+    void gui(Config &c, EntityID eid);
 }

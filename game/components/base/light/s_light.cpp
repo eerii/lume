@@ -10,6 +10,9 @@
 #include "r_opengl.h"
 #include "r_renderer.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 #define LIGHT_PERIOD 5
 #define LIGHT_VARIATION 5
 #define LIGHT_CENTER_RADIUS 0.25
@@ -56,4 +59,10 @@ void System::Light::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
         light->pos = entity["light"]["pos"].as<Vec2>();
     if (entity["light"]["radius"])
         light->radius = entity["light"]["radius"].as<int>();
+}
+
+void System::Light::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    
+#endif
 }

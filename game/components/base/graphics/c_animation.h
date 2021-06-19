@@ -10,7 +10,7 @@
 
 namespace Verse::Component
 {
-    struct Frame {
+    struct AnimationFrame {
         std::vector<ui16> index;
         std::vector<ui16> ms;
     };
@@ -22,7 +22,7 @@ namespace Verse::Component
         std::vector<str> queue;
         bool change_now = false;
         
-        std::map<str, Frame> frames;
+        std::map<str, AnimationFrame> frames;
         
         ui16 size;
     };

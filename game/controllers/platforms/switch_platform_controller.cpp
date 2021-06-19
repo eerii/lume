@@ -30,7 +30,10 @@ bool Controller::SwitchPlatform::controller(Config &c, EntityID eid, actor_move_
             
             tex->transform.size = Vec2::zero; //TODO: Unactive texture animation?
         } else {
-            col->layer = platform_layer[eid];
+            if (platform_layer.find(eid) != platform_layer.end())
+                col->layer = platform_layer[eid];
+            else
+                col->layer = System::Collider::Layers::Platform;
             platform_layer.erase(eid);
             
             tex->transform.size = col->transform.size;

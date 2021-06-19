@@ -14,8 +14,10 @@ namespace Verse::System::Tilemap
     void render(Config &c);
     Vec2 calculateSize(Component::Tilemap* tmap);
 
+    void renderEditor(Config &c);
+
     std::vector<std::vector<ui8>> loadFromImage(str path);
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
-
-    void renderEditor(Config &c);
+    void save(Component::Tilemap* tile, str path, std::vector<str> &key);
+    void gui(Config &c, EntityID eid);
 }

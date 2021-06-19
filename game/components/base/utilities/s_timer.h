@@ -10,4 +10,5 @@
 namespace Verse::System::Timer
 {
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
+    void gui(Config &c, EntityID eid);
 }

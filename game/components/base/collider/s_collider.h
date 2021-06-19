@@ -43,4 +43,6 @@ namespace Verse::System::Collider
     void render(Config &c);
 
     void load(EntityID eid, YAML::Node &entity, struct Scene *s, Config &c);
+    void save(Component::Collider* col, str path, std::vector<str> &key, bool tile);
+    void gui(Config &c, EntityID eid);
 }

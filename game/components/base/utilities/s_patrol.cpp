@@ -4,6 +4,9 @@
 
 #include "s_patrol.h"
 
+#include "gui.h"
+#include "gui_types.h"
+
 using namespace Verse;
 
 void System::Patrol::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
@@ -14,4 +17,10 @@ void System::Patrol::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
         if (entity["patrol"]["points"].IsScalar())
             patrol->points = {entity["patrol"]["points"].as<Vec2>()};
     }
+}
+
+void System::Patrol::gui(Config &c, EntityID eid) {
+#ifndef DISABLE_GUI
+    
+#endif
 }

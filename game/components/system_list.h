@@ -9,6 +9,7 @@
 //Base
 #include "s_collider.h"
 #include "s_actor.h"
+#include "s_state.h"
 #include "s_texture.h"
 #include "s_animation.h"
 #include "s_tilemap.h"
@@ -20,6 +21,7 @@
 //Extra
 #include "s_fire.h"
 #include "s_scene_transition.h"
+#include "s_player.h"
 
 #define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
                                System::Camera::update(c);
