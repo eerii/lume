@@ -15,10 +15,10 @@
 #include "c_light.h"
 #include "c_timer.h"
 #include "c_patrol.h"
+#include "c_scene_transition.h"
 
 //Extra
 #include "c_fire.h"
-#include "c_scene_transition.h"
 #include "c_player.h"
 
 #define COMPONENTS logComponentID(Collider); \
@@ -31,10 +31,9 @@
                    logComponentID(Light); \
                    logComponentID(Timer); \
                    logComponentID(Patrol); \
-                   logComponentID(Fire); \
                    logComponentID(SceneTransition); \
+                   logComponentID(Fire); \
                    logComponentID(Player); \
 
 #define USE_C_FIRE
-#define USE_C_SCENE_TRANSITION
 #define USE_C_PLAYER

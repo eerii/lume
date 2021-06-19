@@ -17,10 +17,10 @@
 #include "s_light.h"
 #include "s_timer.h"
 #include "s_patrol.h"
+#include "s_scene_transition.h"
 
 //Extra
 #include "s_fire.h"
-#include "s_scene_transition.h"
 #include "s_player.h"
 
 #define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
