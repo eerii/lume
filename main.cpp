@@ -15,12 +15,9 @@
 #include "emscripten.h"
 #endif
 
-//#include "state_machines_list.h"
-//#include "state_table.h"
+#include "r_font.h"
 
 using namespace Verse;
-//using namespace State;
-//using namespace Player;
 
 namespace {
     Config config;
@@ -36,7 +33,7 @@ int main(int argc, const char * argv[]) {
     
     config = {
         .name = "Proxecto Lume",
-        .version = "0.1.11",
+        .version = "0.1.13",
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -83,12 +80,12 @@ int main(int argc, const char * argv[]) {
     
     config.active_scene = scene;
     
-    
-    //Types eventTypes = Types<JumpEvent, ReleaseJumpEvent, PeakJumpEvent, FallEvent, DownEvent, ReleaseDownEvent, TouchGroundEvent, TimeoutEvent>{};
-    //std::cout << generatePrettyTransitionTable(JumpSM::getStateTypes(), eventTypes).c_str() << std::endl;
-    //Types eventTypes = Types<MoveEvent, StopMovingEvent>{};
-    //std::cout << generatePrettyTransitionTable(MoveSM::getStateTypes(), eventTypes).c_str() << std::endl;
-    
+    EntityID test_text = scene->createEntity("test_text");
+    Component::Text* text = scene->addComponent<Component::Text>(test_text);
+    text->font = new FontInfo();
+    Graphics::Font::load(text->font, "res/fonts/test.ttf");
+    Graphics::Font::render(text, "hello there", Vec2(100, 40), 20);
+    text->transform = Rect2(64, 80, 100, 40);
     
 #ifdef __EMSCRIPTEN__
     while (true)

@@ -10,6 +10,8 @@
 #include "r_textures.h"
 #include "r_renderer.h"
 
+#include "fmath.h"
+
 #include "gui.h"
 #include "gui_types.h"
 
@@ -33,6 +35,9 @@ void System::Fire::init(Component::Fire *fire) {
 #endif
     
     Graphics::Texture::createGradient(*fire->transform.w, fire->g_tex);
+    
+    Math::perlinNoise(fire->transform.size, Vec2(0,0), 0, 0, fire->p_data);
+    fire->p_tex = Graphics::Renderer::createTexture(fire->p_data, fire->transform.size.x, fire->transform.size.y, false);
 }
 
 void System::Fire::render(Config &c) {
@@ -45,12 +50,8 @@ void System::Fire::render(Config &c) {
         fire->noise_time += ((float)Time::delta / 1000.0f) * c.game_speed;
         if (fire->noise_time > (1.0f / (float)fire->fps)) {
             fire->noise_offset++;
-            Graphics::Texture::createPerlinNoise(fire->transform.size,
-                                                 fire->dir * fire->noise_offset,
-                                                 fire->freq,
-                                                 fire->levels,
-                                                 fire->p_data,
-                                                 fire->p_tex);
+            Graphics::Texture::createPerlinNoise(fire->transform.size, fire->dir * fire->noise_offset, fire->freq,
+                                                 fire->levels, fire->p_data, fire->p_tex);
             
             fire->noise_time = 0;
         }

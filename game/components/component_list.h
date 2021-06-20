@@ -11,6 +11,7 @@
 #include "c_texture.h"
 #include "c_animation.h"
 #include "c_tilemap.h"
+#include "c_text.h"
 #include "c_camera.h"
 #include "c_light.h"
 #include "c_timer.h"
@@ -27,6 +28,7 @@
                    logComponentID(Texture); \
                    logComponentID(Animation); \
                    logComponentID(Tilemap); \
+                   logComponentID(Text); \
                    logComponentID(Camera); \
                    logComponentID(Light); \
                    logComponentID(Timer); \

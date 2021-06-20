@@ -3,6 +3,15 @@
 ## **0.2** ~ Light
 
 
+### **[0.1.13]** ~ Text _2021-06-20_
+#### Added
+- Inluded stb font
+- Load true type fonts
+- Text component
+- Font shader
+- Render fonts!
+
+
 ### **[0.1.12]** ~ Platforms _2021-06-09_
 #### Added
 - Jump from bellow platform
@@ -22,7 +31,7 @@
 
 ---
 
-### **[0.1.11]** ~ Editor _2021-06-06_
+### **[0.1.11]** ~ Editor _2021-06-19_
 #### Added
 - Improved entities GUI
 - Remove entities and components

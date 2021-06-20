@@ -13,6 +13,7 @@
 #include "s_texture.h"
 #include "s_animation.h"
 #include "s_tilemap.h"
+#include "s_text.h"
 #include "s_camera.h"
 #include "s_light.h"
 #include "s_timer.h"
@@ -29,6 +30,7 @@
 #define RENDER_SYSTEMS System::Tilemap::render(c); \
                        if (not c.tme_active) { \
                            System::Texture::render(c); \
+                           System::Text::render(c); \
                            System::Fire::render(c); \
                        }
                        
