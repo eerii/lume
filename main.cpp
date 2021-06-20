@@ -80,13 +80,6 @@ int main(int argc, const char * argv[]) {
     
     config.active_scene = scene;
     
-    EntityID test_text = scene->createEntity("test_text");
-    Component::Text* text = scene->addComponent<Component::Text>(test_text);
-    text->font = new FontInfo();
-    Graphics::Font::load(text->font, "res/fonts/test.ttf");
-    Graphics::Font::render(text, "hello there", Vec2(100, 40), 20);
-    text->transform = Rect2(64, 80, 100, 40);
-    
 #ifdef __EMSCRIPTEN__
     while (true)
         emscripten_set_main_loop(game_loop_emscripten, 0, 1);

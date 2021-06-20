@@ -28,7 +28,13 @@ namespace Verse::Component
         
         ui32 tex_id;
         Rect2 transform;
+        int layer;
         
         int line_height;
+        
+        bool solid_color = true;
+        float r, g, b;
+        
+        str text;
     };
 }

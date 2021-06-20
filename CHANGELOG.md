@@ -3,6 +3,11 @@
 ## **0.2** ~ Light
 
 
+### **[0.1.14]** ~ Name _2021-06-20_
+#### Added
+
+---
+
 ### **[0.1.13]** ~ Text _2021-06-20_
 #### Added
 - Inluded stb font
@@ -10,7 +15,10 @@
 - Text component
 - Font shader
 - Render fonts!
+- Text colors and render modes
+- Text serialization
 
+---
 
 ### **[0.1.12]** ~ Platforms _2021-06-09_
 #### Added
@@ -27,7 +35,6 @@
 - **Complete camera overhaul**
 - Adaptive physics timestep depending on velocity (prevents camera jitter)
 - Lookahead improvements
-
 
 ---
 

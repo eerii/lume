@@ -3,7 +3,11 @@
 //all rights reserved uwu
 
 #include "s_text.h"
+#include "r_font.h"
 #include "r_renderer.h"
+
+#include "gui.h"
+#include "gui_types.h"
 
 using namespace Verse;
 
@@ -22,6 +26,40 @@ void System::Text::render(Config &c) {
         
         glm::mat4 model = Graphics::Renderer::matModel2D(text->transform.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), text->transform.size);
         
-        Graphics::Renderer::renderText(c, text->tex_id, model, v, -10);
+        Graphics::Renderer::renderText(c, text->tex_id, model, v, text->layer, text->r, text->g, text->b, text->solid_color);
     }
+}
+
+void System::Text::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    Component::Text* text = s->addComponent<Component::Text>(eid);
+    if (not entity["text"]["font"]) {
+        log::error("You created a text component for " + s->getName(eid) + " but it has no font");
+        s->removeEntity(eid);
+        return;
+    }
+    text->font = new FontInfo();
+    Graphics::Font::load(text->font, entity["text"]["font"].as<str>());
+    
+    if (entity["text"]["transform"]) {
+        text->transform = entity["text"]["transform"].as<Rect2>();
+        text->bitmap_size = text->transform.size;
+    }
+    
+    text->layer = (entity["text"]["layer"]) ? entity["text"]["layer"].as<int>() : -10;
+    text->line_height = (entity["text"]["line_height"]) ? entity["text"]["line_height"].as<int>() : 16;
+    
+    text->r = 1; text->g = 1; text->b = 1;
+    if (entity["text"]["color"] and entity["text"]["color"].IsSequence()) {
+        std::vector<float> color = entity["text"]["color"].as<std::vector<float>>();
+        if (color.size() >= 3) {
+            text->r = color[0];
+            text->g = color[1];
+            text->b = color[2];
+        }
+    }
+    
+    text->solid_color = (entity["text"]["solid_color"]) ? entity["text"]["solid_color"].as<bool>() : true;
+    text->text = (entity["text"]["text"]) ? entity["text"]["text"].as<str>() : "no text";
+    
+    Graphics::Font::render(text, text->bitmap_size, text->line_height);
 }
