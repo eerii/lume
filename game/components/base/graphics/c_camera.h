@@ -21,5 +21,6 @@ namespace Verse::Component
         glm::mat4 m_extra;
         
         std::function<bool()> controller;
+        str current_controller;
     };
 }

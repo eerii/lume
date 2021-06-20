@@ -7,9 +7,7 @@
 #include "config.h"
 #include "state_machines_list.h"
 
-typedef bool (*actor_move_func)(Verse::Config&, Verse::EntityID);
-
 namespace Verse::Controller::MovingPlatform
 {
-    bool controller(Config &c, EntityID eid, actor_move_func move);
+    bool controller(Config &c, EntityID eid);
 }

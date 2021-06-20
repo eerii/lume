@@ -10,6 +10,42 @@
 
 using namespace Verse;
 
+void System::Animation::update(Config &c, EntityID eid) {
+    Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(eid);
+    
+    if (anim->timer == 0)
+        anim->timer = setTimer(anim->frames[anim->target_key].ms[anim->curr_frame]);
+    
+    if (anim->curr_key == "")
+        anim->curr_key = anim->target_key;
+    
+    if (checkTimer(anim->timer, c.game_speed) or (anim->queue_left == 0 and anim->queue.size() > 0)) {
+        anim->queue_left = (ui16)anim->queue.size();
+        
+        anim->curr_frame = (anim->curr_frame < anim->frames[anim->target_key].index.size() - 1) ? anim->curr_frame + 1 : 0;
+        anim->curr_key = anim->target_key;
+        
+        if (anim->queue.size() > 0) {
+            anim->curr_key = anim->queue[0];
+            anim->queue.erase(anim->queue.begin());
+            anim->target_key = anim->curr_key;
+            anim->curr_frame = 0;
+        }
+        
+        anim->timer = setTimer(anim->frames[anim->curr_key].ms[anim->curr_frame]);
+    }
+    
+    if (anim->queue_left == 0 and anim->curr_key != anim->target_key) {
+        anim->curr_key = anim->target_key;
+        anim->curr_frame = 0;
+        anim->change_now = false;
+        stopTimer(anim->timer);
+        anim->timer = setTimer(anim->frames[anim->curr_key].ms[anim->curr_frame]);
+    }
+    
+    //log::info("%s %s %d %d %d", curr_key.c_str(), anim->curr_key.c_str(), time(), anim->queue.size(), queue_left);
+}
+
 void System::Animation::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Animation* animation = s->addComponent<Component::Animation>(eid);
     ui16 default_fps = (entity["animation"]["default_fps"]) ? entity["animation"]["default_fps"].as<ui16>() : 3;
@@ -50,7 +86,7 @@ void System::Animation::load(EntityID eid, YAML::Node &entity, Scene *s, Config 
             animation->frames[animation_name].ms = ms;
         }
     }
-    animation->curr_key = (entity["animation"]["curr_key"]) ? entity["animation"]["curr_key"].as<str>() : animation->frames.begin()->first;
+    animation->target_key = (entity["animation"]["curr_key"]) ? entity["animation"]["curr_key"].as<str>() : animation->frames.begin()->first;
     animation->size = (entity["animation"]["size"]) ? entity["animation"]["size"].as<int>() : 1;
 }
 
@@ -79,6 +115,20 @@ void System::Animation::save(Component::Animation *anim, str path, std::vector<s
 
 void System::Animation::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(eid);
     
+    ImGui::TableSetColumnIndex(0);
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text("current key");
+    ImGui::TableSetColumnIndex(1);
+    ImGui::Text("%s", anim->curr_key.c_str());
+    ImGui::TableNextRow();
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text("current frame");
+    ImGui::TableSetColumnIndex(1);
+    ImGui::Text("%d", anim->curr_frame);
+    ImGui::TableNextRow();
 #endif
 }

@@ -5,15 +5,16 @@
 #include "falling_platform_controller.h"
 
 #include "s_collider.h"
+#include "s_actor.h"
 
 using namespace Verse;
 
-bool Controller::FallingPlatform::controller(Config &c, EntityID eid, actor_move_func move) {
+bool Controller::FallingPlatform::controller(Config &c, EntityID eid) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);
     
-    move(c, eid);
+    System::Actor::move(c, eid);
     
     bool above = checkActorAbove(c, eid);
     

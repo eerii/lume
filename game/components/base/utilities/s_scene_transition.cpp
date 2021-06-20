@@ -11,6 +11,8 @@
 #include "s_texture.h"
 #include "player_controller.h"
 
+#include "scene_list.h"
+
 #include "gui.h"
 #include "gui_types.h"
 
@@ -100,7 +102,6 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
         }
         
         Controller::Player::resetState(c, new_player);
-        System::Texture::clean();
         System::Tilemap::init(c);
     }
 }
@@ -118,6 +119,26 @@ void System::SceneTransition::load(EntityID eid, YAML::Node &entity, Scene *s, C
 
 void System::SceneTransition::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::SceneTransition* trans = c.active_scene->getComponent<Component::SceneTransition>(eid);
     
+    int scene_index = 0;
+    auto it = std::find(scenes.begin(), scenes.end(), trans->scene_name);
+    if (it != scenes.end())
+        scene_index = (int)std::distance(scenes.begin(), it);
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("new scene");
+    
+    ImGui::TableSetColumnIndex(1);
+    str layer_label = "##scenetrans" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    if (ImGui::Combo(layer_label.c_str(), &scene_index, scenes) and trans->scene_name != scenes[scene_index]) {
+        trans->scene_name = scenes[scene_index];
+        trans->to_scene = new Scene();
+        Serialization::loadScene(trans->scene_name, trans->to_scene, c);
+    }
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(trans->to_pos.x, trans->to_pos.y, "new scene pos", eid);
 #endif
 }

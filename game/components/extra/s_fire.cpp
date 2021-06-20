@@ -54,7 +54,7 @@ void System::Fire::render(Config &c) {
             
             fire->noise_time = 0;
         }
-        if (fire->noise_offset > 256)
+        if (fire->noise_offset > 16384)
             fire->noise_offset = 0;
         
         Graphics::Renderer::renderFire(c, fire->transform, fire->p_tex, fire->g_tex, fire->flame_tex, fire->layer);

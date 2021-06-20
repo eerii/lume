@@ -27,7 +27,7 @@ entities:
       layer: 10
   test:
     fire:
-      transform: [32, 64, 64, 64]
+      transform: [400, 64, 64, 64]
       res: res/graphics/water.png
       dir: [0, 1]
       fps: 12
@@ -110,6 +110,24 @@ entities:
     camera:
       controller: free
       pos: [150, 90]
+  anim_test:
+    texture:
+      res: res/graphics/lume.png
+      transform: [200, 64, 11, 14]
+      layer:
+        - 0
+        - -2
+      offset:
+        - [-1, 0]
+        - [-1, 0]
+    animation:
+      frames:
+        idle_1:
+          index: [0, 0, 0, 1, 2]
+          fps: 3
+      curr_key: idle_1
+      default_fps: 3
+      size: 18
 #  to_test_2:
 #    collider:
 #      transform: [100, 70, 30, 30]

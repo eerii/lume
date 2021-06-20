@@ -85,16 +85,72 @@ void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
         }
     }
     if (entity["camera"]["controller"]) {
-        if (entity["camera"]["controller"].as<str>() == "actor")
-            camera->controller = CAMERA_ACTOR_CONTROLLER;
-        if (entity["camera"]["controller"].as<str>() == "free")
-            camera->controller = CAMERA_FREE_CONTROLLER;
+        str name = entity["camera"]["controller"].as<str>();
+        if (camera_controllers.find(name) != camera_controllers.end())
+            camera->controller = [&c, eid, name](){ return camera_controllers[name](c, eid); };
+        else
+            log::error("Error getting camera controller for " + c.active_scene->getName(eid));
+        camera->current_controller = name;
     }
     System::Camera::init(camera);
 }
 
 void System::Camera::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
     
+    Verse::Gui::draw_vec2(cam->target_pos.x, cam->target_pos.y, "target pos", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->vel.x, cam->vel.y, "vel", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->bounds.pos.x, cam->bounds.pos.y, "bounds pos", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(cam->bounds.size.x, cam->bounds.size.y, "bounds size", eid);
+    ImGui::TableNextRow();
+    
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("controller");
+    
+    ImGui::TableSetColumnIndex(1);
+    str controller_label = "##controller" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    
+    std::vector<str> available_controllers;
+    ui8 current_controller_index = 0;
+    ui8 i = 0;
+    for (std::pair<str, std::function<bool(Config &c, EntityID eid)>> ct : camera_controllers) {
+        available_controllers.push_back(ct.first);
+        if (cam->current_controller == ct.first)
+            current_controller_index = i;
+        i++;
+    }
+    
+    ui8 prev_controller_index = current_controller_index;
+    ImGui::Combo(controller_label.c_str(), current_controller_index, available_controllers);
+    
+    if (prev_controller_index != current_controller_index) {
+        str name = available_controllers[current_controller_index];
+        cam->controller = [&c, eid, name](){
+            return camera_controllers[name](c, eid);
+        };
+        cam->current_controller = name;
+    }
+    
+    bool active = c.active_camera == cam;
+    if (not active) {
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        str button_label = "make active##" + std::to_string(eid);
+        if (ImGui::SmallButton(button_label.c_str())) {
+            c.active_camera = cam;
+        }
+    }
 #endif
 }

@@ -11,11 +11,9 @@
 #define COYOTE_TIMEOUT 100
 #define GRACE_TIMEOUT 150
 
-typedef bool (*actor_move_func)(Verse::Config&, Verse::EntityID);
-
 namespace Verse::Controller::Player
 {
-    bool controller(Config &c, EntityID eid, actor_move_func actor_move);
+    bool controller(Config &c, EntityID eid);
     void move(Config &c, bool right);
     void jump(Config &c, EntityID eid);
     void releaseJump();

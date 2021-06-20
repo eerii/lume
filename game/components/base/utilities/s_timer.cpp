@@ -17,6 +17,10 @@ void System::Timer::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
 
 void System::Timer::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);
     
+    float delay = (float)timer->ms / 1000.0f;
+    Verse::Gui::draw_float(delay, "delay", eid);
+    timer->ms = (ui16)(delay * 1000.0f);
 #endif
 }

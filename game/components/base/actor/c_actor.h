@@ -29,6 +29,7 @@ namespace Verse::Component
         
         std::function<bool()> controller;
         std::function<void()> damage;
+        str current_controller;
         
         std::bitset<MAX_COLLISION_LAYERS> collision_mask;
     };

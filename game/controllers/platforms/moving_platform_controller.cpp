@@ -5,12 +5,13 @@
 #include "moving_platform_controller.h"
 
 #include "s_collider.h"
+#include "s_actor.h"
 
 #define EPSILON 1
 
 using namespace Verse;
 
-bool Controller::MovingPlatform::controller(Config &c, EntityID eid, actor_move_func move) {
+bool Controller::MovingPlatform::controller(Config &c, EntityID eid) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Patrol* patrol = c.active_scene->getComponent<Component::Patrol>(eid);
@@ -31,6 +32,7 @@ bool Controller::MovingPlatform::controller(Config &c, EntityID eid, actor_move_
             Component::Collider* riding_col = c.active_scene->getComponent<Component::Collider>(collision.first);
             Component::Actor* riding_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
             
+            //TODO: FIX VERTICAL MOVE
             float extra_padding_going_up = (actor->vel.y < 0) ? actor->vel.y * c.physics_delta : 0;
             bool above = *riding_col->transform.y + *riding_col->transform.h <= *col->transform.y + 1 - extra_padding_going_up;
             if (above) {
@@ -40,7 +42,7 @@ bool Controller::MovingPlatform::controller(Config &c, EntityID eid, actor_move_
     }
     col->transform += Vec2::j + offset;
     
-    move(c, eid);
+    System::Actor::move(c, eid);
     
     return true;
 }

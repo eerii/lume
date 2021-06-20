@@ -50,7 +50,7 @@ namespace {
     int fh_off[18] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
 }
 
-bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func actor_move) {
+bool Controller::Player::controller(Config &c, EntityID eid) {
     if (scene != c.active_scene or collider == nullptr or actor == nullptr or anim == nullptr or
         tex == nullptr or fire == nullptr or light == nullptr or c_state == nullptr) {
         scene = c.active_scene;
@@ -144,7 +144,7 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     
     //ACTOR MOVE FUNCTION
-    actor_move(c, eid);
+    System::Actor::move(c, eid);
     bool on_ground = state->jump.is(GroundedState()) or state->jump.is(CrouchingState());
     
     
@@ -177,25 +177,25 @@ bool Controller::Player::controller(Config &c, EntityID eid, actor_move_func act
     
     //ANIMATION
     if (state->move.is(IdleState()) or state->move.is(DeceleratingState())) {
-        anim->curr_key = curr_idle_anim;
+        anim->target_key = curr_idle_anim;
     }
     if (state->move.is(MovingState()) or state->move.is(AcceleratingState())) {
-        anim->curr_key = "walk_1";
+        anim->target_key = "walk_1";
         if (state->jump.is(FallingCoyoteState()))
             falling_tiny_bit = checkGroundDown(c, eid, TINY_BIT);
     }
     
     if (state->jump.is(JumpingState()))
-        anim->curr_key = "jump_up";
+        anim->target_key = "jump_up";
     if (not falling_tiny_bit and (state->jump.is(FallingState()) or state->jump.is(FallingCoyoteState()) or state->jump.is(FallingButJumpingState())))
-        anim->curr_key = "jump_down";
+        anim->target_key = "jump_down";
     if (not falling_tiny_bit and previously_on_air and on_ground) //TODO: Platform check
         anim->queue.push_back("jump_end");
     
     
     //FLAME
-    ui16 curr_index = (anim->frames.find(System::Texture::getCurrKey()) != anim->frames.end()) ?
-                       anim->frames[System::Texture::getCurrKey()].index[anim->curr_frame] : 0;
+    ui16 curr_index = (anim->frames.find(anim->curr_key) != anim->frames.end()) ?
+                       anim->frames[anim->curr_key].index[anim->curr_frame] : 0;
     fire->offset = f_off + Vec2(fh_off[curr_index] * (tex->is_reversed ? -1 : 1), fv_off[curr_index]);
     
     return true;

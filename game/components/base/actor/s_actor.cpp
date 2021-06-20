@@ -199,19 +199,16 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
 void System::Actor::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Actor* actor = s->addComponent<Component::Actor>(eid);
     if (entity["actor"]["controller"]) {
-        actor_move_func move = &System::Actor::move;
-        if (entity["actor"]["controller"].as<str>() == "player") {
-            actor->controller = PLAYER_CONTROLLER;
-            actor->damage = PLAYER_DAMAGE;
-        }
-        if (entity["actor"]["controller"].as<str>() == "free")
-            actor->controller = FREE_ACTOR_CONTROLLER;
-        if (entity["actor"]["controller"].as<str>() == "moving_platform")
-            actor->controller = MOVING_PLATFORM_CONTROLLER;
-        if (entity["actor"]["controller"].as<str>() == "falling_platform")
-            actor->controller = FALLING_PLATFORM_CONTROLLER;
-        if (entity["actor"]["controller"].as<str>() == "switch_platform")
-            actor->controller = SWITCH_PLATFORM_CONTROLLER;
+        str name = entity["actor"]["controller"].as<str>();
+        if (controllers.find(name) != controllers.end())
+            actor->controller = [&c, eid, name](){ return controllers[name](c, eid); };
+        else
+            log::error("Error getting controller for " + c.active_scene->getName(eid));
+        
+        if (damage_controllers.find(name) != damage_controllers.end())
+            actor->damage = [&c, name](){ return damage_controllers[name](c); };
+        
+        actor->current_controller = name;
     }
     if (entity["actor"]["max_move_speed"])
         actor->max_move_speed = entity["actor"]["max_move_speed"].as<int>();
@@ -249,6 +246,79 @@ void System::Actor::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
 
 void System::Actor::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     
+    Verse::Gui::draw_vec2(actor->vel.x, actor->vel.y, "vel", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(actor->remainder.x, actor->remainder.y, "remainder", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_int(actor->max_move_speed, "max move speed", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(actor->max_fall_speed, "max fall speed", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_int(actor->acc_ground, "acc (ground)", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(actor->friction_ground, "friction (ground)", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(actor->friction_air, "friction (air)", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(actor->friction_extra, "friction (extra)", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_bool(actor->has_gravity, "gravity", eid);
+    ImGui::TableNextRow();
+    
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("controller");
+    
+    ImGui::TableSetColumnIndex(1);
+    str controller_label = "##controller" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    
+    std::vector<str> available_controllers;
+    ui8 current_controller_index = 0;
+    ui8 i = 0;
+    for (std::pair<str, std::function<bool(Config &c, EntityID eid)>> ct : controllers) {
+        available_controllers.push_back(ct.first);
+        if (actor->current_controller == ct.first)
+            current_controller_index = i;
+        i++;
+    }
+    
+    ui8 prev_controller_index = current_controller_index;
+    ImGui::Combo(controller_label.c_str(), current_controller_index, available_controllers);
+    
+    if (prev_controller_index != current_controller_index) {
+        str name = available_controllers[current_controller_index];
+        actor->controller = [&c, eid, name](){
+            return controllers[name](c, eid);
+        };
+        if (damage_controllers.find(name) != damage_controllers.end()) {
+            actor->damage = [&c, name](){
+                return damage_controllers[name](c);
+            };
+        }
+        actor->current_controller = name;
+    }
+    
+    ImGui::TableNextRow();
+    
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("collision mask");
+    ImGui::TableSetColumnIndex(1);
+    i = 0;
+    for (str layer : System::Collider::layers_name) {
+        str layer_label = layer + "##" + std::to_string(eid);
+        bool layer_active = actor->collision_mask[i];
+        
+        ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+        if (ImGui::Selectable(layer_label.c_str(), layer_active))
+            (actor->collision_mask[i]) ? actor->collision_mask.reset(i) : actor->collision_mask.set(i);
+        i++;
+    }
 #endif
 }

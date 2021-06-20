@@ -260,7 +260,8 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
     
-    if (ImGui::SmallButton("add res")) {
+    str add_label = "add res#" + std::to_string(eid);
+    if (ImGui::SmallButton(add_label.c_str())) {
         tile->res.push_back(tile->res[0]);
         Graphics::Texture::loadTexture(tile->res, tile);
         System::Tilemap::createVertices(c, tile);

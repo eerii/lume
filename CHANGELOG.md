@@ -36,12 +36,14 @@
 - Tilemap editor
 - Save scenes
 - Component State
+- All GUI elements (animation editor for another time)
 #### Changed
 - Light now cleans every frame
 - Moved from serialization to each component
 - From passing state to actor, created state component
 - Migrated to new Rect structure
 - Now gui and serialization are handled in each component
+- Moved animation to it's own system and fixed that only one animation could play
 
 ---
 

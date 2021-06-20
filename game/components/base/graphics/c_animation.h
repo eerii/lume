@@ -17,9 +17,13 @@ namespace Verse::Component
 
     struct Animation {
         str curr_key;
+        str target_key;
         ui8 curr_frame = 0;
         
+        ui32 timer;
+        
         std::vector<str> queue;
+        ui16 queue_left;
         bool change_now = false;
         
         std::map<str, AnimationFrame> frames;

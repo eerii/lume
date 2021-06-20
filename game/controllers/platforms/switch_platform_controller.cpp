@@ -13,7 +13,7 @@ namespace {
     std::map<EntityID, ui8> platform_layer;
 }
 
-bool Controller::SwitchPlatform::controller(Config &c, EntityID eid, actor_move_func move) {
+bool Controller::SwitchPlatform::controller(Config &c, EntityID eid) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(eid);
     Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);
