@@ -63,6 +63,11 @@ void System::Light::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
 
 void System::Light::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::Light* light = c.active_scene->getComponent<Component::Light>(eid);
     
+    Verse::Gui::draw_vec2(light->pos.x, light->pos.y, "pos", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_float(light->radius, "radius", eid);
 #endif
 }

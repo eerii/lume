@@ -20,8 +20,14 @@ namespace {
 }
 
 void System::Fire::init(Component::Fire *fire) {
+    Vec2 fixed_size = fire->transform.size;
+    if (fixed_size.x % 4 != 0)
+        fixed_size.x = fixed_size.x - fixed_size.x % 4 + 4;
+    if (fixed_size.y % 4 != 0)
+        fixed_size.y = fixed_size.y - fixed_size.y % 4 + 4;
+    
 #ifndef __EMSCRIPTEN__
-    fire->p_data = (ui8*)malloc((*fire->transform.w+1) * (*fire->transform.h+1));
+    fire->p_data = (ui8*)malloc(fixed_size.x * fixed_size.y * sizeof(ui8));
 #else
     fire->p_data = (ui8*)malloc((*fire->transform.w+1) * (*fire->transform.h+1) * 4);
 #endif
@@ -82,6 +88,39 @@ void System::Fire::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
 
 void System::Fire::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
+    Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
     
+    Verse::Gui::draw_vec2(*fire->transform.x, *fire->transform.y, "pos", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(*fire->transform.w, *fire->transform.h, "size", eid, [fire](){ init(fire); });
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(fire->offset.x, fire->offset.y, "offset", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_float(fire->freq, "freq", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_int(fire->levels, "levels", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_vec2(fire->dir.x, fire->dir.y, "dir", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_int(fire->layer, "layer", eid);
+    ImGui::TableNextRow();
+    Verse::Gui::draw_ui8(fire->fps, "fps", eid);
+    ImGui::TableNextRow();
+    
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text("texture");
+    
+    ImGui::TableSetColumnIndex(1);
+    float line_height = ImGui::GetStyle().FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
+    ImVec2 button_size = { line_height + 3.0f, line_height };
+    if (ImGui::Button("L", button_size))
+        Graphics::Texture::loadTexture(fire->flame_tex_res, fire->flame_tex);
+    
+    ImGui::SameLine();
+    str res_label = "##res" + std::to_string(eid);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+    ImGui::InputText(res_label.c_str(), &fire->flame_tex_res);
 #endif
 }
