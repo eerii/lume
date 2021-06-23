@@ -18,12 +18,12 @@ bool Controller::FallingPlatform::controller(Config &c, EntityID eid) {
     
     bool above = checkActorAbove(c, eid);
     
-    if (above and timer->tid == 0) {
-        timer->tid = setTimer(timer->ms);
+    if (above and timer->tid[0] == 0) {
+        timer->tid[0] = setTimer(timer->ms[0]);
     }
     
-    if (timer->tid != 0 and checkTimer(timer->tid)) {
-        timer->tid = 0;
+    if (timer->tid[0] != 0 and checkTimer(timer->tid[0])) {
+        timer->tid[0] = 0;
         actor->has_gravity = true;
     }
     

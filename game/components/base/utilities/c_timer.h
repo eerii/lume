@@ -9,7 +9,7 @@
 namespace Verse::Component
 {
     struct Timer {
-        ui32 tid = 0;
-        ui16 ms;
+        std::vector<ui32> tid;
+        std::vector<ui16> ms;
     };
 }

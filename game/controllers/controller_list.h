@@ -12,6 +12,7 @@
 #include "moving_platform_controller.h"
 #include "falling_platform_controller.h"
 #include "switch_platform_controller.h"
+#include "disable_platform_controller.h"
 
 #include "camera_actor_controller.h"
 #include "camera_free_controller.h"
@@ -26,6 +27,7 @@ namespace Verse
         {"moving_platform", Controller::MovingPlatform::controller},
         {"falling_platform", Controller::FallingPlatform::controller},
         {"switch_platform", Controller::SwitchPlatform::controller},
+        {"disable_platform", Controller::DisablePlatform::controller},
     };
 
     static std::map<str, std::function<void(Config &c)>> damage_controllers = {

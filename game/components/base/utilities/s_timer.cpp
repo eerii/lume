@@ -11,16 +11,24 @@ using namespace Verse;
 
 void System::Timer::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Timer* timer = s->addComponent<Component::Timer>(eid);
-    if (entity["timer"]["ms"])
-        timer->ms = entity["timer"]["ms"].as<ui16>();
+    if (entity["timer"]["ms"]) {
+        if (entity["timer"]["ms"].IsSequence())
+            timer->ms = entity["timer"]["ms"].as<std::vector<ui16>>();
+        else
+            timer->ms = {entity["timer"]["ms"].as<ui16>()};
+    }
+    timer->tid = std::vector<ui32>(timer->ms.size());
 }
 
 void System::Timer::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);
     
-    float delay = (float)timer->ms / 1000.0f;
-    Verse::Gui::draw_float(delay, "delay", eid);
-    timer->ms = (ui16)(delay * 1000.0f);
+    for (int i = 0; i < timer->ms.size(); i++) {
+        float delay = (float)timer->ms[i] / 1000.0f;
+        str label = "delay" + std::to_string(i);
+        Verse::Gui::draw_float(delay, label, eid);
+        timer->ms[i] = (ui16)(delay * 1000.0f);
+    }
 #endif
 }

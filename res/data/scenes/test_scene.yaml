@@ -36,11 +36,11 @@ entities:
       layer: 0
   platform_moving:
     collider:
-      transform: [220, 80, 32, 3]
+      transform: [220, 80, 28, 5]
       layer: platform
     texture:
-      res: res/graphics/ground.png
-      transform: [220, 80, 32, 3]
+      res: res/graphics/moving_platform.png
+      transform: [220, 80, 28, 5]
       layer: 10
     actor:
       controller: moving_platform
@@ -52,12 +52,19 @@ entities:
       points:
         - [80, 86]
         - [260, 86]
+    animation:
+      frames:
+        idle:
+          index: [0, 1, 2]
+      curr_key: idle
+      default_fps: 6
+      size: 3
   platform_falling:
     collider:
       transform: [336, 100, 28, 7]
       layer: solid_platform
     texture:
-      res: res/graphics/water.png
+      res: res/graphics/falling_platform.png
       transform: [336, 100, 28, 7]
       layer: 10
     actor:
@@ -71,17 +78,64 @@ entities:
       ms: 500
   platform_switch:
     collider:
-      transform: [500, 140, 28, 7]
+      transform: [500, 140, 28, 5]
       layer: platform
     texture:
-      res: res/graphics/ground.png
-      transform: [500, 140, 28, 7]
+      res: res/graphics/switch_platform.png
+      transform: [500, 140, 28, 5]
       layer: 10
     actor:
       controller: switch_platform
       has_gravity: false
     timer:
       ms: 1500
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [2]
+        pre_active_2:
+          index: [3]
+        pre_inactive:
+          index: [1, 0]
+        inactive:
+          index: [4]
+      curr_key: active
+      default_fps: 12
+      size: 5
+  platform_disable:
+    collider:
+      transform: [64, 120, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/disable_platform.png
+      transform: [64, 120, 28, 5]
+      layer: 10
+    actor:
+      controller: disable_platform
+      has_gravity: false
+      collision_mask:
+        - actor
+    timer:
+      ms: [333, 1500]
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [4]
+          fps: 12
+        pre_active_2:
+          index: [5]
+          fps: 12
+        pre_inactive:
+          index: [1, 2, 3]
+        inactive:
+          index: [6]
+      curr_key: active
+      default_fps: 9
+      size: 7
   water:
     collider:
       transform: [189, 168, 70, 5]
@@ -113,7 +167,7 @@ entities:
     text:
       font: res/fonts/8bit.ttf
       text: hello there!
-      transform: [64, 80, 120, 30]
+      transform: [64, 50, 120, 30]
       color: [1.0, 0.5, 0.5]
       line_height: 16
       layer: -10

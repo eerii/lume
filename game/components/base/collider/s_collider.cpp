@@ -8,6 +8,7 @@
 #include "r_renderer.h"
 
 #include "log.h"
+#include "fmath.h"
 #include "gui.h"
 #include "gui_types.h"
 
@@ -23,7 +24,6 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityI
     if (actor == nullptr)
         return {};
     
-    SDL_Rect rect = collider->transform.toSDL();
     std::vector<EntityID> collisions;
     
     for (EntityID e : SceneView<Component::Collider>(*c.active_scene)) {
@@ -36,9 +36,7 @@ std::vector<EntityID> System::Collider::checkObjectCollisions(Config &c, EntityI
         if (not actor->collision_mask[test_collider->layer])
             continue;
         
-        SDL_Rect test_rect = test_collider->transform.toSDL();
-        
-        if(SDL_HasIntersection(&rect, &test_rect)) {
+        if(Math::checkAABB(collider->transform, test_collider->transform)) {
             collisions.push_back(e);
             
             collider->is_colliding = true;

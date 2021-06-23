@@ -9,6 +9,7 @@
 #### Changed
 - Improved palette handling and added new ones
 - Randomized palette on start
+- Changed to my own AABB collision
 
 ---
 
