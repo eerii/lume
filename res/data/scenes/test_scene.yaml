@@ -27,13 +27,13 @@ entities:
       layer: 10
   test:
     fire:
-      transform: [400, 64, 64, 64]
-      res: res/graphics/water.png
+      transform: [420, 90, 64, 64]
+      res: res/graphics/no_mask.png
       dir: [0, 1]
-      fps: 12
+      fps: 30
       freq: 2
       levels: 4
-      layer: -1
+      layer: 0
   platform_moving:
     collider:
       transform: [220, 80, 32, 3]
@@ -71,11 +71,11 @@ entities:
       ms: 500
   platform_switch:
     collider:
-      transform: [450, 140, 28, 7]
+      transform: [500, 140, 28, 7]
       layer: platform
     texture:
       res: res/graphics/ground.png
-      transform: [450, 140, 28, 7]
+      transform: [500, 140, 28, 7]
       layer: 10
     actor:
       controller: switch_platform
@@ -109,25 +109,6 @@ entities:
   free_camera:
     camera:
       controller: free
-      pos: [150, 90]
-  anim_test:
-    texture:
-      res: res/graphics/lume.png
-      transform: [200, 64, 11, 14]
-      layer:
-        - 0
-        - -2
-      offset:
-        - [-1, 0]
-        - [-1, 0]
-    animation:
-      frames:
-        idle_1:
-          index: [0, 0, 0, 1, 2]
-          fps: 3
-      curr_key: idle_1
-      default_fps: 3
-      size: 18
   test_text:
     text:
       font: res/fonts/8bit.ttf

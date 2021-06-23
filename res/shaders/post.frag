@@ -2,10 +2,9 @@
 
 #define MAX_LIGHTS 32
 #define SMOOTHNESS 0.5
-#define PRIMARY 0.57143
-#define SECONDARY 0.42857
 
 in vec2 f_tex_coord;
+in float palette_interval;
 
 layout(location = 0) out vec4 color;
 
@@ -61,48 +60,31 @@ void main() {
         float light_at_point = 1.0 - light_accumulator;
         
         luminance *= light_at_point;
-        
-        if (luminance < 0.0)
-            luminance = 0.0;
     }
+    
+    if (luminance > 0.999)
+        luminance = 0.999;
     
     //Palette
     if (palette_index > -1.0f) {
-        bool is_primary = color.z >= color.r;
-        bool is_bright = luminance > 0.75f;
-        bool is_dark = luminance < 0.15f;
-        
         vec4 i_color;
-    
+        
         if (use_grayscale) {
             i_color = luminance * vec4(1.0, 1.0, 1.0, 1.0);
         } else {
-            if (is_bright) {
-                i_color = texture(palette, vec2(0.999, palette_index));
-                if (previous_palette_index != palette_index) {
-                    vec4 p_color = texture(palette, vec2(0.999, previous_palette_index));
-                    i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
-                }
-            } else if (is_dark) {
-                i_color = texture(palette, vec2(0.001, palette_index));
-                if (previous_palette_index != palette_index) {
-                    vec4 p_color = texture(palette, vec2(0.001, previous_palette_index));
-                    i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
-                }
-            } else {
-                if (is_primary) {
-                    i_color = texture(palette, vec2(luminance * PRIMARY, palette_index));
-                    if (previous_palette_index != palette_index) {
-                        vec4 p_color = texture(palette, vec2(luminance * PRIMARY, previous_palette_index));
-                        i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
-                    }
-                } else {
-                    i_color = texture(palette, vec2(SECONDARY + luminance * PRIMARY, palette_index));
-                    if (previous_palette_index != palette_index) {
-                        vec4 p_color = texture(palette, vec2(SECONDARY + luminance * PRIMARY, previous_palette_index));
-                        i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
-                    }
-                }
+            bool alt_palette = color.b < color.r;
+            float adjusted_luminance = luminance * 0.5;
+            
+            if (alt_palette) {
+                adjusted_luminance = luminance * (0.5 + palette_interval) + 0.5 - palette_interval;
+                if (adjusted_luminance < 0.5)
+                    adjusted_luminance = 0.0;
+            }
+            
+            i_color = texture(palette, vec2(adjusted_luminance, palette_index));
+            if (previous_palette_index != palette_index) {
+                vec4 p_color = texture(palette, vec2(adjusted_luminance, previous_palette_index));
+                i_color = transition_percent * i_color + (1.0-transition_percent) * p_color;
             }
         }
         

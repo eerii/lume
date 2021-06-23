@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]) {
     
     config = {
         .name = "Proxecto Lume",
-        .version = "0.1.13",
+        .version = "0.1.14",
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -47,8 +47,8 @@ int main(int argc, const char * argv[]) {
         
         .use_grayscale = false,
         .use_light = true,
-        .palette_index = 0,
-        .num_palettes = 4,
+        .palette_index = 1,
+        .num_palettes = 9,
         .background_color = {0.0, 0.0, 0.0, 1.0},
         
         .gravity = 800,
@@ -79,6 +79,9 @@ int main(int argc, const char * argv[]) {
         log::error("Failed to get the active camera!");
     
     config.active_scene = scene;
+    
+    srand((ui32)time(NULL));
+    config.palette_index = (int)(rand() % 5 + 1);
     
 #ifdef __EMSCRIPTEN__
     while (true)

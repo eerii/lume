@@ -5,6 +5,10 @@
 
 ### **[0.1.14]** ~ Name _2021-06-20_
 #### Added
+- 
+#### Changed
+- Improved palette handling and added new ones
+- Randomized palette on start
 
 ---
 
