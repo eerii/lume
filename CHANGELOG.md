@@ -3,13 +3,16 @@
 ## **0.2** ~ Light
 
 
-### **[0.1.14]** ~ Name _2021-06-20_
+### **[0.1.14]** ~ Tiny Things _2021-06-24_
 #### Added
-- 
+- Improved the way components work, use variant
+- The GUI can add components to entities
 #### Changed
 - Improved palette handling and added new ones
 - Randomized palette on start
 - Changed to my own AABB collision
+#### Fixed
+- When going down on platform you went through solid blocks
 
 ---
 

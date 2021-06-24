@@ -110,7 +110,7 @@ void System::Tilemap::renderEditor(Config &c) {
         Graphics::Renderer::renderDebugCollider(c, Rect2(curr_pos, c.tme_curr_tmap->tex_size), false);
         
         if (Input::down((ui8)Input::MouseButton::Left)) {
-            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = 0;
+            c.tme_curr_tmap->tiles[curr_tile.y][curr_tile.x] = c.tme_curr_tile;
             createVertices(c, c.tme_curr_tmap);
         }
         
@@ -257,10 +257,23 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
     }
     
     
+    if (c.tme_active and c.tme_curr_tmap == tile and tile->res.size() > 1) {
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("paint res");
+        
+        ImGui::TableSetColumnIndex(1);
+        str i_label = "##paint" + std::to_string(eid);
+        ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
+        ImGui::DragInt(i_label.c_str(), reinterpret_cast<int*>(&c.tme_curr_tile), 1, 0, (int)tile->res.size() - 1);
+        
+        ImGui::TableNextRow();
+    }
+    
+    
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
     
-    str add_label = "add res#" + std::to_string(eid);
+    str add_label = "add res##" + std::to_string(eid);
     if (ImGui::SmallButton(add_label.c_str())) {
         tile->res.push_back(tile->res[0]);
         Graphics::Texture::loadTexture(tile->res, tile);
@@ -275,6 +288,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
             c.use_light = true;
             c.tme_curr_tmap = nullptr;
             c.tme_curr_id = 0;
+            c.tme_curr_tile = 0;
             c.active_camera = prev_cam;
         }
     } else {
@@ -283,6 +297,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
             c.use_light = false;
             c.tme_curr_tmap = tile;
             c.tme_curr_id = eid;
+            c.tme_curr_tile = 0;
             prev_cam = c.active_camera;
             tile_cam->pos = prev_cam->pos;
             c.active_camera = tile_cam;

@@ -68,7 +68,7 @@ void System::Patrol::gui(Config &c, EntityID eid) {
     
     ImGui::TableSetColumnIndex(0);
     if (ImGui::SmallButton("add point")) {
-        patrol->points.push_back(patrol->points[0]);
+        patrol->points.push_back((patrol->points.size() > 0) ? patrol->points[0] : Vec2(0,0));
     }
 #endif
 }

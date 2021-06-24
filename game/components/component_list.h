@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <variant>
+
 //Base
 #include "c_collider.h"
 #include "c_actor.h"
@@ -22,20 +24,31 @@
 #include "c_fire.h"
 #include "c_player.h"
 
-#define COMPONENTS logComponentID(Collider); \
-                   logComponentID(Actor); \
-                   logComponentID(State); \
-                   logComponentID(Texture); \
-                   logComponentID(Animation); \
-                   logComponentID(Tilemap); \
-                   logComponentID(Text); \
-                   logComponentID(Camera); \
-                   logComponentID(Light); \
-                   logComponentID(Timer); \
-                   logComponentID(Patrol); \
-                   logComponentID(SceneTransition); \
-                   logComponentID(Fire); \
-                   logComponentID(Player); \
-
 #define USE_C_FIRE
 #define USE_C_PLAYER
+
+namespace Verse
+{
+    using ComponentType = std::variant<Component::Collider,
+                                       Component::Actor,
+                                       Component::State,
+                                       Component::Texture,
+                                       Component::Animation,
+                                       Component::Tilemap,
+                                       Component::Text,
+                                       Component::Camera,
+                                       Component::Light,
+                                       Component::Timer,
+                                       Component::Patrol,
+                                       Component::SceneTransition,
+                                       Component::Fire,
+                                       Component::Player>;
+
+    static const std::vector<str> component_names = {
+        "collider", "actor", "state",
+        "texture", "animation", "tilemap", "text", "camera",
+        "light",
+        "timer", "patrol", "scene_transition",
+        "fire", "player"
+    };
+}

@@ -26,9 +26,9 @@ void System::Timer::gui(Config &c, EntityID eid) {
     
     for (int i = 0; i < timer->ms.size(); i++) {
         float delay = (float)timer->ms[i] / 1000.0f;
-        str label = "delay" + std::to_string(i);
-        Verse::Gui::draw_float(delay, label, eid);
+        Verse::Gui::draw_float(delay, "delay", eid + i);
         timer->ms[i] = (ui16)(delay * 1000.0f);
+        ImGui::TableNextRow();
     }
 #endif
 }

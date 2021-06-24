@@ -237,16 +237,13 @@ void Controller::Player::releaseJump() {
 
 void Controller::Player::down(Config &c, EntityID eid) {
     collider->transform += Vec2::j;
-    bool platform_down = false;
     System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
+    collider->transform -= Vec2::j;
     for (System::Collider::CollisionInfoPair collision : collisions) {
         if (collision.second[System::Collider::Layers::Platform]) {
-            platform_down = true;
-            state->jump.handle(FallEvent());
+            state->jump.handle(DownEvent(true));
         }
     }
-    if (not platform_down)
-        collider->transform -= Vec2::j;
 }
 
 void Controller::Player::respawn(Config &c) {

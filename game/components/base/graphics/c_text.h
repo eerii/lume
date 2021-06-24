@@ -23,7 +23,6 @@ namespace Verse::Component
     struct Text {
         FontInfo* font;
         
-        std::vector<ui8> bitmap;
         Vec2 bitmap_size;
         
         ui32 tex_id;
@@ -36,5 +35,6 @@ namespace Verse::Component
         float r, g, b;
         
         str text;
+        str previous_text;
     };
 }

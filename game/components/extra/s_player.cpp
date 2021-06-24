@@ -9,6 +9,10 @@
 
 using namespace Verse;
 
+void System::Player::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
+    
+}
+
 void System::Player::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     

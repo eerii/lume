@@ -17,7 +17,11 @@ namespace Verse::State::Player
     struct ReleaseJumpEvent {};
     struct PeakJumpEvent {};
     struct FallEvent {};
-    struct DownEvent {};
+    struct DownEvent {
+        bool on_platform = false;
+        DownEvent() = default;
+        DownEvent(bool p_platform) : on_platform(p_platform) {};
+    };
     struct ReleaseDownEvent {};
     struct TouchGroundEvent {};
     struct TimeoutEvent {
@@ -30,17 +34,26 @@ namespace Verse::State::Player
     struct JumpingState;
     struct FallingState;
     struct FallingCoyoteState;
+    struct FallingFromPlatformState;
     struct FallingButJumpingState;
     struct FallingFasterState;
     struct FallingFasterButJumpingState;
     struct CrouchingState;
 
-    struct GroundedState : Do<
-        Default<Nothing>,
-        On<JumpEvent, To<JumpingState>>,
-        On<FallEvent, To<FallingCoyoteState>>,
-        On<DownEvent, To<CrouchingState>>
-    > {};
+    struct GroundedState : Default<Nothing> {
+        using Default::handle;
+        
+        To<JumpingState> handle(const JumpEvent &e) { return To<JumpingState>(); };
+        
+        To<FallingCoyoteState> handle(const FallEvent &e) { return To<FallingCoyoteState>(); };
+        
+        OneOf<To<CrouchingState>, To<FallingFromPlatformState>> handle(const DownEvent &e) {
+            if (e.on_platform)
+                return To<FallingFromPlatformState>();
+            else
+                return To<CrouchingState>();
+        };
+    };
 
     struct JumpingState : Do<
         Default<Nothing>,
@@ -64,6 +77,29 @@ namespace Verse::State::Player
         FallingCoyoteState(ui32 p_time) : grace_time(p_time) {};
         
         void onEnter(const FallEvent &e) {
+            timer = setTimer(grace_time);
+        }
+        
+        Maybe<To<FallingState>> handle(const TimeoutEvent &e) {
+            if (checkTimer(timer, e.game_speed))
+                return To<FallingState>();
+            return Nothing();
+        }
+        
+        To<JumpingState> handle(const JumpEvent &e) { return To<JumpingState>(); };
+        
+        To<GroundedState> handle(const TouchGroundEvent &e) { return To<GroundedState>(); };
+    };
+
+    struct FallingFromPlatformState : Default<Nothing> {
+        using Default::handle;
+        
+        ui32 grace_time;
+        ui32 timer;
+        FallingFromPlatformState() = default;
+        FallingFromPlatformState(ui32 p_time) : grace_time(p_time) {};
+        
+        void onEnter(const DownEvent &e) {
             timer = setTimer(grace_time);
         }
         
@@ -152,13 +188,14 @@ namespace Verse::State::Player
     MAKE_STRING(JumpingState)
     MAKE_STRING(FallingState)
     MAKE_STRING(FallingCoyoteState)
+    MAKE_STRING(FallingFromPlatformState)
     MAKE_STRING(FallingButJumpingState)
     MAKE_STRING(FallingFasterState)
     MAKE_STRING(FallingFasterButJumpingState)
     MAKE_STRING(CrouchingState)
 
-    using JumpSM = StateMachine<FallingState, GroundedState, JumpingState, FallingCoyoteState, FallingButJumpingState,
-                                FallingFasterState, FallingFasterButJumpingState, CrouchingState>;
+    using JumpSM = StateMachine<FallingState, GroundedState, JumpingState, FallingCoyoteState, FallingFromPlatformState,
+                                FallingButJumpingState, FallingFasterState, FallingFasterButJumpingState, CrouchingState>;
 
 }
 

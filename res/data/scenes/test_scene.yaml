@@ -166,8 +166,8 @@ entities:
   test_text:
     text:
       font: res/fonts/8bit.ttf
-      text: hello there!
-      transform: [64, 50, 120, 30]
+      text: holi!
+      transform: [30, 80, 120, 30]
       color: [1.0, 0.5, 0.5]
-      line_height: 16
+      line_height: 11
       layer: -10

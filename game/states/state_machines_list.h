@@ -33,6 +33,7 @@ namespace Verse::State
                             Player::GroundedState(),
                             Player::JumpingState(),
                             Player::FallingCoyoteState(coyote_timeout),
+                            Player::FallingFromPlatformState(coyote_timeout),
                             Player::FallingButJumpingState(grace_timeout),
                             Player::FallingFasterState(),
                             Player::FallingFasterButJumpingState(grace_timeout),
