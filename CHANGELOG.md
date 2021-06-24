@@ -7,12 +7,17 @@
 #### Added
 - Improved the way components work, use variant
 - The GUI can add components to entities
+- Made it work for web again
 #### Changed
 - Improved palette handling and added new ones
 - Randomized palette on start
 - Changed to my own AABB collision
+- Fixed moving platform inertia
+- Improved the perlin noise algorithm
+- Now GL_LUMINANCE is used for WebGL instead of making RGBA textures
 #### Fixed
 - When going down on platform you went through solid blocks
+- Fixed some issues with perlin noise, normalized the values
 
 ---
 

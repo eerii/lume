@@ -17,7 +17,9 @@
 
 #include "gui.h"
 #include "gui_types.h"
+#ifndef DISABLE_GUI
 #include "gui_tilemap_editor.h"
+#endif
 
 using namespace Verse;
 

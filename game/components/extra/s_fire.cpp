@@ -28,11 +28,7 @@ void System::Fire::init(Component::Fire *fire) {
     if (fixed_size.y % 4 != 0)
         fixed_size.y = fixed_size.y - fixed_size.y % 4 + 4;
     
-#ifndef __EMSCRIPTEN__
     fire->p_data = (ui8*)malloc(fixed_size.x * fixed_size.y * sizeof(ui8));
-#else
-    fire->p_data = (ui8*)malloc((*fire->transform.w+1) * (*fire->transform.h+1) * 4);
-#endif
     
     Graphics::Texture::createGradient(*fire->transform.w, fire->g_tex);
     

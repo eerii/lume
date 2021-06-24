@@ -4,7 +4,6 @@
 #define SMOOTHNESS 0.5
 
 in vec2 f_tex_coord;
-in float palette_interval;
 
 layout(location = 0) out vec4 color;
 
@@ -14,6 +13,7 @@ uniform sampler2D tex;
 uniform sampler2D palette;
 uniform float palette_index;
 uniform float previous_palette_index;
+uniform float palette_interval;
 uniform float transition_percent;
 
 //Light

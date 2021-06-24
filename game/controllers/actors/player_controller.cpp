@@ -220,7 +220,7 @@ void Controller::Player::jump(Config &c, EntityID eid) {
         falling_tiny_bit = false;
         anim->queue.push_back("jump_start");
         
-        actor->extra_vel.x += getMovingPlatformVelocity(c, eid).x * (2.5f - 0.3f * abs(actor->vel.x / actor->max_move_speed));
+        actor->extra_vel.x += getMovingPlatformVelocity(c, eid).x * (1.0f + 0.5f * abs(actor->vel.x / actor->max_move_speed));
         state->move.handle(MoveEvent(sign(actor->extra_vel.x), actor->extra_vel.x));
     }
 }
