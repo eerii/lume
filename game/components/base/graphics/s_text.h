@@ -12,6 +12,6 @@ namespace Verse::System::Text
     void render(Config &c);
     
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
-    void save(Component::Text* tex, str path, std::vector<str> &key);
+    void save(Component::Text* text, str path, std::vector<str> &key);
     void gui(Config &c, EntityID eid);
 }

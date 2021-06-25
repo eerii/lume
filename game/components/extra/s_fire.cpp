@@ -86,6 +86,8 @@ void System::Fire::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
 void System::Fire::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
+    if (fire == nullptr)
+        return;
     
     Verse::Gui::draw_vec2(*fire->transform.x, *fire->transform.y, "pos", eid);
     ImGui::TableNextRow();

@@ -78,6 +78,9 @@ void System::Tilemap::render(Config &c) {
         if (c.tme_active and tmap != c.tme_curr_tmap)
             continue;
         
+        if (tmap->res.size() == 0 or tmap->tex_id.size() == 0)
+            continue;
+        
         int i = 0;
         for (ui32 t : tmap->tex_id) {
             Graphics::Renderer::renderTilemap(c, t, reinterpret_cast<float*>(tmap->vert[i].data()), (int)tmap->vert[i].size(), tmap->layer);
@@ -196,6 +199,8 @@ void System::Tilemap::save(Component::Tilemap *tile, str path, std::vector<str> 
 void System::Tilemap::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Tilemap* tile = c.active_scene->getComponent<Component::Tilemap>(eid);
+    if (tile == nullptr)
+        return;
     
     if (tile_cam == nullptr) {
         for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
@@ -209,6 +214,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
     
     
     ImGui::TableSetColumnIndex(0);
+    ImGui::AlignTextToFramePadding();
     ImGui::Text("level");
     
     ImGui::TableSetColumnIndex(1);
@@ -233,6 +239,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
     for (int i = 0; i < tile->res.size(); i++) {
         str label = "res " + std::to_string(i);
         ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
         ImGui::Text("%s", label.c_str());
         
         ImGui::TableSetColumnIndex(1);
@@ -242,25 +249,30 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
         button_label = "L##res" + std::to_string(i) + std::to_string(eid);
         if (ImGui::Button(button_label.c_str(), button_size)) {
             Graphics::Texture::loadTexture(tile->res, tile);
+            System::Tilemap::createVertices(c, tile);
         }
         
-        ImGui::SameLine();
-        button_label = "X##res" + std::to_string(i) + std::to_string(eid);
-        if (ImGui::Button(button_label.c_str(), button_size)) {
-            tile->res.erase(tile->res.begin() + i);
-            Graphics::Texture::loadTexture(tile->res, tile);
+        if (tile->res.size() > 1) {
+            ImGui::SameLine();
+            button_label = "X##res" + std::to_string(i) + std::to_string(eid);
+            if (ImGui::Button(button_label.c_str(), button_size)) {
+                tile->res.erase(tile->res.begin() + i);
+                Graphics::Texture::loadTexture(tile->res, tile);
+            }
         }
         
         ImGui::SameLine();
         str res_label = "##res" + std::to_string(i) + std::to_string(eid);
         ImGui::SetNextItemWidth(ImGui::GetColumnWidth());
         ImGui::InputText(res_label.c_str(), &tile->res[i]);
+        
         ImGui::TableNextRow();
     }
     
     
     if (c.tme_active and c.tme_curr_tmap == tile and tile->res.size() > 1) {
         ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
         ImGui::Text("paint res");
         
         ImGui::TableSetColumnIndex(1);

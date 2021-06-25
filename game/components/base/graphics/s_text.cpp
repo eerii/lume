@@ -72,9 +72,35 @@ void System::Text::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Graphics::Font::render(text);
 }
 
+void System::Text::save(Component::Text *text, str path, std::vector<str> &key) {
+    key[2] = "text";
+    
+    key[3] = "font";
+    Serialization::appendYAML(path, key, (str)text->font->path, true);
+    
+    key[3] = "text";
+    Serialization::appendYAML(path, key, (str)text->text, true);
+    
+    key[3] = "transform";
+    Serialization::appendYAML(path, key, text->transform, true);
+    
+    key[3] = "color";
+    str color = "[" + std::to_string(text->r) + "," + std::to_string(text->g) + "," + std::to_string(text->b) + "]";
+    YAML::Node n = YAML::Load(color);
+    Serialization::appendYAML(path, key, n, true);
+    
+    key[3] = "line_height";
+    Serialization::appendYAML(path, key, text->line_height, true);
+    
+    key[3] = "layer";
+    Serialization::appendYAML(path, key, text->line_height, true);
+}
+
 void System::Text::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Text* text = c.active_scene->getComponent<Component::Text>(eid);
+    if (text == nullptr)
+        return;
     
     Verse::Gui::draw_vec2(text->transform.pos.x, text->transform.pos.y, "pos", eid);
     ImGui::TableNextRow();

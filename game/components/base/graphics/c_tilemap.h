@@ -23,5 +23,10 @@ namespace Verse::Component
         int layer;
         
         std::vector<std::vector<std::array<float, 24>>> vert;
+        
+        Tilemap() {
+            tiles.push_back({0});
+            res.push_back("");
+        }
     };
 }

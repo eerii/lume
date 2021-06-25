@@ -18,6 +18,11 @@ namespace Verse::Component
         
         std::vector<Vec2> offset;
         std::vector<int> layer;
-        bool is_reversed = false;
+        bool is_reversed;
+        
+        Texture() {
+            offset = std::vector<Vec2>(1);
+            layer = std::vector<int>(1);
+        };
     };
 }

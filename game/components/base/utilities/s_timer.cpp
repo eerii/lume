@@ -23,6 +23,8 @@ void System::Timer::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
 void System::Timer::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);
+    if (timer == nullptr)
+        return;
     
     for (int i = 0; i < timer->ms.size(); i++) {
         float delay = (float)timer->ms[i] / 1000.0f;

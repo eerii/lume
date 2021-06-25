@@ -119,7 +119,8 @@ bool System::Actor::move(Config &c, EntityID eid) {
     }
     
     Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
-    texture->transform = collider->transform.pos;
+    if (texture != nullptr)
+        texture->transform = collider->transform.pos;
     
     Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
     if (fire != nullptr)
@@ -249,9 +250,62 @@ void System::Actor::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
     }
 }
 
+void System::Actor::save(Component::Actor *actor, str path, std::vector<str> &key) {
+    key[2] = "actor";
+    
+    key[3] = "controller";
+    Serialization::appendYAML(path, key, (str)actor->current_controller, true);
+    
+    if (actor->max_move_speed != 0) {
+        key[3] = "max_move_speed";
+        Serialization::appendYAML(path, key, actor->max_move_speed, true);
+    }
+    
+    if (actor->max_fall_speed != 0) {
+        key[3] = "max_fall_speed";
+        Serialization::appendYAML(path, key, actor->max_fall_speed, true);
+    }
+    
+    if (actor->acc_ground != 0) {
+        key[3] = "acc_ground";
+        Serialization::appendYAML(path, key, actor->acc_ground, true);
+    }
+    
+    if (actor->friction_ground != 0) {
+        key[3] = "friction_ground";
+        Serialization::appendYAML(path, key, actor->friction_ground, true);
+    }
+    
+    if (actor->friction_ground != 0) {
+        key[3] = "friction_air";
+        Serialization::appendYAML(path, key, actor->friction_ground, true);
+    }
+    
+    if (actor->friction_extra != 0) {
+        key[3] = "friction_extra";
+        Serialization::appendYAML(path, key, actor->friction_extra, true);
+    }
+    
+    key[3] = "has_gravity";
+    Serialization::appendYAML(path, key, (bool)actor->has_gravity, true);
+    
+    //Collision Mask
+    if (actor->collision_mask.any()) {
+        key[3] = "collision_mask";
+        std::vector<str> collision_mask_names;
+        for (int i = 0; i < MAX_COLLISION_LAYERS; i++) {
+            if (actor->collision_mask[i])
+                collision_mask_names.push_back(component_names[i]);
+        }
+        Serialization::appendYAML(path, key, collision_mask_names, true);
+    }
+}
+
 void System::Actor::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
+    if (actor == nullptr)
+        return;
     
     Verse::Gui::draw_vec2(actor->vel.x, actor->vel.y, "vel", eid);
     ImGui::TableNextRow();

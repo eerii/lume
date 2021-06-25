@@ -22,6 +22,8 @@ void System::Patrol::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
 void System::Patrol::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Patrol* patrol = c.active_scene->getComponent<Component::Patrol>(eid);
+    if (patrol == nullptr)
+        return;
     
     for (int i = 0; i < patrol->points.size(); i++) {
         str label = "point " + std::to_string(i);

@@ -120,6 +120,8 @@ void System::SceneTransition::load(EntityID eid, YAML::Node &entity, Scene *s, C
 void System::SceneTransition::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::SceneTransition* trans = c.active_scene->getComponent<Component::SceneTransition>(eid);
+    if (trans == nullptr)
+        return;
     
     int scene_index = 0;
     auto it = std::find(scenes.begin(), scenes.end(), trans->scene_name);

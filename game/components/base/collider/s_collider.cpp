@@ -163,6 +163,8 @@ void System::Collider::save(Component::Collider *col, str path, std::vector<str>
 void System::Collider::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
+    if (col == nullptr)
+        return;
     
     Verse::Gui::draw_vec2(*col->transform.x, *col->transform.y, "pos", eid);
     ImGui::TableNextRow();

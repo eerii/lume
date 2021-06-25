@@ -94,17 +94,15 @@ void System::Animation::save(Component::Animation *anim, str path, std::vector<s
     key[2] = "animation";
     
     key[3] = "frames";
-    key.push_back(""); key.push_back("");
     for (std::pair<str, Component::AnimationFrame> f : anim->frames) {
-        key[4] = f.first;
+        std::vector<str> new_key = {key[0], key[1], key[2], key[3], f.first, ""};
         
-        key[5] = "index";
-        Serialization::appendYAML(path, key, f.second.index, true);
+        new_key[5] = "fps";
+        Serialization::appendYAML(path, new_key, (int)round(1000.0f / (float)f.second.ms[0]), true);
         
-        key[5] = "fps";
-        Serialization::appendYAML(path, key, (int)round(1000.0f / (float)f.second.ms[0]), true);
+        new_key[5] = "index";
+        Serialization::appendYAML(path, new_key, f.second.index, true);
     }
-    key.pop_back(); key.pop_back();
     
     key[3] = "curr_key";
     Serialization::appendYAML(path, key, (str)anim->frames.begin()->first, true);
@@ -116,6 +114,8 @@ void System::Animation::save(Component::Animation *anim, str path, std::vector<s
 void System::Animation::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(eid);
+    if (anim == nullptr)
+        return;
     
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();

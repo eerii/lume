@@ -75,7 +75,7 @@ void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
         camera->pos = entity["camera"]["pos"].as<Vec2>();
     camera->bounds = Rect2(0,0,0,0);
     if (entity["camera"]["bounds"]) {
-        if (entity["camera"]["bounds"].IsMap()) {
+        if (entity["camera"]["bounds"].IsSequence()) {
             camera->bounds = entity["camera"]["bounds"].as<Rect2>();
         } else {
             if (entity["camera"]["bounds"].as<str>() == "scene")
@@ -95,9 +95,32 @@ void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
     System::Camera::init(camera);
 }
 
+void System::Camera::save(Component::Camera *cam, str path, std::vector<str> &key, Scene *s) {
+    key[2] = "camera";
+    
+    key[3] = "controller";
+    Serialization::appendYAML(path, key, (str)cam->current_controller, true);
+    
+    if (cam->pos != Vec2(0,0)) {
+        key[3] = "pos";
+        Serialization::appendYAML(path, key, cam->pos, true);
+    }
+    
+    key[3] = "bounds";
+    if (cam->bounds.size == s->size) {
+        Serialization::appendYAML(path, key, (str)"scene", true);
+    } else if (cam->bounds.size == Vec2(0,0)) {
+        Serialization::appendYAML(path, key, (str)"none", true);
+    } else {
+        Serialization::appendYAML(path, key, cam->bounds, true);
+    }
+}
+
 void System::Camera::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
+    if (cam == nullptr)
+        return;
     
     Verse::Gui::draw_vec2(cam->target_pos.x, cam->target_pos.y, "target pos", eid);
     ImGui::TableNextRow();

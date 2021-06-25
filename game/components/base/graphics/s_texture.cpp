@@ -31,6 +31,9 @@ void System::Texture::render(Config &c) {
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
         
+        if (tex->res.size() == 0)
+            continue;
+        
         Vec2 size = Vec2(1, (int)tex->layer.size());
         if (anim != nullptr) {
             System::Animation::update(c, e);
@@ -77,22 +80,20 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     if (entity["texture"]["transform"])
         texture->transform = entity["texture"]["transform"].as<Rect2>();
     if (entity["texture"]["offset"]) {
+        texture->offset = {};
         if (entity["texture"]["offset"].IsSequence()) {
             texture->offset = entity["texture"]["offset"].as<std::vector<Vec2>>();
         } else {
             texture->offset.push_back(entity["texture"]["offset"].as<Vec2>());
         }
-    } else {
-        texture->offset.push_back(Vec2(0,0));
     }
     if (entity["texture"]["layer"]) {
+        texture->layer = {};
         if (entity["texture"]["layer"].IsSequence()) {
             texture->layer = entity["texture"]["layer"].as<std::vector<int>>();
         } else {
             texture->layer.push_back(entity["texture"]["layer"].as<int>());
         }
-    } else {
-        texture->layer.push_back(0);
     }
 }
 
@@ -123,6 +124,8 @@ void System::Texture::save(Component::Texture *tex, str path, std::vector<str> &
 void System::Texture::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(eid);
+    if (tex == nullptr)
+        return;
     
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
@@ -152,12 +155,36 @@ void System::Texture::gui(Config &c, EntityID eid) {
         ImGui::TableNextRow();
         
         for (int i = 0; i < tex->offset.size(); i++) {
+            if (tex->offset.size() > 1) {
+                ImGui::TableSetColumnIndex(0);
+                ImGui::AlignTextToFramePadding();
+                str label = "layer " + std::to_string(i);
+                ImGui::Text("%s", label.c_str());
+                
+                ImGui::SameLine();
+                str button_label = "x##texlayer" + std::to_string(i) + std::to_string(eid);
+                if (ImGui::SmallButton(button_label.c_str())) {
+                    tex->offset.erase(tex->offset.begin() + i);
+                    tex->layer.erase(tex->layer.begin() + i);
+                }
+                
+                ImGui::TableNextRow();
+            }
+            
             str label = "offset " + std::to_string(i);
             Verse::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label, eid);
             ImGui::TableNextRow();
             
             Verse::Gui::draw_int(tex->layer[i], "layer " + std::to_string(i), eid);
             ImGui::TableNextRow();
+        }
+        
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        str button_label = "add layer##" + std::to_string(eid);
+        if (ImGui::SmallButton(button_label.c_str())) {
+            tex->offset.push_back(Vec2(0,0));
+            tex->layer.push_back(0);
         }
         
         ImGui::TreePop();

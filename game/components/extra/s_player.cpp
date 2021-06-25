@@ -15,6 +15,8 @@ void System::Player::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
 
 void System::Player::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
-    
+    Component::Player* player = c.active_scene->getComponent<Component::Player>(eid);
+    if (player == nullptr)
+        return;
 #endif
 }
