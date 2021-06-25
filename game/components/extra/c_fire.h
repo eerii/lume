@@ -13,7 +13,7 @@ namespace Verse::Component
         Vec2 offset;
         
         str flame_tex_res;
-        ui32 flame_tex, p_tex, g_tex;
+        ui32 flame_tex, p_tex;
         ui8* p_data;
         
         Vec2 dir;

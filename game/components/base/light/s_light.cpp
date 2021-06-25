@@ -6,6 +6,7 @@
 
 #include <map>
 
+#include "game.h"
 #include "ftime.h"
 #include "r_opengl.h"
 #include "r_renderer.h"
@@ -59,6 +60,16 @@ void System::Light::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
         light->pos = entity["light"]["pos"].as<Vec2>();
     if (entity["light"]["radius"])
         light->radius = entity["light"]["radius"].as<int>();
+}
+
+void System::Light::save(Component::Light *light, str path, std::vector<str> &key) {
+    key[2] = "light";
+    
+    key[3] = "pos";
+    Serialization::appendYAML(path, key, light->pos, true);
+    
+    key[3] = "radius";
+    Serialization::appendYAML(path, key, light->radius, true);
 }
 
 void System::Light::gui(Config &c, EntityID eid) {

@@ -6,6 +6,7 @@
 
 #include <glm/ext.hpp>
 
+#include "game.h"
 #include "ftime.h"
 #include "log.h"
 #include "r_renderer.h"
@@ -41,6 +42,14 @@ void System::Camera::update(Config &c) {
         Vec2 to_move = Vec2(floor(total.x), floor(total.y));
         cam->pos += to_move;
         cam->remainder = total - to_move.to_float();
+    }
+}
+
+void System::Camera::prerender(Config &c) {
+    for (EntityID e : SceneView<Component::Camera>(*c.active_scene)) {
+        Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(e);
+        if (cam != c.active_camera)
+            continue;
         
         pixel_perfect_move = Vec2(0.5f * c.resolution.x - cam->pos.x, 0.5f * c.resolution.y - cam->pos.y);
         extra_move = (c.use_subpixel_cam) ? Vec2f(-cam->remainder.x, cam->remainder.y) * c.render_scale : Vec2f(0,0);
@@ -126,6 +135,9 @@ void System::Camera::gui(Config &c, EntityID eid) {
     ImGui::TableNextRow();
     
     Verse::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", eid);
+    ImGui::TableNextRow();
+    
+    Verse::Gui::draw_vec2(cam->remainder.x, cam->remainder.y, "remainder", eid);
     ImGui::TableNextRow();
     
     Verse::Gui::draw_vec2(cam->vel.x, cam->vel.y, "vel", eid);

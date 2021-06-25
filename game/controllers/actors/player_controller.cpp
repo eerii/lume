@@ -302,7 +302,7 @@ str Controller::Player::getCurrentMoveState() {
 
 void Controller::Player::resetState(Config &c, EntityID eid) {
     delete state;
-    state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON * c.game_speed); //TODO: Change
+    state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: Change
     
     c_state = c.active_scene->getComponent<Component::State>(eid);
     if (c_state == nullptr) {

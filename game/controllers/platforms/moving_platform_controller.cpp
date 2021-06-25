@@ -4,6 +4,7 @@
 
 #include "moving_platform_controller.h"
 
+#include "game.h"
 #include "s_collider.h"
 #include "s_actor.h"
 
@@ -24,23 +25,25 @@ bool Controller::MovingPlatform::controller(Config &c, EntityID eid) {
             patrol->current = next_patrol_point;
     }
     
-    Vec2 offset = (actor->vel.y > 0) ? Vec2(0, floor(actor->vel.y * c.physics_delta)) : Vec2(0,0);
-    col->transform -= Vec2::j + offset;
+    col->transform -= Vec2::j;
     System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
     for (System::Collider::CollisionInfoPair collision : collisions) {
         if (collision.second[System::Collider::Layers::Actor]) {
             Component::Collider* riding_col = c.active_scene->getComponent<Component::Collider>(collision.first);
             Component::Actor* riding_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
             
-            //TODO: FIX VERTICAL MOVE
-            float extra_padding_going_up = (actor->vel.y < 0) ? actor->vel.y * c.physics_delta : 0;
-            bool above = *riding_col->transform.y + *riding_col->transform.h <= *col->transform.y + 1 - extra_padding_going_up;
+            bool above = *riding_col->transform.y + *riding_col->transform.h <= *col->transform.y + 1;
             if (above) {
-                riding_actor->extra_vel = actor->vel;
+                riding_actor->extra_vel.x = actor->vel.x;
+                if (riding_actor->vel.x == 0)
+                    riding_actor->remainder.x = actor->remainder.x;
+                
+                riding_actor->extra_vel.y = actor->vel.y;
+                riding_actor->remainder.y = actor->remainder.y;
             }
         }
     }
-    col->transform += Vec2::j + offset;
+    col->transform += Vec2::j;
     
     System::Actor::move(c, eid);
     

@@ -42,7 +42,7 @@ int main(int argc, const char * argv[]) {
         .use_vsync = true,
         .use_subpixel_cam = true,
         
-        .timestep_modifier = 1.0f,
+        .timestep = 10.0,
         .game_speed = 1.0f,
         
         .use_grayscale = false,

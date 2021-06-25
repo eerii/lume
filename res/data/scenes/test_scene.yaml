@@ -59,6 +59,31 @@ entities:
       curr_key: idle
       default_fps: 6
       size: 3
+  platform_moving_up:
+    collider:
+      transform: [64, 124, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/moving_platform.png
+      transform: [64, 124, 28, 5]
+      layer: 10
+    actor:
+      controller: moving_platform
+      max_move_speed: 50
+      has_gravity: false
+      collision_mask:
+        - actor
+    patrol:
+      points:
+        - [64, 124]
+        - [64, 64]
+    animation:
+      frames:
+        idle:
+          index: [0, 1, 2]
+      curr_key: idle
+      default_fps: 6
+      size: 3
   platform_falling:
     collider:
       transform: [336, 100, 28, 7]
@@ -106,11 +131,11 @@ entities:
       size: 5
   platform_disable:
     collider:
-      transform: [64, 120, 28, 5]
+      transform: [64, 140, 28, 5]
       layer: platform
     texture:
       res: res/graphics/disable_platform.png
-      transform: [64, 120, 28, 5]
+      transform: [64, 140, 28, 5]
       layer: 10
     actor:
       controller: disable_platform

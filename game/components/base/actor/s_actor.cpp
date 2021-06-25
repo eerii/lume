@@ -188,8 +188,9 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
                 falling = std::get<PlayerStates*>(state->state)->jump.is(Player::FallingFromPlatformState());
             
             bool above = *actor_collider->transform.y + *actor_collider->transform.h <= *platform_collider->transform.y + 1;
-            if (not falling and above and actor->vel.y > -1)
+            if (not falling and above and actor->vel.y >= 0) {
                 solid = true;
+            }
         }
         
         if (collision.second[System::Collider::Layers::SolidPlatform])

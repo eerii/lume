@@ -22,48 +22,12 @@ namespace {
     Vec2 la_bounds = Vec2(60, 40);
 
     int input = 0;
-    Vec2f distances[4] = {Vec2f::zero, Vec2f::zero, Vec2f::zero, Vec2f::zero};
 }
 
 bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
     
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
-    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
-    
-    Component::Collider* platform_collider = nullptr;
-    Component::Actor* platform_actor = nullptr;
-    Component::Patrol* platform_patrol = nullptr;
-    
-    
-    collider->transform += Vec2::j;
-    System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
-    collider->transform -= Vec2::j;
-    for (System::Collider::CollisionInfoPair collision : collision_info) {
-        if (collision.second[System::Collider::Layers::Platform] or collision.second[System::Collider::Layers::SolidPlatform]) {
-            platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
-            
-            bool above = *collider->transform.y + *collider->transform.h <= *platform_collider->transform.y + 1;
-            if (above) {
-                platform_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
-                platform_patrol = c.active_scene->getComponent<Component::Patrol>(collision.first);
-                
-                if (platform_patrol != nullptr and platform_patrol->points.size() > 0) {
-                    int next_patrol_point = (platform_patrol->current + 1) % platform_patrol->points.size();
-                    cam->target_pos = platform_patrol->points[next_patrol_point];
-                    cam->vel.x = platform_actor->vel.x;
-                    
-                    if (c.game_speed != 0)
-                        c.timestep_modifier = 1.0f / ((float)platform_actor->max_move_speed * TIMESTEP * 0.001f * c.game_speed);
-                    
-                    return true;
-                }
-            }
-        }
-    }
-    
-    
-    cam->target_pos = collider->transform.pos + collider->transform.size * 0.5f;
     
     int prev_input = input;
     input = 0;
@@ -74,25 +38,19 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     if (input != prev_input)
         cam->vel.x = 0;
     
+    cam->target_pos = collider->transform.pos + collider->transform.size * 0.5f;
+    
     lookahead(c, cam, input);
     
     checkBounds(c, cam);
     
-    distances[3] = distances[2];
-    distances[2] = distances[1];
-    distances[1] = distances[0];
-    distances[0] = cam->target_pos.to_float() - cam->pos.to_float();
-    Vec2f distance = (distances[0] + distances[1] + distances[2] + distances[3]) * 0.25;
-    
+    Vec2f distance = cam->target_pos.to_float() - cam->pos.to_float();
     cam->vel = distance * 5.0f;
     
     if (abs(distance.x) < CAM_EPSILON)
         cam->vel.x = 0;
     if (abs(distance.y) < CAM_EPSILON)
         cam->vel.y = 0;
-    
-    if (c.game_speed != 0)
-        c.timestep_modifier = 1.0f / ((float)actor->max_move_speed * TIMESTEP * 0.001f * c.game_speed);
     
     return true;
 }

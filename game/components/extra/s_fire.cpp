@@ -30,8 +30,6 @@ void System::Fire::init(Component::Fire *fire) {
     
     fire->p_data = (ui8*)malloc(fixed_size.x * fixed_size.y * sizeof(ui8));
     
-    Graphics::Texture::createGradient(*fire->transform.w, fire->g_tex);
-    
     Math::perlinNoise(fire->transform.size, Vec2(0,0), 0, 0, fire->p_data);
     fire->p_tex = Graphics::Renderer::createTexture(fire->p_data, fire->transform.size.x, fire->transform.size.y, false);
 }
@@ -54,7 +52,7 @@ void System::Fire::render(Config &c) {
         if (fire->noise_offset > 16384)
             fire->noise_offset = 0;
         
-        Graphics::Renderer::renderFire(c, fire->transform, fire->p_tex, fire->g_tex, fire->flame_tex, fire->layer);
+        Graphics::Renderer::renderFire(c, fire->transform, fire->p_tex, fire->flame_tex, fire->layer);
     }
 }
 
