@@ -10,10 +10,11 @@
 namespace Verse::Component
 {
     struct Camera {
-        Vec2 target_pos;
-        Vec2 pos;
-        Vec2f vel;
-        Vec2f remainder;
+        Vec2f target_pos;
+        
+        Vec2f pos;
+        Vec2f previous_pos;
+        Vec2f render_pos;
         
         Rect2 bounds;
         

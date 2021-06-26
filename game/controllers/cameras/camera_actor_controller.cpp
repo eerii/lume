@@ -29,28 +29,17 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
     
-    int prev_input = input;
     input = 0;
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
         input = -1;
     if (Input::down(Input::Key::Right) or Input::down(Input::Key::D))
         input = 1;
-    if (input != prev_input)
-        cam->vel.x = 0;
     
-    cam->target_pos = collider->transform.pos + collider->transform.size * 0.5f;
+    cam->target_pos = collider->transform.pos.to_float() + collider->transform.size.to_float() * 0.5f;
     
     lookahead(c, cam, input);
     
     checkBounds(c, cam);
-    
-    Vec2f distance = cam->target_pos.to_float() - cam->pos.to_float();
-    cam->vel = distance * 5.0f;
-    
-    if (abs(distance.x) < CAM_EPSILON)
-        cam->vel.x = 0;
-    if (abs(distance.y) < CAM_EPSILON)
-        cam->vel.y = 0;
     
     return true;
 }

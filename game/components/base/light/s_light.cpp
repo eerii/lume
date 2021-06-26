@@ -39,8 +39,8 @@ void System::Light::render(Config &c, ui8 pid) {
         light_sources[e].z /= c.resolution.x + 2.0f*BORDER_WIDTH;
         light_sources[e].w /= c.resolution.x + 2.0f*BORDER_WIDTH;
         
-        light_sources[e].x += (0.5f * c.resolution.x - BORDER_WIDTH - (float)floor(c.active_camera->pos.x)) / (c.resolution.x + 2.0f*BORDER_WIDTH);
-        light_sources[e].y -= (0.5f * c.resolution.y - BORDER_WIDTH - (float)floor(c.active_camera->pos.y)) / (c.resolution.y + 2.0f*BORDER_WIDTH);
+        light_sources[e].x += (0.5f * c.resolution.x - BORDER_WIDTH - (float)floor(c.active_camera->render_pos.x)) / (c.resolution.x + 2.0f*BORDER_WIDTH);
+        light_sources[e].y -= (0.5f * c.resolution.y - BORDER_WIDTH - (float)floor(c.active_camera->render_pos.y)) / (c.resolution.y + 2.0f*BORDER_WIDTH);
         
     }
     

@@ -8,7 +8,7 @@
 
 #include "input.h"
 
-#define CAM_SPEED 256
+#define CAM_MOVE 200
 
 using namespace Verse;
 
@@ -16,18 +16,18 @@ bool Controller::Camera::Free::controller(Config &c, EntityID eid) {
     Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
     
     if (Input::down(Input::Key::A))
-        cam->vel.x = -CAM_SPEED;
+        cam->target_pos.x = cam->pos.x - CAM_MOVE * c.physics_delta;
     if (Input::down(Input::Key::D))
-        cam->vel.x = CAM_SPEED;
+        cam->target_pos.x = cam->pos.x + CAM_MOVE * c.physics_delta;
     if (Input::down(Input::Key::W))
-        cam->vel.y = -CAM_SPEED;
+        cam->target_pos.y = cam->pos.y - CAM_MOVE * c.physics_delta;
     if (Input::down(Input::Key::S))
-        cam->vel.y = CAM_SPEED;
+        cam->target_pos.y = cam->pos.x + CAM_MOVE * c.physics_delta;
     
     if (not Input::down(Input::Key::A) and not Input::down(Input::Key::D))
-        cam->vel.x = 0;
+        cam->target_pos.x = cam->pos.x;
     if (not Input::down(Input::Key::W) and not Input::down(Input::Key::S))
-        cam->vel.y = 0;
+        cam->target_pos.y = cam->pos.y;
     
     /*if (Input::pressed(Input::Key::O))
         cam->scale += 0.25f;

@@ -160,6 +160,10 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
             if (anim != nullptr)
                 anim->target_key = "active";
             
+            Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(collision.first);
+            if (noise != nullptr)
+                noise->enabled = true;
+            
             c.active_scene->removeComponent<Component::Collider>(collision.first);
         }
         

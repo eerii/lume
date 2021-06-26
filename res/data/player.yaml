@@ -83,3 +83,8 @@
       controller: actor
       pos: [20, 90]
       bounds: scene
+    noise:
+      dir: [0, 1]
+      fps: 6
+      freq: 128
+      levels: 1

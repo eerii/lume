@@ -23,5 +23,7 @@ namespace Verse::Component
         
         float noise_time = 1000;
         float noise_offset = 0;
+        
+        bool enabled = true;
     };
 }

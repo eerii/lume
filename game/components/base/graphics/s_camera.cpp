@@ -18,16 +18,9 @@
 using namespace Verse;
 
 namespace {
-    Vec2 pixel_perfect_move;
-    Vec2f extra_move;
-
     Vec2f shake_vec;
     ui32 shake_timer = 0;
     float shake_strength;
-}
-
-void System::Camera::init(Component::Camera* camera) {
-    camera->vel = Vec2f(0,0);
 }
 
 void System::Camera::update(Config &c) {
@@ -38,10 +31,12 @@ void System::Camera::update(Config &c) {
         
         cam->controller();
         
-        Vec2f total = cam->remainder + cam->vel * c.physics_delta;
-        Vec2 to_move = Vec2(floor(total.x), floor(total.y));
-        cam->pos += to_move;
-        cam->remainder = total - to_move.to_float();
+        //Vec2f distance = cam->target_pos - cam->pos;
+        
+        cam->previous_pos = cam->pos;
+        cam->pos = cam->target_pos;
+        
+        //TODO: MOVE CAMERA, smooth damp
     }
 }
 
@@ -51,8 +46,16 @@ void System::Camera::prerender(Config &c) {
         if (cam != c.active_camera)
             continue;
         
-        pixel_perfect_move = Vec2(0.5f * c.resolution.x - cam->pos.x, 0.5f * c.resolution.y - cam->pos.y);
-        extra_move = (c.use_subpixel_cam) ? Vec2f(-cam->remainder.x, cam->remainder.y) * c.render_scale : Vec2f(0,0);
+        cam->render_pos = cam->pos; // * c.physics_interpolation + cam->previous_pos * (1.0 - c.physics_interpolation);
+        
+        Vec2 pixel_pos = Vec2(floor(cam->render_pos.x), floor(cam->render_pos.y));
+        Vec2 pixel_perfect_move = Vec2(0.5f * c.resolution.x + BORDER_WIDTH - pixel_pos.x,
+                                       0.5f * c.resolution.y + BORDER_WIDTH - pixel_pos.y);
+        
+        Vec2f extra_move = cam->render_pos - pixel_pos.to_float();
+        extra_move.x = -extra_move.x;
+        if (not c.use_subpixel_cam)
+            extra_move = Vec2f(0,0);
         
         if(checkTimer(shake_timer)) {
             shake_vec = Vec2f(0,0);
@@ -81,7 +84,7 @@ void System::Camera::shake(Config &c, ui16 ms, float strength) {
 void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Camera* camera = s->addComponent<Component::Camera>(eid);
     if (entity["camera"]["pos"])
-        camera->pos = entity["camera"]["pos"].as<Vec2>();
+        camera->pos = entity["camera"]["pos"].as<Vec2f>();
     camera->bounds = Rect2(0,0,0,0);
     if (entity["camera"]["bounds"]) {
         if (entity["camera"]["bounds"].IsSequence()) {
@@ -101,7 +104,6 @@ void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
             log::error("Error getting camera controller for " + c.active_scene->getName(eid));
         camera->current_controller = name;
     }
-    System::Camera::init(camera);
 }
 
 void System::Camera::save(Component::Camera *cam, str path, std::vector<str> &key, Scene *s) {
@@ -110,7 +112,7 @@ void System::Camera::save(Component::Camera *cam, str path, std::vector<str> &ke
     key[3] = "controller";
     Serialization::appendYAML(path, key, (str)cam->current_controller, true);
     
-    if (cam->pos != Vec2(0,0)) {
+    if (cam->pos != Vec2f(0,0)) {
         key[3] = "pos";
         Serialization::appendYAML(path, key, cam->pos, true);
     }
@@ -135,12 +137,6 @@ void System::Camera::gui(Config &c, EntityID eid) {
     ImGui::TableNextRow();
     
     Verse::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", eid);
-    ImGui::TableNextRow();
-    
-    Verse::Gui::draw_vec2(cam->remainder.x, cam->remainder.y, "remainder", eid);
-    ImGui::TableNextRow();
-    
-    Verse::Gui::draw_vec2(cam->vel.x, cam->vel.y, "vel", eid);
     ImGui::TableNextRow();
     
     Verse::Gui::draw_vec2(cam->bounds.pos.x, cam->bounds.pos.y, "bounds pos", eid);

@@ -40,10 +40,8 @@ void System::Texture::render(Config &c) {
             System::Animation::update(c, e);
             size.x = anim->size;
         }
-        if (noise != nullptr)
-            size.y -= 1;
         
-        for (int i = 0; i < size.y; i++) {
+        for (int i = 0; i < size.y - ((noise != nullptr) ? 1 : 0); i++) {
             glm::mat4 vertices = glm::transpose(glm::make_mat4x4(v));
             vertices[2] /= (float)size.x;
             vertices[3] = (vertices[3] + (float)i) / (float)size.y;

@@ -37,14 +37,9 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
     Component::Texture* tex = s->getComponent<Component::Texture>(eid);
     
     noise->size = tex->transform.size;
-    Component::Animation* anim = s->getComponent<Component::Animation>(eid);
-    if (anim != nullptr)
-        noise->size.x /= anim->size;
-    noise->size.y /= tex->layer.size();
-   
     noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
     
-    Math::perlinNoise(noise->size, Vec2(0,0), 0, 0, noise->noise_data.data());
+    Math::perlinNoise(noise->size, Vec2(0,0), noise->freq, noise->levels, noise->noise_data.data(), true);
     noise->noise_tex = Graphics::Renderer::createTexture(noise->noise_data.data(), noise->size.x, noise->size.y, false);
 }
 
@@ -52,14 +47,12 @@ void System::Noise::update(Config &c) {
     for (EntityID e : SceneView<Component::Noise>(*c.active_scene)) {
         Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
-        Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
         
-        Vec2 curr_noise_size = tex->transform.size;
-        if (anim != nullptr)
-            curr_noise_size.x /= anim->size;
-        curr_noise_size.y /= tex->layer.size();
-        if (curr_noise_size != noise->size) {
-            noise->size = curr_noise_size;
+        if (not noise->enabled)
+            continue;
+        
+        if (noise->size != tex->transform.size) {
+            noise->size = tex->transform.size;
             noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
         }
         
@@ -81,6 +74,9 @@ void System::Noise::render(Config &c) {
         Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
+        
+        if (not noise->enabled)
+            continue;
         
         if (tex->res.size() == 0)
             continue;
@@ -109,7 +105,7 @@ void System::Noise::render(Config &c) {
         
         tex_vertices = glm::transpose(tex_vertices);
         
-        Rect2 dst = Rect2 (tex->transform.pos + noise->offset + tex->offset[i], noise->size);
+        Rect2 dst = Rect2 (tex->transform.pos + noise->offset + ((tex->offset.size() > i) ? tex->offset[i] : Vec2(0, 0)), noise->size);
         glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
         
         Graphics::Renderer::renderNoise(c, noise->noise_tex, tex->tex_id, model, glm::value_ptr(tex_vertices), vn, tex->layer[i]);
@@ -128,6 +124,7 @@ void System::Noise::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
         noise->freq = entity["noise"]["freq"].as<float>();
     if (entity["noise"]["levels"])
         noise->levels = entity["noise"]["levels"].as<int>();
+    noise->enabled = (entity["noise"]["enabled"]) ? entity["noise"]["enabled"].as<bool>() : true;
     System::Noise::init(c, s, eid);
 }
 
