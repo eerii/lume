@@ -14,7 +14,8 @@ namespace Verse::Component
         ui32 tex_id;
         str res;
         
-        Rect2 transform;
+        Vec2 size;
+        Vec2 render_pos;
         
         std::vector<Vec2> offset;
         std::vector<int> layer;

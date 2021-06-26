@@ -11,6 +11,7 @@ namespace Verse::Component
 {
     struct Camera {
         Vec2f target_pos;
+        Vec2f previous_target_pos;
         
         Vec2f pos;
         Vec2f previous_pos;

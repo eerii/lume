@@ -10,9 +10,10 @@
 #include "ftime.h"
 #include "s_collider.h"
 #include "controller_list.h"
+#include "fmath.h"
 
 #define CAM_EPSILON 0.5f
-#define LA_SPEED 2.5f
+#define LA_SPEED 1.5f
 
 using namespace Verse;
 

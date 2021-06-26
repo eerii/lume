@@ -8,6 +8,7 @@
 - Improved the way components work, use variant
 - The GUI can add components to entities
 - Made it work for web again
+- Smooth damp
 #### Changed
 - Improved palette handling and added new ones
 - Randomized palette on start
@@ -16,6 +17,8 @@
 - Improved the perlin noise algorithm
 - Now GL_LUMINANCE is used for WebGL instead of making RGBA textures
 - Noise component
+- Made camera a bit more static, but solved the brrrr issue.
+- More thinking into how to apply the smooth damp only when the player is still is needed.
 #### Fixed
 - When going down on platform you went through solid blocks
 - Fixed some issues with perlin noise, normalized the values

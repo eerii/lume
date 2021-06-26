@@ -36,7 +36,7 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
     Component::Noise* noise = s->getComponent<Component::Noise>(eid);
     Component::Texture* tex = s->getComponent<Component::Texture>(eid);
     
-    noise->size = tex->transform.size;
+    noise->size = tex->size;
     noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
     
     Math::perlinNoise(noise->size, Vec2(0,0), noise->freq, noise->levels, noise->noise_data.data(), true);
@@ -51,8 +51,8 @@ void System::Noise::update(Config &c) {
         if (not noise->enabled)
             continue;
         
-        if (noise->size != tex->transform.size) {
-            noise->size = tex->transform.size;
+        if (noise->size != tex->size) {
+            noise->size = tex->size;
             noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
         }
         
@@ -105,7 +105,7 @@ void System::Noise::render(Config &c) {
         
         tex_vertices = glm::transpose(tex_vertices);
         
-        Rect2 dst = Rect2 (tex->transform.pos + noise->offset + ((tex->offset.size() > i) ? tex->offset[i] : Vec2(0, 0)), noise->size);
+        Rect2 dst = Rect2 (tex->render_pos + noise->offset + ((tex->offset.size() > i) ? tex->offset[i] : Vec2(0, 0)), noise->size);
         glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
         
         Graphics::Renderer::renderNoise(c, noise->noise_tex, tex->tex_id, model, glm::value_ptr(tex_vertices), vn, tex->layer[i]);

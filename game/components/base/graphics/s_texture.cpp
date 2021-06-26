@@ -61,7 +61,8 @@ void System::Texture::render(Config &c) {
             
             vertices = glm::transpose(vertices);
             
-            Rect2 dst = Rect2((tex->transform.pos + tex->offset[i]), tex->transform.size);
+            Rect2 dst = Rect2((tex->render_pos + tex->offset[i]), tex->size);
+            
             glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
             
             Graphics::Renderer::renderTexture(c, tex->tex_id, model, glm::value_ptr(vertices), tex->layer[i]);
@@ -78,8 +79,11 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     }
     texture->res = entity["texture"]["res"].as<str>();
     Graphics::Texture::loadTexture(texture->res, texture);
-    if (entity["texture"]["transform"])
-        texture->transform = entity["texture"]["transform"].as<Rect2>();
+    if (entity["texture"]["transform"]) {
+        Rect2 transform = entity["texture"]["transform"].as<Rect2>();
+        texture->render_pos = transform.pos;
+        texture->size = transform.size;
+    }
     if (entity["texture"]["offset"]) {
         texture->offset = {};
         if (entity["texture"]["offset"].IsSequence()) {
@@ -105,7 +109,7 @@ void System::Texture::save(Component::Texture *tex, str path, std::vector<str> &
     Serialization::appendYAML(path, key, (str)tex->res, true);
     
     key[3] = "transform";
-    Serialization::appendYAML(path, key, tex->transform, true);
+    Serialization::appendYAML(path, key, Rect2(tex->render_pos, tex->size), true);
     
     key[3] = "layer";
     if (tex->layer.size() == 1)
@@ -145,9 +149,9 @@ void System::Texture::gui(Config &c, EntityID eid) {
     
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(*tex->transform.x, *tex->transform.y, "pos", eid);
+    Verse::Gui::draw_vec2(tex->render_pos.x, tex->render_pos.y, "pos", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(*tex->transform.w, *tex->transform.h, "size", eid);
+    Verse::Gui::draw_vec2(tex->size.x, tex->size.y, "size", eid);
     ImGui::TableNextRow();
     
     ImGui::TableSetColumnIndex(0);

@@ -119,7 +119,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
     
     Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
     if (texture != nullptr)
-        texture->transform = collider->transform.pos;
+        texture->render_pos = collider->transform.pos;
         
     return true;
 }

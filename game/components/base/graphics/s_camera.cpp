@@ -7,10 +7,12 @@
 #include <glm/ext.hpp>
 
 #include "game.h"
+#include "fmath.h"
 #include "ftime.h"
 #include "log.h"
 #include "r_renderer.h"
 #include "controller_list.h"
+#include "input.h"
 
 #include "gui.h"
 #include "gui_types.h"
@@ -21,6 +23,8 @@ namespace {
     Vec2f shake_vec;
     ui32 shake_timer = 0;
     float shake_strength;
+
+    //float smooth_vel;
 }
 
 void System::Camera::update(Config &c) {
@@ -29,14 +33,13 @@ void System::Camera::update(Config &c) {
         if (cam != c.active_camera)
             continue;
         
+        cam->previous_target_pos = cam->target_pos;
         cam->controller();
-        
-        //Vec2f distance = cam->target_pos - cam->pos;
         
         cam->previous_pos = cam->pos;
         cam->pos = cam->target_pos;
         
-        //TODO: MOVE CAMERA, smooth damp
+        //Vec2f(Math::smoothDamp(cam->pos.x, cam->target_pos.x, smooth_vel, 0.3, 100000, c.physics_delta), cam->pos.y);
     }
 }
 
