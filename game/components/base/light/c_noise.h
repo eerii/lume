@@ -8,26 +8,20 @@
 
 namespace Verse::Component
 {
-    struct Fire {
-        Rect2 transform;
+    struct Noise {
         Vec2 offset;
         
-        str flame_tex_res;
-        ui32 flame_tex, p_tex;
-        ui8* p_data;
+        ui32 noise_tex;
+        std::vector<ui8> noise_data;
+        Vec2 size;
         
         Vec2 dir;
         ui8 fps;
         
         float freq;
         int levels = 4;
-        int layer;
         
         float noise_time = 1000;
         float noise_offset = 0;
-        
-        ~Fire() {
-            delete[] p_data;
-        }
     };
 }

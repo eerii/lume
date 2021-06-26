@@ -15,6 +15,7 @@
 - Fixed moving platform inertia
 - Improved the perlin noise algorithm
 - Now GL_LUMINANCE is used for WebGL instead of making RGBA textures
+- Noise component
 #### Fixed
 - When going down on platform you went through solid blocks
 - Fixed some issues with perlin noise, normalized the values

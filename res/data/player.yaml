@@ -8,7 +8,9 @@
       layer:
         - 0
         - -2
+        - -1
       offset:
+        - [-1, 0]
         - [-1, 0]
         - [-1, 0]
     animation:
@@ -81,11 +83,3 @@
       controller: actor
       pos: [20, 90]
       bounds: scene
-    fire:
-      transform: [32, 64, 11, 11]
-      res: res/graphics/flame.png
-      dir: [0, 1]
-      fps: 3
-      freq: 64
-      levels: 1
-      layer: -1

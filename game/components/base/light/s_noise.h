@@ -7,9 +7,10 @@
 #include "config.h"
 #include "serialization.h"
 
-namespace Verse::System::Fire
+namespace Verse::System::Noise
 {
-    void init(Component::Fire* fire);
+    void init(Config &c, Scene *s, EntityID eid);
+    void update(Config &c);
     void render(Config &c);
 
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);

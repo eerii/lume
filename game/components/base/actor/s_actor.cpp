@@ -8,7 +8,6 @@
 
 #include "s_collider.h"
 #include "s_scene_transition.h"
-#include "s_fire.h"
 #include "r_textures.h"
 #include "controller_list.h"
 
@@ -121,10 +120,6 @@ bool System::Actor::move(Config &c, EntityID eid) {
     Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
     if (texture != nullptr)
         texture->transform = collider->transform.pos;
-    
-    Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(eid);
-    if (fire != nullptr)
-        fire->transform = collider->transform.pos + fire->offset;
         
     return true;
 }
@@ -155,24 +150,15 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
         if (collision.second[System::Collider::Layers::Checkpoint] and perform_actions) {
             Component::Collider* c_col = c.active_scene->getComponent<Component::Collider>(collision.first);
             
-            Component::Fire* fire = c.active_scene->getComponent<Component::Fire>(collision.first);
-            Component::Light* light = c.active_scene->getComponent<Component::Light>(collision.first);
+            c.active_scene->checkpoints.push_back(c_col->transform.pos);
             
-            c.active_scene->checkpoints.push_back(c_col->transform.pos - Vec2(0,4));
-            
-            fire = c.active_scene->addComponent<Component::Fire>(collision.first);
-            Vec2 offset = Vec2(*c_col->transform.w * 0.5f - 5.5, -*c_col->transform.h);
-            fire->transform = Rect2(c_col->transform.pos + offset, Vec2(11, 11));
-            fire->dir = Vec2::j;
-            fire->fps = 3;
-            fire->freq = 16;
-            fire->layer = 0;
-            Graphics::Texture::loadTexture("res/graphics/flame.png", fire->flame_tex);
-            System::Fire::init(fire);
-            
-            light = c.active_scene->addComponent<Component::Light>(collision.first);
+            Component::Light* light = c.active_scene->addComponent<Component::Light>(collision.first);
             light->pos = Vec2(*c_col->transform.w * 0.5f, -*c_col->transform.h * 0.5f);
             light->radius = 50;
+            
+            Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(collision.first);
+            if (anim != nullptr)
+                anim->target_key = "active";
             
             c.active_scene->removeComponent<Component::Collider>(collision.first);
         }

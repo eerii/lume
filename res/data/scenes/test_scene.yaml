@@ -26,14 +26,15 @@ entities:
       tex_size: [7, 7]
       layer: 10
   test:
-    fire:
+    texture:
       transform: [420, 90, 64, 64]
       res: res/graphics/no_mask.png
+      layer: 10
+    noise:
       dir: [0, 1]
       fps: 30
-      freq: 2
+      freq: 32
       levels: 4
-      layer: 0
   platform_moving:
     collider:
       transform: [220, 80, 28, 5]
@@ -171,20 +172,38 @@ entities:
       layer: 0
   checkpoint_1:
     collider:
-      transform: [400, 149, 1, 10]
+      transform: [400, 141, 9, 18]
       layer: checkpoint
     texture:
-      res: res/graphics/water.png
-      transform: [400, 149, 1, 10]
+      res: res/graphics/checkpoint.png
+      transform: [400, 141, 9, 18]
       layer: 1
+    animation:
+      frames:
+        active:
+          index: [1, 2, 3]
+        inactive:
+          index: [0]
+      curr_key: inactive
+      default_fps: 3
+      size: 4
   checkpoint_2:
     collider:
-      transform: [624, 121, 1, 10]
+      transform: [615, 113, 9, 18]
       layer: checkpoint
     texture:
-      res: res/graphics/water.png
-      transform: [624, 121, 1, 10]
+      res: res/graphics/checkpoint.png
+      transform: [615, 113, 9, 18]
       layer: 1
+    animation:
+      frames:
+        active:
+          index: [1, 2, 3]
+        inactive:
+          index: [0]
+      curr_key: inactive
+      default_fps: 3
+      size: 4
   free_camera:
     camera:
       controller: free

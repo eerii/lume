@@ -28,7 +28,6 @@ namespace {
     Component::Actor* actor;
     Component::Animation* anim;
     Component::Texture* tex;
-    Component::Fire* fire;
     Component::Collider* collider;
     Component::Light* light;
 
@@ -44,21 +43,16 @@ namespace {
     str curr_idle_anim = "idle_1";
 
     float previous_game_speed = 1.0f;
-
-    Vec2 f_off = Vec2(-1, -1);
-    int fv_off[18] = {0, 0, 0, -1, 0, -1, 1, -1, -1, -1, -1, 1, -1, -1, 0, 0, 0, 0};
-    int fh_off[18] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0};
 }
 
 bool Controller::Player::controller(Config &c, EntityID eid) {
     if (scene != c.active_scene or collider == nullptr or actor == nullptr or anim == nullptr or
-        tex == nullptr or fire == nullptr or light == nullptr or c_state == nullptr) {
+        tex == nullptr or light == nullptr or c_state == nullptr) {
         scene = c.active_scene;
         collider = c.active_scene->getComponent<Component::Collider>(eid);
         actor = c.active_scene->getComponent<Component::Actor>(eid);
         anim = c.active_scene->getComponent<Component::Animation>(eid);
         tex = c.active_scene->getComponent<Component::Texture>(eid);
-        fire = c.active_scene->getComponent<Component::Fire>(eid);
         light = c.active_scene->getComponent<Component::Light>(eid);
         c_state = c.active_scene->getComponent<Component::State>(eid);
     }
@@ -191,12 +185,6 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
         anim->target_key = "jump_down";
     if (not falling_tiny_bit and previously_on_air and on_ground) //TODO: Platform check
         anim->queue.push_back("jump_end");
-    
-    
-    //FLAME
-    ui16 curr_index = (anim->frames.find(anim->curr_key) != anim->frames.end()) ?
-                       anim->frames[anim->curr_key].index[anim->curr_frame] : 0;
-    fire->offset = f_off + Vec2(fh_off[curr_index] * (tex->is_reversed ? -1 : 1), fv_off[curr_index]);
     
     return true;
 }

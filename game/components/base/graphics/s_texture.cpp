@@ -30,6 +30,7 @@ void System::Texture::render(Config &c) {
     for (EntityID e : SceneView<Component::Texture>(*c.active_scene)) {
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
+        Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(e);
         
         if (tex->res.size() == 0)
             continue;
@@ -39,6 +40,8 @@ void System::Texture::render(Config &c) {
             System::Animation::update(c, e);
             size.x = anim->size;
         }
+        if (noise != nullptr)
+            size.y -= 1;
         
         for (int i = 0; i < size.y; i++) {
             glm::mat4 vertices = glm::transpose(glm::make_mat4x4(v));

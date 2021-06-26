@@ -19,12 +19,11 @@
 #include "c_timer.h"
 #include "c_patrol.h"
 #include "c_scene_transition.h"
+#include "c_noise.h"
 
 //Extra
-#include "c_fire.h"
 #include "c_player.h"
 
-#define USE_C_FIRE
 #define USE_C_PLAYER
 
 namespace Verse
@@ -38,17 +37,17 @@ namespace Verse
                                        Component::Text,
                                        Component::Camera,
                                        Component::Light,
+                                       Component::Noise,
                                        Component::Timer,
                                        Component::Patrol,
                                        Component::SceneTransition,
-                                       Component::Fire,
                                        Component::Player>;
 
     static const std::vector<str> component_names = {
         "collider", "actor", "state",
         "texture", "animation", "tilemap", "text", "camera",
-        "light",
+        "light", "noise",
         "timer", "patrol", "scene_transition",
-        "fire", "player"
+        "player"
     };
 }
