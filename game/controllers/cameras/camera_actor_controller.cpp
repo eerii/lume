@@ -12,15 +12,18 @@
 #include "controller_list.h"
 #include "fmath.h"
 
-#define CAM_EPSILON 0.5f
-#define LA_SPEED 1.5f
-
 using namespace Verse;
 
 namespace {
+    float la_speed = 1.5f;
+    Vec2 la_bounds = Vec2(60, 40);
+
     int la_dir = 0;
     float la_percent = 0.0f;
-    Vec2 la_bounds = Vec2(60, 40);
+    float target_percent = 1.0f;
+
+    float la_pos = 0.0f;
+    float la_vel = 0.0f;
 
     int input = 0;
 }
@@ -38,7 +41,8 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     
     cam->target_pos = collider->transform.pos.to_float() + collider->transform.size.to_float() * 0.5f;
     
-    lookahead(c, cam, input);
+    if (c.enable_lookahead)
+        lookahead(c, cam, input);
     
     checkBounds(c, cam);
     
@@ -46,13 +50,24 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
 }
 
 void Controller::Camera::Actor::lookahead(Config &c, Component::Camera *cam, int input) {
-    la_percent = (input != 0 and input != la_dir) ? 1.0f - la_percent : la_percent;
-    la_dir = (input != 0) ? input : la_dir;
+    if (input != 0) {
+        if (input != la_dir)
+            la_percent = target_percent - la_percent;
+        la_dir = input;
+        la_percent += (la_percent < target_percent) ? la_speed * c.physics_delta * (target_percent - pow(la_percent, 1.5f)) : 0.0f;
+    }
     
-    if (input != 0)
-        la_percent += (la_percent < 1.0f) ? LA_SPEED * c.physics_delta * (1.0f - pow(la_percent, 2)) : 0.0f;
+    float la_target = la_bounds.x * la_dir * (la_percent - 0.5f * target_percent) +
+                      ((input == 0 and c.enable_smooth_panning) ? la_dir * 10.0f : 0.0f);
     
-    cam->target_pos.x += la_bounds.x * la_dir * (la_percent - 0.5f);
+    if (c.enable_smooth_panning) {
+        float prev_la_pos = la_pos;
+        la_pos = Math::smoothDamp(la_pos, la_target, la_vel, 0.25, 100000, c.physics_delta);
+        if (abs(prev_la_pos - la_pos) < 0.1f)
+            la_pos = prev_la_pos;
+    }
+    
+    cam->target_pos.x += (c.enable_smooth_panning) ? la_pos : la_target;
 }
 
 void Controller::Camera::Actor::checkBounds(Config &c, Component::Camera* cam) {

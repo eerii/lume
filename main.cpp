@@ -40,7 +40,6 @@ int main(int argc, const char * argv[]) {
         .render_scale = 4,
         .enable_gui = true,
         .use_vsync = true,
-        .use_subpixel_cam = true,
         
         .timestep = 10.0,
         .game_speed = 1.0f,
@@ -50,6 +49,10 @@ int main(int argc, const char * argv[]) {
         .palette_index = 1,
         .num_palettes = 9,
         .background_color = {0.0, 0.0, 0.0, 1.0},
+        
+        .enable_lookahead = true,
+        .enable_smooth_panning = true,
+        .use_subpixel_cam = true,
         
         .gravity = 800,
         .gravity_dir = Vec2f(0, 1),
