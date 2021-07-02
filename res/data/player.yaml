@@ -78,7 +78,7 @@
         - solid_platform
     light:
       pos: [5, 5]
-      radius: 100
+      radius: 150
     camera:
       controller: actor
       pos: [20, 90]

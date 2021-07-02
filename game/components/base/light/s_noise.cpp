@@ -4,6 +4,8 @@
 
 #include "s_noise.h"
 
+#include <glm/ext.hpp>
+
 #include "ftime.h"
 
 #include "r_pipeline.h"
@@ -40,7 +42,7 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
     noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
     
     Math::perlinNoise(noise->size, Vec2(0,0), noise->freq, noise->levels, noise->noise_data.data(), true);
-    noise->noise_tex = Graphics::Renderer::createTexture(noise->noise_data.data(), noise->size.x, noise->size.y, false);
+    noise->noise_tex = Graphics::Texture::createTexture(noise->noise_data.data(), noise->size.x, noise->size.y, false);
 }
 
 void System::Noise::update(Config &c) {

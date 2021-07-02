@@ -38,7 +38,7 @@ namespace {
     bool previously_on_air = false;
     bool falling_tiny_bit = false;
 
-    int light_strength = 100;
+    int light_strength = 150;
     ui32 light_timer = 0;
     str curr_idle_anim = "idle_1";
 
@@ -244,7 +244,7 @@ void Controller::Player::respawn(Config &c) {
     actor->vel = Vec2f(0,0);
     state->jump.handle(FallEvent());
     
-    light_strength = 100;
+    light_strength = 150;
 }
 
 bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {

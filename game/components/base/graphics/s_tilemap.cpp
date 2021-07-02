@@ -5,6 +5,7 @@
 #include "s_tilemap.h"
 
 #include <array>
+#include <glm/ext.hpp>
 
 #include "log.h"
 #include "input.h"
@@ -47,11 +48,11 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
         dst.pos = tmap->pos;
         dst.size = tmap->tex_size;
         
-        int k = 0;
         for (int i = 0; i < tmap->tiles.size(); i++) {
-            for (int j = 0; j < tmap->tiles[i].size(); j++) {                if (tmap->tiles[i][j] == l) {
+            for (int j = 0; j < tmap->tiles[i].size(); j++) {
+                if (tmap->tiles[i][j] == l) {
                     src.pos.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
-                    std::array<float, 24> v = {
+                    float v[24] = {
                         0.0,  1.0,  0.0,  1.0,
                         1.0,  1.0,  1.0,  1.0,
                         0.0,  0.0,  0.0,  0.0,
@@ -59,9 +60,16 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
                         0.0,  0.0,  0.0,  0.0,
                         1.0,  0.0,  1.0,  0.0,
                     };
-                    tmap->vert[l].push_back(v);
-                    Graphics::Renderer::prepareTilemap(c, dst, tmap->vert[l][k]);
-                    k++;
+                    
+                    for (int i = 0; i < 6; i++) {
+                        v[4*i + 0] = (i % 2 == 1) ? *dst.w : 0.0;
+                        v[4*i + 0] += *dst.x;
+                        v[4*i + 1] = (i < 2 or i == 3) ? *dst.h : 0.0;
+                        v[4*i + 1] += *dst.y;
+                    }
+                
+                    for (int i = 0; i < 24; i++)
+                        tmap->vert[l].push_back(v[i]);
                 }
                 dst.pos.x += tmap->tex_size.x;
             }
@@ -83,7 +91,13 @@ void System::Tilemap::render(Config &c) {
         
         int i = 0;
         for (ui32 t : tmap->tex_id) {
-            Graphics::Renderer::renderTilemap(c, t, reinterpret_cast<float*>(tmap->vert[i].data()), (int)tmap->vert[i].size(), tmap->layer);
+            Graphics::TextureData tex_data;
+            tex_data.gl_id = t;
+            tex_data.model = glm::translate(glm::mat4(1.0f), glm::vec3(-BORDER_WIDTH, -BORDER_WIDTH, 0.0f));
+            tex_data.vertices = tmap->vert[i];
+            tex_data.layer = tmap->layer;
+            
+            Graphics::Renderer::renderTilemap(c, tex_data);
             i++;
         }
     }

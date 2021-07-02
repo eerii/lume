@@ -38,7 +38,6 @@ int main(int argc, const char * argv[]) {
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
-        .enable_gui = true,
         .use_vsync = true,
         
         .timestep = 10.0,
@@ -68,7 +67,7 @@ int main(int argc, const char * argv[]) {
     
     Scene* scene = new Scene();
     
-    Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
+    Serialization::loadScene("test_scene_3", scene, config); //Always scene before player, if not camera no bounds
     EntityID player = Serialization::loadPlayer(scene, config);
     
     for (EntityID e : SceneView<Component::SceneTransition>(*scene)) {

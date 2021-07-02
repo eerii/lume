@@ -68,7 +68,7 @@ void System::Text::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     text->previous_text = text->text;
     
     ui8 bitmap[1] = {0};
-    text->tex_id = Graphics::Renderer::createTexture(bitmap, 0, 0, false);
+    text->tex_id = Graphics::Texture::createTexture(bitmap, 0, 0, false);
     Graphics::Font::render(text);
 }
 

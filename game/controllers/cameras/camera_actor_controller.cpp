@@ -26,12 +26,14 @@ namespace {
     float la_vel = 0.0f;
 
     int input = 0;
+    float vel_percent = 0.0f;
 }
 
 bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);
     
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
+    Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     
     input = 0;
     if (Input::down(Input::Key::Left) or Input::down(Input::Key::A))
@@ -40,6 +42,8 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
         input = 1;
     
     cam->target_pos = collider->transform.pos.to_float() + collider->transform.size.to_float() * 0.5f;
+    
+    vel_percent = (input != 0) ? (float)abs(actor->vel.x) / (float)actor->max_move_speed : vel_percent;
     
     if (c.enable_lookahead)
         lookahead(c, cam, input);
@@ -58,7 +62,7 @@ void Controller::Camera::Actor::lookahead(Config &c, Component::Camera *cam, int
     }
     
     float la_target = la_bounds.x * la_dir * (la_percent - 0.5f * target_percent) +
-                      ((input == 0 and c.enable_smooth_panning) ? la_dir * 10.0f : 0.0f);
+                      ((input == 0 and c.enable_smooth_panning) ? la_dir * vel_percent * 10.0f : 0.0f);
     
     if (c.enable_smooth_panning) {
         float prev_la_pos = la_pos;

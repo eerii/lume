@@ -4,6 +4,8 @@
 
 #include "s_texture.h"
 
+#include <glm/ext.hpp>
+
 #include "ftime.h"
 #include "s_animation.h"
 #include "r_renderer.h"
@@ -42,30 +44,36 @@ void System::Texture::render(Config &c) {
         }
         
         for (int i = 0; i < size.y - ((noise != nullptr) ? 1 : 0); i++) {
-            glm::mat4 vertices = glm::transpose(glm::make_mat4x4(v));
-            vertices[2] /= (float)size.x;
-            vertices[3] = (vertices[3] + (float)i) / (float)size.y;
+            std::vector<float> vertices(v, v + sizeof v / sizeof v[0]);
             
-            if (anim != nullptr and
-                anim->frames.size() > 0 and
-                anim->frames.count(anim->curr_key) > 0 and
-                anim->frames[anim->curr_key].index.size() > anim->curr_frame)
-                vertices[2] += (float)anim->frames[anim->curr_key].index[anim->curr_frame] / (float)size.x;
+            bool has_anim = (anim != nullptr and
+                             anim->frames.size() > 0 and
+                             anim->frames.count(anim->curr_key) > 0 and
+                             anim->frames[anim->curr_key].index.size() > anim->curr_frame);
             
-            if (tex->is_reversed) {
-                vertices[2][0] = vertices[2][1];
-                vertices[2][1] = vertices[2][2];
-                vertices[2][2] = vertices[2][0];
-                vertices[2][3] = vertices[2][1];
+            for (int j = 0; j < 4; j++) {
+                vertices[j*4+2] /= (float)size.x;
+                vertices[j*4+3] = (vertices[j*4+3] + (float)i) / (float)size.y;
+                
+                if (has_anim)
+                    vertices[j*4+2] += (float)anim->frames[anim->curr_key].index[anim->curr_frame] / (float)size.x;
             }
             
-            vertices = glm::transpose(vertices);
+            if (tex->is_reversed) {
+                vertices[0*4+2] = vertices[1*4+2];
+                vertices[1*4+2] = vertices[2*4+2];
+                vertices[2*4+2] = vertices[0*4+2];
+                vertices[3*4+2] = vertices[1*4+2];
+            }
             
             Rect2 dst = Rect2((tex->render_pos + tex->offset[i]), tex->size);
             
-            glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
-            
-            Graphics::Renderer::renderTexture(c, tex->tex_id, model, glm::value_ptr(vertices), tex->layer[i]);
+            Graphics::TextureData tex_data;
+            tex_data.gl_id = tex->tex_id;
+            tex_data.model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
+            tex_data.vertices = vertices;
+            tex_data.layer = tex->layer[i];
+            Graphics::Renderer::renderTexture(c, tex_data);
         }
     }
 }

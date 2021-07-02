@@ -30,6 +30,7 @@ bool Controller::FallingPlatform::controller(Config &c, EntityID eid) {
     if (actor->has_gravity and actor->vel.y == 0 and checkGroundBelow(c, eid)) {
         c.active_scene->removeComponent<Component::Timer>(eid);
         c.active_scene->removeComponent<Component::Actor>(eid);
+        col->layer = System::Collider::Layers::Ground;
     }
     
     if (*col->transform.y > 500)

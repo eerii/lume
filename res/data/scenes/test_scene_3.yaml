@@ -1,0 +1,350 @@
+%YAML 1.2
+---
+scene:
+  name: test_scene_3
+  size: [768, 180]
+  spawn:
+   - [32, 64]
+
+entities:
+  tile_bg_1:
+    tilemap:
+      res:
+        - res/graphics/bg_1.png
+        - res/graphics/bg_2.png
+        - res/graphics/bg_3.png
+      tiles: res/levels/bg_2.png
+      pos: [-56, 12]
+      tex_size: [7, 7]
+      layer: 20
+  tile_blocks:
+    collider: tile
+    tilemap:
+      res: res/graphics/ground.png
+      tiles: res/levels/3.png
+      pos: [14, 61]
+      tex_size: [7, 7]
+      layer: 10
+  platform_moving:
+    collider:
+      transform: [300, 168, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/moving_platform.png
+      transform: [300, 168, 28, 5]
+      layer: 10
+    actor:
+      controller: moving_platform
+      max_move_speed: 50
+      has_gravity: false
+      collision_mask:
+        - actor
+    patrol:
+      points:
+        - [300, 168]
+        - [436, 168]
+    animation:
+      frames:
+        idle:
+          index: [0, 1, 2]
+      curr_key: idle
+      default_fps: 6
+      size: 3
+  platform_falling_1:
+    collider:
+      transform: [580, 110, 28, 7]
+      layer: solid_platform
+    texture:
+      res: res/graphics/falling_platform.png
+      transform: [580, 110, 28, 7]
+      layer: 10
+    actor:
+      controller: falling_platform
+      max_move_speed: 200
+      has_gravity: false
+      collision_mask:
+        - actor
+        - ground
+        - solid_platform
+    timer:
+      ms: 500
+  platform_falling_2:
+    collider:
+      transform: [587, 61, 28, 7]
+      layer: solid_platform
+    texture:
+      res: res/graphics/falling_platform.png
+      transform: [587, 61, 28, 7]
+      layer: 10
+    actor:
+      controller: falling_platform
+      max_move_speed: 200
+      has_gravity: false
+      collision_mask:
+        - actor
+        - ground
+        - solid_platform
+    timer:
+      ms: 500
+  platform_falling_3:
+    collider:
+      transform: [538, 124, 28, 7]
+      layer: solid_platform
+    texture:
+      res: res/graphics/falling_platform.png
+      transform: [538, 124, 28, 7]
+      layer: 10
+    actor:
+      controller: falling_platform
+      max_move_speed: 200
+      has_gravity: false
+      collision_mask:
+        - actor
+        - ground
+        - solid_platform
+    timer:
+      ms: 500
+  platform_falling_5:
+    collider:
+      transform: [573, 40, 28, 7]
+      layer: solid_platform
+    texture:
+      res: res/graphics/falling_platform.png
+      transform: [573, 40, 28, 7]
+      layer: 10
+    actor:
+      controller: falling_platform
+      max_move_speed: 200
+      has_gravity: false
+      collision_mask:
+        - actor
+        - ground
+        - solid_platform
+    timer:
+      ms: 500
+  platform_disable_1:
+    collider:
+      transform: [300, 136, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/disable_platform.png
+      transform: [300, 136, 28, 5]
+      layer: 10
+    actor:
+      controller: disable_platform
+      has_gravity: false
+      collision_mask:
+        - actor
+    timer:
+      ms: [333, 1500]
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [4]
+          fps: 12
+        pre_active_2:
+          index: [5]
+          fps: 12
+        pre_inactive:
+          index: [1, 2, 3]
+        inactive:
+          index: [6]
+      curr_key: active
+      default_fps: 9
+      size: 7
+  platform_disable_2:
+    collider:
+      transform: [200, 86, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/disable_platform.png
+      transform: [200, 86, 28, 5]
+      layer: 10
+    actor:
+      controller: disable_platform
+      has_gravity: false
+      collision_mask:
+        - actor
+    timer:
+      ms: [333, 1500]
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [4]
+          fps: 12
+        pre_active_2:
+          index: [5]
+          fps: 12
+        pre_inactive:
+          index: [1, 2, 3]
+        inactive:
+          index: [6]
+      curr_key: active
+      default_fps: 9
+      size: 7
+  platform_switch_1:
+    collider:
+      transform: [157, 159, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/switch_platform.png
+      transform: [157, 159, 28, 5]
+      layer: 10
+    actor:
+      controller: switch_platform
+      has_gravity: false
+    timer:
+      ms: 1500
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [2]
+        pre_active_2:
+          index: [3]
+        pre_inactive:
+          index: [1, 0]
+        inactive:
+          index: [4]
+      curr_key: active
+      default_fps: 12
+      size: 5
+  platform_switch_2:
+    collider:
+      transform: [430, 61, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/switch_platform.png
+      transform: [430, 61, 28, 5]
+      layer: 10
+    actor:
+      controller: switch_platform
+      has_gravity: false
+    timer:
+      ms: 1500
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [2]
+        pre_active_2:
+          index: [3]
+        pre_inactive:
+          index: [1, 0]
+        inactive:
+          index: [4]
+      curr_key: active
+      default_fps: 12
+      size: 5
+  platform_switch_3:
+    collider:
+      transform: [536, 61, 28, 5]
+      layer: platform
+    texture:
+      res: res/graphics/switch_platform.png
+      transform: [536, 61, 28, 5]
+      layer: 10
+    actor:
+      controller: switch_platform
+      has_gravity: false
+    timer:
+      ms: 1500
+    animation:
+      frames:
+        active:
+          index: [0]
+        pre_active_1:
+          index: [2]
+        pre_active_2:
+          index: [3]
+        pre_inactive:
+          index: [1, 0]
+        inactive:
+          index: [4]
+      curr_key: active
+      default_fps: 12
+      size: 5
+  checkpoint_1:
+    collider:
+      transform: [296, 43, 9, 18]
+      layer: checkpoint
+    texture:
+      res: res/graphics/checkpoint.png
+      transform: [296, 43, 9, 18]
+      layer:
+       - 1
+       - 0
+    animation:
+      frames:
+        active:
+          index: [1, 2, 3]
+        inactive:
+          index: [0]
+      curr_key: inactive
+      default_fps: 3
+      size: 4
+    noise:
+      dir: [0, 1]
+      fps: 6
+      freq: 128
+      levels: 1
+      enabled: false
+  checkpoint_2:
+    collider:
+      transform: [493, 43, 9, 18]
+      layer: checkpoint
+    texture:
+      res: res/graphics/checkpoint.png
+      transform: [493, 43, 9, 18]
+      layer:
+       - 1
+       - 0
+    animation:
+      frames:
+        active:
+          index: [1, 2, 3]
+        inactive:
+          index: [0]
+      curr_key: inactive
+      default_fps: 3
+      size: 4
+    noise:
+      dir: [0, 1]
+      fps: 6
+      freq: 128
+      levels: 1
+      enabled: false
+  checkpoint_3:
+    collider:
+      transform: [650, 99, 9, 18]
+      layer: checkpoint
+    texture:
+      res: res/graphics/checkpoint.png
+      transform: [650, 99, 9, 18]
+      layer:
+       - 1
+       - 0
+    animation:
+      frames:
+        active:
+          index: [1, 2, 3]
+        inactive:
+          index: [0]
+      curr_key: inactive
+      default_fps: 3
+      size: 4
+    noise:
+      dir: [0, 1]
+      fps: 6
+      freq: 128
+      levels: 1
+      enabled: false
+  free_camera:
+    camera:
+      controller: free

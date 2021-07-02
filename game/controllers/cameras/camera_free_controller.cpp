@@ -22,12 +22,7 @@ bool Controller::Camera::Free::controller(Config &c, EntityID eid) {
     if (Input::down(Input::Key::W))
         cam->target_pos.y = cam->pos.y - CAM_MOVE * c.physics_delta;
     if (Input::down(Input::Key::S))
-        cam->target_pos.y = cam->pos.x + CAM_MOVE * c.physics_delta;
-    
-    if (not Input::down(Input::Key::A) and not Input::down(Input::Key::D))
-        cam->target_pos.x = cam->pos.x;
-    if (not Input::down(Input::Key::W) and not Input::down(Input::Key::S))
-        cam->target_pos.y = cam->pos.y;
+        cam->target_pos.y = cam->pos.y + CAM_MOVE * c.physics_delta;
     
     /*if (Input::pressed(Input::Key::O))
         cam->scale += 0.25f;

@@ -11,6 +11,7 @@ namespace Verse
 {
     static std::vector<str> scenes {
         "test_scene",
-        "test_scene_2"
+        "test_scene_2",
+        "test_scene_3",
     };
 }
