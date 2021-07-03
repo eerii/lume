@@ -42,7 +42,8 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
     noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
     
     Math::perlinNoise(noise->size, Vec2(0,0), noise->freq, noise->levels, noise->noise_data.data(), true);
-    noise->noise_tex = Graphics::Texture::createTexture(noise->noise_data.data(), noise->size.x, noise->size.y, false);
+    noise->noise_tex.w = noise->size.x; noise->noise_tex.h = noise->size.y;
+    Graphics::Texture::createTexture(noise->noise_data.data(), noise->noise_tex, noise->size.x, noise->size.y, false);
 }
 
 void System::Noise::update(Config &c) {
@@ -61,8 +62,10 @@ void System::Noise::update(Config &c) {
         noise->noise_time += c.physics_delta;
         if (noise->fps != 0 and noise->noise_time > (1.0f / (float)noise->fps)) {
             noise->noise_offset++;
-            Graphics::Texture::createPerlinNoise(noise->size, noise->dir * noise->noise_offset, noise->freq,
-                                                 noise->levels, noise->noise_data.data(), noise->noise_tex);
+            noise->noise_tex.w = noise->size.x;
+            noise->noise_tex.h = noise->size.y;
+            Graphics::Texture::createPerlinNoise(noise->noise_data.data(), noise->noise_tex, noise->size,
+                                                 noise->dir * noise->noise_offset, noise->freq, noise->levels);
             
             noise->noise_time = 0;
         }
@@ -88,29 +91,39 @@ void System::Noise::render(Config &c) {
             tex_size.x = anim->size;
         
         int i = tex_size.y - 1;
-        glm::mat4 tex_vertices = glm::transpose(glm::make_mat4x4(v));
-        tex_vertices[2] /= (float)tex_size.x;
-        tex_vertices[3] = (tex_vertices[3] + (float)i) / (float)tex_size.y;
         
-        if (anim != nullptr and
-            anim->frames.size() > 0 and
-            anim->frames.count(anim->curr_key) > 0 and
-            anim->frames[anim->curr_key].index.size() > anim->curr_frame)
-            tex_vertices[2] += (float)anim->frames[anim->curr_key].index[anim->curr_frame] / (float)tex_size.x;
+        std::vector<float> vertices(v, v + sizeof v / sizeof v[0]);
         
-        if (tex->is_reversed) {
-            tex_vertices[2][0] = tex_vertices[2][1];
-            tex_vertices[2][1] = tex_vertices[2][2];
-            tex_vertices[2][2] = tex_vertices[2][0];
-            tex_vertices[2][3] = tex_vertices[2][1];
+        bool has_anim = (anim != nullptr and
+                         anim->frames.size() > 0 and
+                         anim->frames.count(anim->curr_key) > 0 and
+                         anim->frames[anim->curr_key].index.size() > anim->curr_frame);
+        
+        for (int j = 0; j < 4; j++) {
+            vertices[j*4+2] /= (float)tex_size.x;
+            vertices[j*4+3] = (vertices[j*4+3] + (float)i) / (float)tex_size.y;
+            
+            if (has_anim)
+                vertices[j*4+2] += (float)anim->frames[anim->curr_key].index[anim->curr_frame] / (float)tex_size.x;
         }
         
-        tex_vertices = glm::transpose(tex_vertices);
+        if (tex->is_reversed) {
+            vertices[0*4+2] = vertices[1*4+2];
+            vertices[1*4+2] = vertices[2*4+2];
+            vertices[2*4+2] = vertices[0*4+2];
+            vertices[3*4+2] = vertices[1*4+2];
+        }
         
         Rect2 dst = Rect2 (tex->render_pos + noise->offset + ((tex->offset.size() > i) ? tex->offset[i] : Vec2(0, 0)), noise->size);
-        glm::mat4 model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
         
-        Graphics::Renderer::renderNoise(c, noise->noise_tex, tex->tex_id, model, glm::value_ptr(tex_vertices), vn, tex->layer[i]);
+        noise->mask_tex.gl_id = tex->data.gl_id;
+        noise->mask_tex.model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
+        noise->mask_tex.vertices = vertices;
+        noise->mask_tex.layer = tex->layer[i];
+        
+        noise->noise_tex.vertices = std::vector<float>(vn, vn + sizeof vn / sizeof vn[0]);
+        
+        Graphics::Renderer::renderNoise(c, noise->mask_tex, noise->noise_tex);
     }
 }
 
@@ -148,5 +161,7 @@ void System::Noise::gui(Config &c, EntityID eid) {
     
     Verse::Gui::draw_ui8(noise->fps, "fps", eid);
     ImGui::TableNextRow();
+    
+    Verse::Gui::draw_bool(noise->enabled, "enabled", eid);
 #endif
 }

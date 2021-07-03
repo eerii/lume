@@ -5,13 +5,15 @@
 #pragma once
 
 #include "dtypes.h"
+#include "r_texturedata.h"
 
 namespace Verse::Component
 {
     struct Noise {
         Vec2 offset;
         
-        ui32 noise_tex;
+        Verse::Graphics::TextureData mask_tex;
+        Verse::Graphics::TextureData noise_tex;
         std::vector<ui8> noise_data;
         Vec2 size;
         

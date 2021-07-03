@@ -5,13 +5,12 @@
 #pragma once
 
 #include "dtypes.h"
-#include <vector>
+#include "r_texturedata.h"
 
 namespace Verse::Component
 {
     struct Texture {
-        ui8* tex;
-        ui32 tex_id;
+        Verse::Graphics::TextureData data;
         str res;
         
         Vec2 size;

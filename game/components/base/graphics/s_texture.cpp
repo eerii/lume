@@ -68,12 +68,11 @@ void System::Texture::render(Config &c) {
             
             Rect2 dst = Rect2((tex->render_pos + tex->offset[i]), tex->size);
             
-            Graphics::TextureData tex_data;
-            tex_data.gl_id = tex->tex_id;
-            tex_data.model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
-            tex_data.vertices = vertices;
-            tex_data.layer = tex->layer[i];
-            Graphics::Renderer::renderTexture(c, tex_data);
+            tex->data.model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
+            tex->data.vertices = vertices;
+            tex->data.layer = tex->layer[i];
+            
+            Graphics::Renderer::renderTexture(c, tex->data);
         }
     }
 }

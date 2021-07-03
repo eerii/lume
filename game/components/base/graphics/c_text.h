@@ -6,6 +6,7 @@
 
 #include "dtypes.h"
 #include "stb_truetype_fresa.h"
+#include "r_texturedata.h"
 
 namespace Verse
 {
@@ -25,7 +26,7 @@ namespace Verse::Component
         
         Vec2 bitmap_size;
         
-        ui32 tex_id;
+        Verse::Graphics::TextureData tex_data;
         Rect2 transform;
         int layer;
         

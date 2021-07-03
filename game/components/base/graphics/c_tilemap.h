@@ -5,14 +5,13 @@
 #pragma once
 
 #include "dtypes.h"
-#include <vector>
-#include <glm/glm.hpp>
+#include "r_texturedata.h"
 
 namespace Verse::Component
 {
     struct Tilemap {
         std::vector<str> res;
-        std::vector<ui32> tex_id;
+        std::vector<Verse::Graphics::TextureData> tex_data;
         
         str tile_res;
         std::vector<std::vector<ui8>> tiles;

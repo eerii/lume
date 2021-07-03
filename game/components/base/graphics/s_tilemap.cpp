@@ -37,7 +37,7 @@ void System::Tilemap::init(Config &c) {
 
 void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
     tmap->vert = {};
-    for (int l = 0; l < tmap->tex_id.size(); l++) {
+    for (int l = 0; l < tmap->tex_data.size(); l++) {
         tmap->vert.push_back({});
         
         Rect2 src;
@@ -86,18 +86,16 @@ void System::Tilemap::render(Config &c) {
         if (c.tme_active and tmap != c.tme_curr_tmap)
             continue;
         
-        if (tmap->res.size() == 0 or tmap->tex_id.size() == 0)
+        if (tmap->res.size() == 0 or tmap->tex_data.size() == 0)
             continue;
         
         int i = 0;
-        for (ui32 t : tmap->tex_id) {
-            Graphics::TextureData tex_data;
-            tex_data.gl_id = t;
-            tex_data.model = glm::translate(glm::mat4(1.0f), glm::vec3(-BORDER_WIDTH, -BORDER_WIDTH, 0.0f));
-            tex_data.vertices = tmap->vert[i];
-            tex_data.layer = tmap->layer;
+        for (Graphics::TextureData t : tmap->tex_data) {
+            t.model = glm::translate(glm::mat4(1.0f), glm::vec3(-BORDER_WIDTH, -BORDER_WIDTH, 0.0f));
+            t.vertices = tmap->vert[i];
+            t.layer = tmap->layer;
             
-            Graphics::Renderer::renderTilemap(c, tex_data);
+            Graphics::Renderer::renderTilemap(c, t);
             i++;
         }
     }

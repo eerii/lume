@@ -29,9 +29,10 @@ void System::Text::render(Config &c) {
             text->previous_text = text->text;
         }
         
-        glm::mat4 model = Graphics::Renderer::matModel2D(text->transform.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), text->transform.size);
+        text->tex_data.vertices = std::vector<float>(v, v + sizeof v / sizeof v[0]);
+        text->tex_data.model = Graphics::Renderer::matModel2D(text->transform.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), text->transform.size);
         
-        Graphics::Renderer::renderText(c, text->tex_id, model, v, text->layer, text->r, text->g, text->b, text->solid_color);
+        Graphics::Renderer::renderText(c, text->tex_data, text->r, text->g, text->b, text->solid_color);
     }
 }
 
@@ -68,7 +69,8 @@ void System::Text::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     text->previous_text = text->text;
     
     ui8 bitmap[1] = {0};
-    text->tex_id = Graphics::Texture::createTexture(bitmap, 0, 0, false);
+    text->tex_data.w = 0; text->tex_data.h = 0;
+    Graphics::Texture::createTexture(bitmap, text->tex_data, false);
     Graphics::Font::render(text);
 }
 
