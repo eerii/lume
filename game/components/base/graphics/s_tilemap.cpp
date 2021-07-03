@@ -76,6 +76,10 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
             dst.pos.x = tmap->pos.x;
             dst.pos.y += tmap->tex_size.y;
         }
+        
+        tmap->tex_data[l].vertices = tmap->vert[l];
+        tmap->tex_data[l].model = glm::translate(glm::mat4(1.0f), glm::vec3(-BORDER_WIDTH, -BORDER_WIDTH, 0.0f));
+        tmap->tex_data[l].layer = tmap->layer;
     }
 }
 
@@ -91,10 +95,6 @@ void System::Tilemap::render(Config &c) {
         
         int i = 0;
         for (Graphics::TextureData t : tmap->tex_data) {
-            t.model = glm::translate(glm::mat4(1.0f), glm::vec3(-BORDER_WIDTH, -BORDER_WIDTH, 0.0f));
-            t.vertices = tmap->vert[i];
-            t.layer = tmap->layer;
-            
             Graphics::Renderer::renderTilemap(c, t);
             i++;
         }

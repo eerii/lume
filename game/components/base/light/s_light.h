@@ -9,7 +9,7 @@
 
 namespace Verse::System::Light
 {
-    void render(Config &c, ui8 pid);
+    std::vector<glm::vec4> render(Config &c, ui8 pid);
 
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
     void save(Component::Light* light, str path, std::vector<str> &key);

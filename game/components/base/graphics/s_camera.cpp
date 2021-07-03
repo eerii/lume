@@ -23,8 +23,6 @@ namespace {
     Vec2f shake_vec;
     ui32 shake_timer = 0;
     float shake_strength;
-
-    //float smooth_vel;
 }
 
 void System::Camera::update(Config &c) {

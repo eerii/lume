@@ -3,6 +3,13 @@
 ## **0.2** ~ Light
 
 
+### **[0.1.15]** ~ Vulkan _2021-07-03_
+#### Added
+- Created USE_OPENGL and USE_VULKAN toggles, they enable and disable parts of the code
+#### Changed
+- Cleaned up rendering pipeline, abstracted all OpenGL functions to the renderer
+
+
 ### **[0.1.14]** ~ Tiny Things _2021-06-24_
 #### Added
 - Improved the way components work, use variant
