@@ -6,6 +6,8 @@
 ### **[0.1.15]** ~ Vulkan _2021-07-03_
 #### Added
 - Created USE_OPENGL and USE_VULKAN toggles, they enable and disable parts of the code
+- Vulkan Instance Initialization
+- Vulkan Debug and Validation layers
 #### Changed
 - Cleaned up rendering pipeline, abstracted all OpenGL functions to the renderer
 

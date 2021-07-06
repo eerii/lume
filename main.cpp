@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]) {
     
     config = {
         .name = "Proxecto Lume",
-        .version = "0.1.14",
+        .version = {0, 1, 15},
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -44,7 +44,7 @@ int main(int argc, const char * argv[]) {
         .game_speed = 1.0f,
         
         .use_grayscale = false,
-        .use_light = true,
+        .use_light = false,
         .palette_index = 1,
         .num_palettes = 9,
         .background_color = {0.0, 0.0, 0.0, 1.0},
@@ -64,9 +64,15 @@ int main(int argc, const char * argv[]) {
     bool running = Game::init(config);
     Component::registerComponents();
     
-    
     Scene* scene = new Scene();
     
+    
+#ifdef USE_VULKAN
+    Serialization::loadScene("test_vulkan", scene, config);
+    config.active_scene = scene;
+    for (EntityID e : SceneView<Component::Camera>(*scene))
+        config.active_camera = scene->getComponent<Component::Camera>(e);
+#else
     Serialization::loadScene("test_scene_3", scene, config); //Always scene before player, if not camera no bounds
     EntityID player = Serialization::loadPlayer(scene, config);
     
@@ -84,6 +90,8 @@ int main(int argc, const char * argv[]) {
     
     srand((ui32)time(NULL));
     config.palette_index = (int)(rand() % 5 + 1);
+#endif
+    
     
 #ifdef __EMSCRIPTEN__
     while (true)
@@ -92,7 +100,6 @@ int main(int argc, const char * argv[]) {
     while (running)
         running = Game::update(config);
 #endif
-    
     
     Game::stop();
     

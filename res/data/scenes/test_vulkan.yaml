@@ -1,0 +1,12 @@
+%YAML 1.2
+---
+scene:
+  name: test_vulkan
+  size: [768, 180]
+  spawn:
+   - [32, 64]
+
+entities:
+  free_camera:
+    camera:
+      controller: free
