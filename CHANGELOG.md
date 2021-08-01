@@ -8,8 +8,12 @@
 - Created USE_OPENGL and USE_VULKAN toggles, they enable and disable parts of the code
 - Vulkan Instance Initialization
 - Vulkan Debug and Validation layers
+- Vulkan Rendering Pipeline
+- Rendered a Triangle!
+- Rendered a Fractal
 #### Changed
 - Cleaned up rendering pipeline, abstracted all OpenGL functions to the renderer
+- Improved timer precision
 
 
 ### **[0.1.14]** ~ Tiny Things _2021-06-24_
