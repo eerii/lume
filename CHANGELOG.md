@@ -1,7 +1,10 @@
 # Changelog 📝
 
-## **0.2** ~ Light
+## **0.2** ~ Elements
 
+#### 2021-07-01
+
+---
 
 ### **[0.1.15]** ~ Vulkan _2021-07-03_
 #### Added
@@ -15,6 +18,7 @@
 - Cleaned up rendering pipeline, abstracted all OpenGL functions to the renderer
 - Improved timer precision
 
+---
 
 ### **[0.1.14]** ~ Tiny Things _2021-06-24_
 #### Added
