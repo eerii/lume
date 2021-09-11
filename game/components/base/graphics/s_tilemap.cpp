@@ -161,6 +161,23 @@ std::vector<std::vector<ui8>> System::Tilemap::loadFromImage(str path) {
     return tiles;
 }
 
+void System::Tilemap::saveToImage(str path, std::vector<std::vector<ui8>> &tiles) {
+    int h = (int)tiles.size() - 1;
+    int w = (int)tiles[0].size();
+    
+    ui8 data[w * h];
+    
+    int index = 0;
+    
+    for (int j = 0; j < h; j++) {
+        for (int i = 0; i < w; i++) {
+            data[index++] = tiles[j][i];
+        }
+    }
+    
+    stbi_write_png(path.c_str(), w, h, 1, data, w);
+}
+
 void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Tilemap* tilemap = s->addComponent<Component::Tilemap>(eid);
     if (not entity["tilemap"]["tiles"]) {
@@ -310,6 +327,8 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
     
     if (c.tme_active and c.tme_curr_tmap == tile) {
         if (ImGui::SmallButton("save")) {
+            saveToImage(c.tme_curr_tmap->tile_res, c.tme_curr_tmap->tiles);
+            
             c.tme_active = false;
             c.use_light = true;
             c.tme_curr_tmap = nullptr;

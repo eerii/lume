@@ -10,6 +10,10 @@
 
 using namespace Verse;
 
+namespace {
+    std::vector<str> new_frame;
+}
+
 void System::Animation::update(Config &c, EntityID eid) {
     Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(eid);
     
@@ -130,5 +134,35 @@ void System::Animation::gui(Config &c, EntityID eid) {
     ImGui::TableSetColumnIndex(1);
     ImGui::Text("%d", anim->curr_frame);
     ImGui::TableNextRow();
+    
+    int j = 0;
+    new_frame.resize(anim->frames.size(), "");
+    for (auto [key, frame] : anim->frames) {
+        ImGui::TableSetColumnIndex(0);
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("%s", key.c_str());
+        
+        ImGui::TableSetColumnIndex(1);
+        for (int i = 0; i < frame.index.size(); i++) {
+            if (ImGui::SmallButton(std::to_string(frame.index[i]).c_str())) {
+                anim->frames[key].index.erase(anim->frames[key].index.begin() + i);
+                anim->frames[key].ms.erase(anim->frames[key].ms.begin() + i);
+            }
+            ImGui::SameLine();
+        }
+        
+        str label = "##newframe" + std::to_string(j);
+        ImGui::PushItemWidth(20);
+        ImGui::InputText(label.c_str(), &new_frame[j]);
+        ImGui::SameLine();
+        if (ImGui::SmallButton("+")) {
+            anim->frames[key].index.push_back(std::stoi(new_frame[j]));
+            anim->frames[key].ms.push_back(anim->frames[key].ms[0]);
+            new_frame[j] = "";
+        }
+        ImGui::TableNextRow();
+        
+        j++;
+    }
 #endif
 }

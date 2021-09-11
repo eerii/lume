@@ -17,6 +17,7 @@ namespace Verse::System::Tilemap
     void renderEditor(Config &c);
 
     std::vector<std::vector<ui8>> loadFromImage(str path);
+    void saveToImage(str path, std::vector<std::vector<ui8>> &tiles);
     void load(EntityID eid, YAML::Node &entity, Scene *s, Config &c);
     void save(Component::Tilemap* tile, str path, std::vector<str> &key);
     void gui(Config &c, EntityID eid);

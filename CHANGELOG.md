@@ -1,6 +1,22 @@
 # Changelog 📝
 
-## **0.2** ~ Elements
+## **0.2** ~ Butterfly 🦋
+
+---
+
+###  **[0.2.1]** ~ Editor Improvements _2021-09-11_
+
+- Tilemap saves edited levels
+
+---
+
+###  **[0.2.0]** ~ Second Milestone _2021-07-01_
+
+---
+---
+---
+
+## **0.1** ~ Cocoon 🌷
 
 #### 2021-07-01
 
@@ -261,7 +277,7 @@ The first step to take will be to organize all the thoughts and put them into pa
 ---
 ---
 
-## **0.1** ~ Basics
+## **0.0** ~ Caterpillar 🐛
 
 #### 2021-03-21
 
