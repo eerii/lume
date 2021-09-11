@@ -164,5 +164,8 @@ void System::Animation::gui(Config &c, EntityID eid) {
         
         j++;
     }
+    
+    //TODO: Add animation FPS
+    //TODO: Add new animation names
 #endif
 }

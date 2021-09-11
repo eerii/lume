@@ -19,6 +19,8 @@ void System::Patrol::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
     }
 }
 
+//TODO: Patrol save
+
 void System::Patrol::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Patrol* patrol = c.active_scene->getComponent<Component::Patrol>(eid);

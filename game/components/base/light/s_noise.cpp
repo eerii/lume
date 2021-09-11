@@ -143,6 +143,8 @@ void System::Noise::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
     System::Noise::init(c, s, eid);
 }
 
+//TODO: Noise save
+
 void System::Noise::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(eid);

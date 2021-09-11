@@ -153,8 +153,8 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
             c.active_scene->checkpoints.push_back(c_col->transform.pos);
             
             Component::Light* light = c.active_scene->addComponent<Component::Light>(collision.first);
-            light->pos = Vec2(*c_col->transform.w * 0.5f, -*c_col->transform.h * 0.5f);
-            light->radius = 50;
+            light->pos = Vec2(6, 6); //TODO: Improve this
+            light->radius = 75;
             
             Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(collision.first);
             if (anim != nullptr)

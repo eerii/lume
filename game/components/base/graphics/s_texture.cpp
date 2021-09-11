@@ -131,7 +131,10 @@ void System::Texture::save(Component::Texture *tex, str path, std::vector<str> &
     Serialization::appendYAML(path, key, (str)tex->res, true);
     
     key[3] = "transform";
-    Serialization::appendYAML(path, key, tex->transform, true);
+    if (tex->use_collider_transform)
+        Serialization::appendYAML(path, key, (str)"collider", true);
+    else
+        Serialization::appendYAML(path, key, tex->transform, true);
     
     key[3] = "layer";
     if (tex->layer.size() == 1)

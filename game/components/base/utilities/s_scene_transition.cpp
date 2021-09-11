@@ -117,6 +117,8 @@ void System::SceneTransition::load(EntityID eid, YAML::Node &entity, Scene *s, C
     transition->to_pos =  entity["scene_transition"]["pos"] ? entity["scene_transition"]["pos"].as<Vec2>() : Vec2(0,0);
 }
 
+//TODO: Scene transition save
+
 void System::SceneTransition::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::SceneTransition* trans = c.active_scene->getComponent<Component::SceneTransition>(eid);

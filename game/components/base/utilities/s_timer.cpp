@@ -20,6 +20,8 @@ void System::Timer::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
     timer->tid = std::vector<ui32>(timer->ms.size());
 }
 
+//TODO: Timer save
+
 void System::Timer::gui(Config &c, EntityID eid) {
 #ifndef DISABLE_GUI
     Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);

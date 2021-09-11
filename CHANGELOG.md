@@ -8,6 +8,7 @@
 
 - Tilemap saves edited levels
 - Collider transform for texture
+- Temporarily fixed player and checkpoint light placement
 
 ---
 
