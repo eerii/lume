@@ -7,6 +7,7 @@
 ###  **[0.2.1]** ~ Editor Improvements _2021-09-11_
 
 - Tilemap saves edited levels
+- Collider transform for texture
 
 ---
 

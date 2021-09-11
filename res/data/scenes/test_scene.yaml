@@ -41,7 +41,6 @@ entities:
       layer: platform
     texture:
       res: res/graphics/moving_platform.png
-      transform: [220, 80, 28, 5]
       layer: 10
     actor:
       controller: moving_platform
@@ -66,7 +65,6 @@ entities:
       layer: solid_platform
     texture:
       res: res/graphics/falling_platform.png
-      transform: [336, 100, 28, 7]
       layer: 10
     actor:
       controller: falling_platform
@@ -83,7 +81,6 @@ entities:
       layer: platform
     texture:
       res: res/graphics/switch_platform.png
-      transform: [500, 140, 28, 5]
       layer: 10
     actor:
       controller: switch_platform
@@ -111,7 +108,6 @@ entities:
       layer: platform
     texture:
       res: res/graphics/disable_platform.png
-      transform: [64, 120, 28, 5]
       layer: 10
     actor:
       controller: disable_platform
@@ -143,7 +139,6 @@ entities:
       layer: water
     texture:
       res: res/graphics/water.png
-      transform: [189, 168, 70, 5]
       layer: 0
   checkpoint_1:
     collider:
@@ -151,7 +146,6 @@ entities:
       layer: checkpoint
     texture:
       res: res/graphics/checkpoint.png
-      transform: [400, 141, 9, 18]
       layer:
        - 1
        - 0
@@ -176,7 +170,6 @@ entities:
       layer: checkpoint
     texture:
       res: res/graphics/checkpoint.png
-      transform: [615, 113, 9, 18]
       layer:
        - 1
        - 0

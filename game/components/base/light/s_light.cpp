@@ -32,7 +32,7 @@ std::vector<glm::vec4> System::Light::render(Config &c, ui8 pid) {
         
         light->render_data = glm::vec4(light->pos.x, light->pos.y, radius_with_var, light->radius * LIGHT_CENTER_RADIUS);
         if (tex != nullptr)
-            light->render_data += glm::vec4(tex->render_pos.x, tex->render_pos.y, 0, 0);
+            light->render_data += glm::vec4(*tex->transform.x, *tex->transform.y, 0, 0);
         
         light->render_data.x /= c.resolution.x + 2.0f*BORDER_WIDTH;
         light->render_data.y = 1.0f - light->render_data.y / (c.resolution.y + 2.0f*BORDER_WIDTH);
@@ -55,7 +55,7 @@ void System::Light::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) 
     if (entity["light"]["pos"])
         light->pos = entity["light"]["pos"].as<Vec2>();
     if (entity["light"]["radius"])
-        light->radius = entity["light"]["radius"].as<int>();
+        light->radius = entity["light"]["radius"].as<float>();
 }
 
 void System::Light::save(Component::Light *light, str path, std::vector<str> &key) {

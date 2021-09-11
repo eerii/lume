@@ -13,8 +13,8 @@ namespace Verse::Component
         Verse::Graphics::TextureData data;
         str res;
         
-        Vec2 size;
-        Vec2 render_pos;
+        Rect2 transform;
+        bool use_collider_transform;
         
         std::vector<Vec2> offset;
         std::vector<int> layer;

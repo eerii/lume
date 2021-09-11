@@ -34,6 +34,14 @@ void System::Texture::render(Config &c) {
         Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
         Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(e);
         
+        if (tex->use_collider_transform) {
+            Component::Collider* col = c.active_scene->getComponent<Component::Collider>(e);
+            if (col != nullptr)
+                tex->transform = col->transform;
+            else
+                tex->use_collider_transform = false;
+        }
+        
         if (tex->res.size() == 0)
             continue;
         
@@ -66,7 +74,7 @@ void System::Texture::render(Config &c) {
                 vertices[3*4+2] = vertices[1*4+2];
             }
             
-            Rect2 dst = Rect2((tex->render_pos + tex->offset[i]), tex->size);
+            Rect2 dst = Rect2((tex->transform.pos + tex->offset[i]), tex->transform.size);
             
             tex->data.model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
             tex->data.vertices = vertices;
@@ -86,10 +94,17 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     }
     texture->res = entity["texture"]["res"].as<str>();
     Graphics::Texture::loadTexture(texture->res, texture);
-    if (entity["texture"]["transform"]) {
-        Rect2 transform = entity["texture"]["transform"].as<Rect2>();
-        texture->render_pos = transform.pos;
-        texture->size = transform.size;
+    if (entity["texture"]["transform"] and entity["texture"]["transform"].IsSequence()) {
+        texture->transform = entity["texture"]["transform"].as<Rect2>();
+    } else {
+        Component::Collider* collider = s->getComponent<Component::Collider>(eid);
+        if (collider == nullptr) {
+            log::error("You didn't specity a position for " + s->getName(eid) + "'s texture and there is no collider");
+            s->removeEntity(eid);
+            return;
+        }
+        texture->transform = collider->transform;
+        texture->use_collider_transform = true;
     }
     if (entity["texture"]["offset"]) {
         texture->offset = {};
@@ -116,7 +131,7 @@ void System::Texture::save(Component::Texture *tex, str path, std::vector<str> &
     Serialization::appendYAML(path, key, (str)tex->res, true);
     
     key[3] = "transform";
-    Serialization::appendYAML(path, key, Rect2(tex->render_pos, tex->size), true);
+    Serialization::appendYAML(path, key, tex->transform, true);
     
     key[3] = "layer";
     if (tex->layer.size() == 1)
@@ -156,10 +171,15 @@ void System::Texture::gui(Config &c, EntityID eid) {
     
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(tex->render_pos.x, tex->render_pos.y, "pos", eid);
+    Verse::Gui::draw_bool(tex->use_collider_transform, "collider transform", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(tex->size.x, tex->size.y, "size", eid);
-    ImGui::TableNextRow();
+    
+    if (not tex->use_collider_transform) {
+        Verse::Gui::draw_vec2(*tex->transform.x, *tex->transform.y, "pos", eid);
+        ImGui::TableNextRow();
+        Verse::Gui::draw_vec2(*tex->transform.w, *tex->transform.h, "size", eid);
+        ImGui::TableNextRow();
+    }
     
     ImGui::TableSetColumnIndex(0);
     ImGui::AlignTextToFramePadding();
