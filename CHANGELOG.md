@@ -13,6 +13,7 @@
 - Modular state machines, actor no longer relies on player
 - Moved base components to external library (mango)
 - State machine for checkpoints
+- Render light separately
 
 ---
 
