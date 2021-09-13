@@ -4,13 +4,15 @@
 
 ---
 
-###  **[0.2.1]** ~ Editor Improvements _2021-09-11_
+###  **[0.2.1]** ~ Small Tweaks _2021-09-11_
 
 - Tilemap saves edited levels
 - Collider transform for texture
 - Temporarily fixed player and checkpoint light placement
 - Fix scene transition relying on player exisiting
 - Modular state machines, actor no longer relies on player
+- Moved base components to external library (mango)
+- State machine for checkpoints
 
 ---
 

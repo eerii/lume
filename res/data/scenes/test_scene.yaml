@@ -164,6 +164,11 @@ entities:
       freq: 128
       levels: 1
       enabled: false
+    light:
+      pos: [6,6]
+      radius: 25
+    state:
+      checkpoint: 1
   checkpoint_2:
     collider:
       transform: [615, 113, 9, 18]
@@ -188,6 +193,11 @@ entities:
       freq: 128
       levels: 1
       enabled: false
+    light:
+      pos: [6,6]
+      radius: 25
+    state:
+      checkpoint: 2
   free_camera:
     camera:
       controller: free

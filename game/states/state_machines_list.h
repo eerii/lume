@@ -11,22 +11,27 @@
 #include "sm_door_test.h"
 #include "sm_player_jump.h"
 #include "sm_player_move.h"
+#include "sm_checkpoint.h"
 
 #define NAMESPACES using namespace Door; \
-                   using namespace Player;
+                   using namespace Player; \
+                   using namespace Checkpoint;
 
 #define jump_state std::get<State::Player::JumpSM>(state->states[state->index["jump"]])
 #define move_state std::get<State::Player::MoveSM>(state->states[state->index["move"]])
+#define checkpoint_state std::get<State::Checkpoint::CheckpointSM>(state->states[state->index["checkpoint"]])
 
 #define STATE_NAMES { \
                         {"jump", false}, \
-                        {"move", false} \
+                        {"move", false}, \
+                        {"checkpoint", false} \
                     }
 
 namespace Verse
 {
     using StateType = std::variant<State::Player::JumpSM,
-                                   State::Player::MoveSM>;
+                                   State::Player::MoveSM,
+                                   State::Checkpoint::CheckpointSM>;
 }
 
 namespace Verse::State
