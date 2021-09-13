@@ -9,6 +9,8 @@
 - Tilemap saves edited levels
 - Collider transform for texture
 - Temporarily fixed player and checkpoint light placement
+- Fix scene transition relying on player exisiting
+- Modular state machines, actor no longer relies on player
 
 ---
 

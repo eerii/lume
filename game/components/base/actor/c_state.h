@@ -5,11 +5,14 @@
 #pragma once
 
 #include "dtypes.h"
+#include <map>
 #include "state_machines_list.h"
 
 namespace Verse::Component
 {
     struct State {
-        Verse::State::StateType state;
+        std::vector<Verse::StateType> states;
+        std::map<str, bool> has_state = STATE_NAMES;
+        std::map<str, ui8> index;
     };
 }

@@ -6,9 +6,9 @@
 
 #include "gui.h"
 #include "gui_types.h"
+#include "state_machines_list.h"
 
 using namespace Verse;
-
 void System::State::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     
 }

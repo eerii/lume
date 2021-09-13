@@ -21,8 +21,4 @@ namespace Verse::Controller::Player
     void respawn(Config &c);
     bool checkGroundDown(Config &c, EntityID eid, int down = 1);
     Vec2f getMovingPlatformVelocity(Config &c, EntityID eid);
-
-    str getCurrentJumpState();
-    str getCurrentMoveState();
-    void resetState(Config &c, EntityID eid);
 }

@@ -31,8 +31,7 @@ namespace {
     Component::Collider* collider;
     Component::Light* light;
 
-    Component::State* c_state;
-    State::PlayerStates * state;
+    Component::State* state;
 
     bool tried_jumping = false;
     bool previously_on_air = false;
@@ -47,21 +46,52 @@ namespace {
 
 bool Controller::Player::controller(Config &c, EntityID eid) {
     if (scene != c.active_scene or collider == nullptr or actor == nullptr or anim == nullptr or
-        tex == nullptr or light == nullptr or c_state == nullptr) {
+        tex == nullptr or light == nullptr or state == nullptr) {
         scene = c.active_scene;
         collider = c.active_scene->getComponent<Component::Collider>(eid);
         actor = c.active_scene->getComponent<Component::Actor>(eid);
         anim = c.active_scene->getComponent<Component::Animation>(eid);
         tex = c.active_scene->getComponent<Component::Texture>(eid);
         light = c.active_scene->getComponent<Component::Light>(eid);
-        c_state = c.active_scene->getComponent<Component::State>(eid);
+        state = c.active_scene->getComponent<Component::State>(eid);
     }
     
-    if (state == nullptr)
-        resetState(c, eid); //TODO: CHANGE FOR ACTOR VALUES and propper epsilon and change in delete state pls
+    if (state->states.size() == 0) {
+        if (state == nullptr)
+            log::error("Player has no state component");
+        
+        if (not state->has_state["jump"]) {
+            state->states.push_back(State::Player::JumpSM(
+                State::Player::FallingState(),
+                State::Player::GroundedState(),
+                State::Player::JumpingState(),
+                State::Player::FallingCoyoteState(COYOTE_TIMEOUT),
+                State::Player::FallingFromPlatformState(COYOTE_TIMEOUT),
+                State::Player::FallingButJumpingState(GRACE_TIMEOUT),
+                State::Player::FallingFasterState(),
+                State::Player::FallingFasterButJumpingState(GRACE_TIMEOUT),
+                State::Player::CrouchingState()
+            ));
+            
+            state->has_state["jump"] = true;
+            state->index["jump"] = state->states.size() - 1;
+        }
+        
+        if (not state->has_state["move"]) {
+            state->states.push_back(State::Player::MoveSM(
+                State::Player::IdleState(),
+                State::Player::AcceleratingState(100),
+                State::Player::MovingState(),
+                State::Player::DeceleratingState(EPSILON)
+            ));
+            
+            state->has_state["move"] = true;
+            state->index["move"] = state->states.size() - 1;
+        }
+    }
     
     if (previous_game_speed != c.game_speed)
-        state->move.updateStates(IdleState(), AcceleratingState(100), MovingState(), DeceleratingState(EPSILON * c.game_speed)); //TODO: Change too
+        move_state.updateStates(IdleState(), AcceleratingState(100), MovingState(), DeceleratingState(EPSILON * c.game_speed)); //TODO: Change too
     
     
     //DOWN
@@ -70,9 +100,9 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     
     
     //GROUNDED
-    if (state->jump.is(GroundedState())) {
+    if (jump_state.is(GroundedState())) {
         if (not checkGroundDown(c, eid))
-            state->jump.handle(FallEvent());
+            jump_state.handle(FallEvent());
     }
     
     
@@ -83,12 +113,12 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
         move(c, true);
     
     if (not (Input::down(Input::Key::Left) or Input::down(Input::Key::A) or Input::down(Input::Key::Right) or Input::down(Input::Key::D)))
-        state->move.handle(StopMovingEvent(actor->vel.x));
+        move_state.handle(StopMovingEvent(actor->vel.x));
     
-    if (state->move.is(IdleState()))
+    if (move_state.is(IdleState()))
         actor->vel.x = 0;
     
-    if (state->move.is(MovingState()))
+    if (move_state.is(MovingState()))
         actor->vel.x = sign(actor->vel.x) * actor->max_move_speed;
         
     
@@ -99,14 +129,14 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     if (Input::released(Input::Key::Space))
         releaseJump();
     
-    if (actor->vel.y > 0 and state->jump.is(JumpingState()))
-        state->jump.handle(PeakJumpEvent());
+    if (actor->vel.y > 0 and jump_state.is(JumpingState()))
+        jump_state.handle(PeakJumpEvent());
     
-    previously_on_air = not (state->jump.is(GroundedState()) or state->jump.is(CrouchingState()));
+    previously_on_air = not (jump_state.is(GroundedState()) or jump_state.is(CrouchingState()));
     falling_tiny_bit = (previously_on_air) ? falling_tiny_bit : false;
         
-    state->jump.handle(TimeoutEvent(c.game_speed));
-    tried_jumping = state->jump.is(FallingButJumpingState()) or state->jump.is(FallingFasterButJumpingState());
+    jump_state.handle(TimeoutEvent(c.game_speed));
+    tried_jumping = jump_state.is(FallingButJumpingState()) or jump_state.is(FallingFasterButJumpingState());
     
     
     //TEST CAMERA SHAKE
@@ -139,13 +169,13 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     
     //ACTOR MOVE FUNCTION
     System::Actor::move(c, eid);
-    bool on_ground = state->jump.is(GroundedState()) or state->jump.is(CrouchingState());
+    bool on_ground = jump_state.is(GroundedState()) or jump_state.is(CrouchingState());
     
     
     //FRICTION
     {
         int friction = (on_ground) ? actor->friction_ground : actor->friction_air;
-        if (state->move.is(DeceleratingState()))
+        if (move_state.is(DeceleratingState()))
             actor->vel.x -= friction * c.physics_delta * sign(actor->vel.x);
         
         int friction_extra = (on_ground) ? actor->friction_ground : actor->friction_extra;
@@ -160,7 +190,7 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     
     
     //JUMP GRACE
-    if (tried_jumping and state->jump.is(JumpingState())) {
+    if (tried_jumping and jump_state.is(JumpingState())) {
         actor->vel.y = -jump_impulse;
         falling_tiny_bit = false;
         anim->queue.push_back("jump_end_short");
@@ -170,18 +200,18 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
         
     
     //ANIMATION
-    if (state->move.is(IdleState()) or state->move.is(DeceleratingState())) {
+    if (move_state.is(IdleState()) or move_state.is(DeceleratingState())) {
         anim->target_key = curr_idle_anim;
     }
-    if (state->move.is(MovingState()) or state->move.is(AcceleratingState())) {
+    if (move_state.is(MovingState()) or move_state.is(AcceleratingState())) {
         anim->target_key = "walk_1";
-        if (state->jump.is(FallingCoyoteState()))
+        if (move_state.is(FallingCoyoteState()))
             falling_tiny_bit = checkGroundDown(c, eid, TINY_BIT);
     }
     
-    if (state->jump.is(JumpingState()))
+    if (jump_state.is(JumpingState()))
         anim->target_key = "jump_up";
-    if (not falling_tiny_bit and (state->jump.is(FallingState()) or state->jump.is(FallingCoyoteState()) or state->jump.is(FallingButJumpingState())))
+    if (not falling_tiny_bit and (jump_state.is(FallingState()) or jump_state.is(FallingCoyoteState()) or jump_state.is(FallingButJumpingState())))
         anim->target_key = "jump_down";
     if (not falling_tiny_bit and previously_on_air and on_ground) //TODO: Platform check
         anim->queue.push_back("jump_end");
@@ -194,32 +224,32 @@ void Controller::Player::move(Config &c, bool right) {
     
     tex->is_reversed = not right;
     
-    state->move.handle(MoveEvent(right ? 1 : -1, actor->vel.x));
+    move_state.handle(MoveEvent(right ? 1 : -1, actor->vel.x));
 }
 
 void Controller::Player::jump(Config &c, EntityID eid) {
-    if (state->jump.is(JumpingState()))
+    if (jump_state.is(JumpingState()))
         return;
     
-    state->jump.handle(JumpEvent());
+    jump_state.handle(JumpEvent());
     
-    if (state->jump.is(JumpingState())) {
+    if (jump_state.is(JumpingState())) {
         actor->vel.y = -jump_impulse;
         falling_tiny_bit = false;
         anim->queue.push_back("jump_start");
         
         actor->extra_vel.x += getMovingPlatformVelocity(c, eid).x * (1.0f + 0.5f * abs(actor->vel.x / actor->max_move_speed));
-        state->move.handle(MoveEvent(sign(actor->extra_vel.x), actor->extra_vel.x));
+        move_state.handle(MoveEvent(sign(actor->extra_vel.x), actor->extra_vel.x));
     }
 }
 
 void Controller::Player::releaseJump() {
-    if (not state->jump.is(JumpingState()))
+    if (not jump_state.is(JumpingState()))
         return;
     
-    state->jump.handle(ReleaseJumpEvent());
+    jump_state.handle(ReleaseJumpEvent());
     
-    if (state->jump.is(FallingState()) and -actor->vel.y > min_jump_impulse)
+    if (jump_state.is(FallingState()) and -actor->vel.y > min_jump_impulse)
         actor->vel.y = -min_jump_impulse;
 }
 
@@ -229,7 +259,7 @@ void Controller::Player::down(Config &c, EntityID eid) {
     collider->transform -= Vec2::j;
     for (System::Collider::CollisionInfoPair collision : collisions) {
         if (collision.second[System::Collider::Layers::Platform]) {
-            state->jump.handle(DownEvent(true));
+            jump_state.handle(DownEvent(true));
         }
     }
 }
@@ -242,7 +272,7 @@ void Controller::Player::respawn(Config &c) {
     collider->transform = closest_checkpoint;
     
     actor->vel = Vec2f(0,0);
-    state->jump.handle(FallEvent());
+    jump_state.handle(FallEvent());
     
     light_strength = 150;
 }
@@ -278,24 +308,4 @@ Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
     collider->transform -= Vec2::j;
     
     return vel;
-}
-
-str Controller::Player::getCurrentJumpState() {
-    return (state == nullptr) ? "" : CURR_STATE(state->jump);
-}
-
-str Controller::Player::getCurrentMoveState() {
-    return (state == nullptr) ? "" : CURR_STATE(state->move);
-}
-
-void Controller::Player::resetState(Config &c, EntityID eid) {
-    delete state;
-    state = new PlayerStates(COYOTE_TIMEOUT, GRACE_TIMEOUT, 100, EPSILON); //TODO: Change
-    
-    c_state = c.active_scene->getComponent<Component::State>(eid);
-    if (c_state == nullptr) {
-        log::error("The state component in the player is null!");
-        return;
-    }
-    c_state->state = state;
 }

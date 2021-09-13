@@ -9,12 +9,16 @@
 
 #include "s_tilemap.h"
 #include "s_texture.h"
-#include "player_controller.h"
 
+#include "component_list.h"
 #include "scene_list.h"
 
 #include "gui.h"
 #include "gui_types.h"
+
+#ifdef USE_C_PLAYER
+#include "player_controller.h"
+#endif
 
 using namespace Verse;
 
@@ -32,6 +36,7 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
     Scene* prev_scene = c.active_scene;
     
     if (prev_scene != new_scene) {
+#ifdef USE_C_PLAYER
         EntityID prev_player = 0;
         for (EntityID e : SceneView<Component::Player>(*prev_scene)) {
             prev_player = e;
@@ -56,6 +61,14 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
         c.active_camera = new_scene->getComponent<Component::Camera>(new_player);
         if (c.active_camera == nullptr)
             log::error("Failed to get the active camera!");
+#else
+        for (EntityID e : SceneView<Component::Camera>(*prev_scene)) {
+            c.active_camera = new_scene->getComponent<Component::Camera>(e);
+            break;
+        }
+        if (c.active_camera == nullptr)
+            log::error("Failed to get the active camera!");
+#endif
         c.active_scene = new_scene;
         
         std::map<str, Scene*> transitions = {};
@@ -100,8 +113,6 @@ void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2 new_pos) 
                 t->to_scene = nullptr;
             }
         }
-        
-        Controller::Player::resetState(c, new_player);
         System::Tilemap::init(c);
     }
 }

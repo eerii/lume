@@ -28,16 +28,14 @@ void System::Actor::update(Config &c) {
 bool System::Actor::move(Config &c, EntityID eid) {
     Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
-    
-    PlayerStates* p_state = nullptr;
     Component::State* state = c.active_scene->getComponent<Component::State>(eid);
-    if (state != nullptr and std::holds_alternative<PlayerStates*>(state->state))
-        p_state = std::get<PlayerStates*>(state->state);
 
     //Gravity
-    bool grounded = (p_state != nullptr) ?
-                     p_state->jump.is(Player::GroundedState()) or
-                     p_state->jump.is(Player::CrouchingState()) : false;
+#ifdef jump_state
+    bool grounded = (state != nullptr and state->has_state["jump"]) ?
+                     jump_state.is(Player::GroundedState()) or
+                     jump_state.is(Player::CrouchingState()) : false;
+#endif
     if (actor->has_gravity and not grounded) {
         actor->vel += c.gravity_dir * c.gravity * c.physics_delta;
     }
@@ -80,8 +78,10 @@ bool System::Actor::move(Config &c, EntityID eid) {
                 if (colliding == Colliding::Exit)
                     return false;
                 
-                if (colliding != Colliding::Solid and p_state != nullptr)
-                    p_state->jump.handle(Player::FallEvent());
+#ifdef jump_state
+                if (state != nullptr and state->has_state["jump"] and colliding != Colliding::Solid)
+                    jump_state.handle(Player::FallEvent());
+#endif
                 
                 collider->transform -= Vec2::j;
             }
@@ -105,15 +105,19 @@ bool System::Actor::move(Config &c, EntityID eid) {
             actor->remainder.y = 0;
             actor->vel.y = 0;
             
-            if (sy > 0 and p_state != nullptr)
-                p_state->jump.handle(Player::TouchGroundEvent());
+#ifdef jump_state
+            if (state != nullptr and state->has_state["jump"] and sy > 0)
+                jump_state.handle(Player::TouchGroundEvent());
+#endif
         }
         
         if (colliding == Colliding::Transparent) {
             to_move.y -= sy;
             
-            if (p_state != nullptr)
-                p_state->jump.handle(Player::FallEvent());
+#ifdef jump_state
+            if (state != nullptr and state->has_state["jump"])
+                jump_state.handle(Player::FallEvent());
+#endif
         }
     }
     
@@ -171,11 +175,11 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
             Component::Collider* platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
             Component::Collider* actor_collider = c.active_scene->getComponent<Component::Collider>(eid);
             Component::Actor* actor = c.active_scene->getComponent<Component::Actor>(eid);
-            
-            bool falling = false;
             Component::State* state = c.active_scene->getComponent<Component::State>(eid);
-            if (state != nullptr and std::holds_alternative<PlayerStates*>(state->state))
-                falling = std::get<PlayerStates*>(state->state)->jump.is(Player::FallingFromPlatformState());
+            
+#ifdef jump_state
+            bool falling = (state != nullptr and state->has_state["jump"] and jump_state.is(Player::FallingFromPlatformState()));
+#endif
             
             bool above = *actor_collider->transform.y + *actor_collider->transform.h <= *platform_collider->transform.y + 1;
             if (not falling and above and actor->vel.y >= 0) {

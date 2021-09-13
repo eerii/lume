@@ -4,47 +4,35 @@
 
 #pragma once
 
+#include "dtypes.h"
+
+#include <variant>
+
 #include "sm_door_test.h"
 #include "sm_player_jump.h"
 #include "sm_player_move.h"
-#include <variant>
 
 #define NAMESPACES using namespace Door; \
                    using namespace Player;
 
+#define jump_state std::get<State::Player::JumpSM>(state->states[state->index["jump"]])
+#define move_state std::get<State::Player::MoveSM>(state->states[state->index["move"]])
+
+#define STATE_NAMES { \
+                        {"jump", false}, \
+                        {"move", false} \
+                    }
+
+namespace Verse
+{
+    using StateType = std::variant<State::Player::JumpSM,
+                                   State::Player::MoveSM>;
+}
+
 namespace Verse::State
 {
-
-    struct PlayerStates {
-        ui16 coyote_timeout = 100;
-        ui16 grace_timeout = 100;
-        ui16 max_speed = 0;
-        ui16 min_speed = 0;
-        
-        PlayerStates() = default;
-        PlayerStates(ui16 p_coyote, ui16 p_grace, ui16 p_max, ui16 p_min) :
-            coyote_timeout(p_coyote),
-            grace_timeout(p_grace),
-            max_speed(p_max),
-            min_speed(p_min)
-        {}
-        
-        Player::JumpSM jump{Player::FallingState(),
-                            Player::GroundedState(),
-                            Player::JumpingState(),
-                            Player::FallingCoyoteState(coyote_timeout),
-                            Player::FallingFromPlatformState(coyote_timeout),
-                            Player::FallingButJumpingState(grace_timeout),
-                            Player::FallingFasterState(),
-                            Player::FallingFasterButJumpingState(grace_timeout),
-                            Player::CrouchingState()};
-        
-        Player::MoveSM move{Player::IdleState(),
-                            Player::AcceleratingState(max_speed),
-                            Player::MovingState(),
-                            Player::DeceleratingState(min_speed)};
-    };
-
-    using StateType = std::variant<bool, State::PlayerStates*>;
-
+    template <typename State>
+    str getCurrentState(State state) {
+        return CURR_STATE(state);
+    }
 }
