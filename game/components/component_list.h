@@ -8,6 +8,7 @@
 
 //Base
 #include "c_collider.h"
+#include "c_circle_collider.h"
 #include "c_actor.h"
 #include "c_state.h"
 #include "c_texture.h"
@@ -29,6 +30,7 @@
 namespace Verse
 {
     using ComponentType = std::variant<Component::Collider,
+                                       Component::CircleCollider,
                                        Component::Actor,
                                        Component::State,
                                        Component::Texture,
@@ -44,7 +46,8 @@ namespace Verse
                                        Component::Player>;
 
     static const std::vector<str> component_names = {
-        "collider", "actor", "state",
+        "collider", "circle_collider",
+        "actor", "state",
         "texture", "animation", "tilemap", "text", "camera",
         "light", "noise",
         "timer", "patrol", "scene_transition",

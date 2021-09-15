@@ -209,3 +209,8 @@ entities:
       color: [1.0, 0.5, 0.5]
       line_height: 11
       layer: -10
+  collider_test:
+    circle_collider:
+      pos: [200, 50]
+      radius: 30
+      layer: ground

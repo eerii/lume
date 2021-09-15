@@ -4,7 +4,13 @@
 
 ---
 
-###  **[0.2.1]** ~ Small Tweaks _2021-09-11_
+###  **[0.2.2]** ~ Combat Dialog _2021-09-15_
+
+- Circle Collider with collisions and rendering
+
+---
+
+###  **[0.2.1]** ~ Small Tweaks _2021-09-14_
 
 - Tilemap saves edited levels
 - Collider transform for texture

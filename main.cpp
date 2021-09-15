@@ -33,7 +33,7 @@ int main(int argc, const char * argv[]) {
     
     config = {
         .name = "Proxecto Lume",
-        .version = {0, 2, 1},
+        .version = {0, 2, 2},
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
@@ -56,7 +56,7 @@ int main(int argc, const char * argv[]) {
         .gravity = 800,
         .gravity_dir = Vec2f(0, 1),
         
-        .player_loses_light = true,
+        .player_loses_light = false,
     };
     
     log::debug("Starting main");
