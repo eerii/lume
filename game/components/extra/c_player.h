@@ -9,6 +9,9 @@
 namespace Verse::Component
 {
     struct Player {
-        
+        float light_strength = 150.0f;
+        float recover_light_speed = 30.0f;
+        float lose_light_speed = 5.0f;
+        bool recovering_light = false;
     };
 }

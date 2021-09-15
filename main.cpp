@@ -56,7 +56,7 @@ int main(int argc, const char * argv[]) {
         .gravity = 800,
         .gravity_dir = Vec2f(0, 1),
         
-        .player_loses_light = false,
+        .player_loses_light = true,
     };
     
     log::debug("Starting main");

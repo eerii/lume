@@ -30,15 +30,13 @@ namespace {
     Component::Texture* tex;
     Component::Collider* collider;
     Component::Light* light;
-
     Component::State* state;
+    Component::Player* player;
 
     bool tried_jumping = false;
     bool previously_on_air = false;
     bool falling_tiny_bit = false;
 
-    int light_strength = 150;
-    ui32 light_timer = 0;
     str curr_idle_anim = "idle_1";
 
     float previous_game_speed = 1.0f;
@@ -54,6 +52,7 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
         tex = c.active_scene->getComponent<Component::Texture>(eid);
         light = c.active_scene->getComponent<Component::Light>(eid);
         state = c.active_scene->getComponent<Component::State>(eid);
+        player = c.active_scene->getComponent<Component::Player>(eid);
     }
     
     if (state->states.size() == 0) {
@@ -145,21 +144,35 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     
     
     //LIGHT
-    if (light_timer == 0)
-        light_timer = setTimer(500);
-    
-    if (checkTimer(light_timer)) {
-        if (c.player_loses_light)
-            light_strength--;
-        light_timer = setTimer(500);
-        curr_idle_anim = (light_strength > 75) ? "idle_1" : (light_strength > 50) ? "idle_2" : (light_strength > 25) ? "idle_3" : "idle_4";
+    if (player->recovering_light) {
+        System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
+        
+        player->recovering_light = false;
+        
+        for (System::Collider::CollisionInfoPair collision : collision_info) {
+            if (collision.second[System::Collider::Layers::Checkpoint]) {
+#ifdef checkpoint_state
+                Component::State* state = c.active_scene->getComponent<Component::State>(collision.first);
+                if (state != nullptr and checkpoint_state.is(State::Checkpoint::ActivatedState())) {
+                    player->light_strength = (player->light_strength >= 150.0f) ? 150.0f :
+                                              player->light_strength + player->recover_light_speed * c.physics_delta;
+                    player->recovering_light = true;
+                }
+#endif
+            }
+        }
+    } else if (c.player_loses_light) {
+        player->light_strength -= player->lose_light_speed * c.physics_delta;
     }
     
-    if (light_strength < 0) {
+    curr_idle_anim = (player->light_strength > 75.0f) ? "idle_1" :
+                     (player->light_strength > 50.0f) ? "idle_2" :
+                     (player->light_strength > 25.0f) ? "idle_3" : "idle_4";
+    
+    if (player->light_strength < 0.0f)
         respawn(c);
-    }
     
-    light->radius = light_strength;
+    light->radius = player->light_strength;
     
     
     //FALL OFF THE LEVEL
@@ -168,7 +181,8 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     
     
     //ACTOR MOVE FUNCTION
-    System::Actor::move(c, eid);
+    if (not System::Actor::move(c, eid))
+        return false;
     bool on_ground = jump_state.is(GroundedState()) or jump_state.is(CrouchingState());
     
     
@@ -274,7 +288,7 @@ void Controller::Player::respawn(Config &c) {
     actor->vel = Vec2f(0,0);
     jump_state.handle(FallEvent());
     
-    light_strength = 150;
+    player->light_strength = 150.0f;
 }
 
 bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {

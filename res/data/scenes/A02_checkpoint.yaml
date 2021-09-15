@@ -1,0 +1,56 @@
+%YAML 1.2
+---
+scene:
+  name: A02_checkpoint
+  size: [256, 180]
+  spawn:
+   - [128, 120]
+
+entities:
+  tile_blocks:
+    collider: tile #tilemap collider
+    tilemap:
+      res: res/graphics/ground.png
+      tiles: res/levels/A02_checkpoint.png
+      pos: [0, 0]
+      tex_size: [7, 7]
+      layer: 10
+  free_camera:
+    camera:
+      controller: free
+  checkpoint_1:
+    collider:
+      transform: [120, 143, 9, 18]
+      layer: checkpoint
+    texture:
+      res: res/graphics/checkpoint.png
+      layer:
+        - 1
+        - 0
+    animation:
+      frames:
+        active:
+          index: [1, 2, 3]
+        inactive:
+          index: [0]
+      curr_key: inactive
+      default_fps: 3
+      size: 4
+    noise:
+      dir: [0, 1]
+      fps: 6
+      freq: 128
+      levels: 1
+      enabled: false
+    light:
+      pos: [6,6]
+      radius: 25
+    state:
+      checkpoint: 1
+  to_a01:
+    collider:
+      transform: [-12, 126, 14, 21]
+      layer: scene
+    scene_transition:
+      scene: A01_inicio
+      pos: [245, 77]

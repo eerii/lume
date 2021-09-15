@@ -14,6 +14,8 @@
 - Moved base components to external library (mango)
 - State machine for checkpoints
 - Render light separately
+- Add some light parameters (GUI only for now)
+- Recover light with checkpoints
 
 ---
 

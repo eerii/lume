@@ -18,5 +18,7 @@ void System::Player::gui(Config &c, EntityID eid) {
     Component::Player* player = c.active_scene->getComponent<Component::Player>(eid);
     if (player == nullptr)
         return;
+    
+    Gui::draw_float(player->light_strength, "light strenght", eid);
 #endif
 }

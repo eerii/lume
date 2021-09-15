@@ -1,0 +1,27 @@
+%YAML 1.2
+---
+scene:
+  name: A01_inicio
+  size: [256, 180]
+  spawn:
+   - [64, 120]
+
+entities:
+  tile_blocks:
+    collider: tile #tilemap collider
+    tilemap:
+      res: res/graphics/ground.png
+      tiles: res/levels/A01_inicio.png
+      pos: [0, 0]
+      tex_size: [7, 7]
+      layer: 10
+  free_camera:
+    camera:
+      controller: free
+  to_a02:
+    collider:
+      transform: [258, 70, 14, 21]
+      layer: scene
+    scene_transition:
+      scene: A02_checkpoint
+      pos: [5, 133]

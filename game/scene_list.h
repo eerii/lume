@@ -13,5 +13,7 @@ namespace Verse
         "test_scene",
         "test_scene_2",
         "test_scene_3",
+        "A01_inicio",
+        "A02_checkpoint"
     };
 }

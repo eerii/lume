@@ -1,10 +1,10 @@
   player:
     collider:
-      transform: [32, 64, 9, 14]
+      transform: [64, 120, 9, 14]
       layer: actor
     texture:
       res: res/graphics/lume.png
-      transform: [32, 64, 11, 14]
+      transform: [64, 120, 11, 14]
       layer:
         - 0
         - -2
