@@ -15,8 +15,6 @@
 #include "emscripten.h"
 #endif
 
-#include "r_font.h"
-
 using namespace Verse;
 
 namespace {
@@ -73,7 +71,7 @@ int main(int argc, const char * argv[]) {
     for (EntityID e : SceneView<Component::Camera>(*scene))
         config.active_camera = scene->getComponent<Component::Camera>(e);
 #else
-    Serialization::loadScene("test_scene", scene, config); //Always scene before player, if not camera no bounds
+    Serialization::loadScene("A01_inicio", scene, config); //Always scene before player, if not camera no bounds
     EntityID player = Serialization::loadPlayer(scene, config);
     
     for (EntityID e : SceneView<Component::SceneTransition>(*scene)) {
@@ -92,6 +90,8 @@ int main(int argc, const char * argv[]) {
     config.palette_index = (int)(rand() % 5 + 1);
 #endif
     
+    //Component::Dialogue* dialogue = scene->addComponent<Component::Dialogue>(player);
+    //System::Dialogue::parse(config, dialogue, "dialogue/test");
     
 #ifdef __EMSCRIPTEN__
     while (true)

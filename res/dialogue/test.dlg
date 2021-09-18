@@ -1,0 +1,34 @@
+start
+#
+mel: I'm getting *extremely* tired
+p: Do you really need to complain
+p: every.
+p: single.
+p: time?
+mel: Y e s.
+mel: How hecking long till we get there?
+[option1] Just 20 minutes.
+[option2] The sun hasn't sunk in the horizon.
+[] ...
+#
+
+option1
+#
+mel: Please. Do not quote SmallAnt to me.
+p: If you were half as fast...
+mel: You can't even keep the pace.
+[another_option] Catch me then!
+[] I'm going to ignore you.
+#
+
+option2
+#
+mel: You are a drama queen, jeez.
+(is_drama_queen)
+#
+
+another_option
+#
+mel: No, wait!
+<startCutscene>
+#

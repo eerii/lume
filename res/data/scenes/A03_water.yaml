@@ -1,27 +1,27 @@
 %YAML 1.2
 ---
 scene:
-  name: A01_inicio
+  name: A03_water
   size: [256, 180]
   spawn:
-   - [64, 148]
+   - [5, 147]
 
 entities:
   tile_blocks:
-    collider: tile #tilemap collider
+    collider: tile
     tilemap:
       res: res/graphics/ground.png
-      tiles: res/levels/A01_inicio.png
+      tiles: res/levels/A03_water.png
       pos: [0, 0]
       tex_size: [7, 7]
       layer: 10
   free_camera:
     camera:
       controller: free
-  to_a02:
+  water:
     collider:
-      transform: [258, 71, 14, 48]
-      layer: scene
-    scene_transition:
-      scene: A02_checkpoint
-      pos: [5, 133]
+      transform: [21, 177, 161, 5]
+      layer: water
+    texture:
+      res: res/graphics/water.png
+      layer: 15

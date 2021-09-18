@@ -49,8 +49,15 @@ entities:
       checkpoint: 1
   to_a01:
     collider:
-      transform: [-12, 126, 14, 21]
+      transform: [-12, 99, 14, 48]
       layer: scene
     scene_transition:
       scene: A01_inicio
-      pos: [245, 77]
+      pos: [245, 105]
+  to_a03:
+    collider:
+      transform: [258, 126, 7, 35]
+      layer: scene
+    scene_transition:
+      scene: A03_water
+      pos: [5, 147]

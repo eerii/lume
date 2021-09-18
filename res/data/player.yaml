@@ -1,3 +1,5 @@
+%YAML 1.2
+---
   player:
     collider:
       transform: [64, 120, 9, 14]

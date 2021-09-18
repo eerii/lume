@@ -20,6 +20,7 @@
 #include "s_patrol.h"
 #include "s_scene_transition.h"
 #include "s_noise.h"
+#include "s_dialogue.h"
 
 //Extra
 #include "s_player.h"

@@ -14,6 +14,8 @@ namespace Verse
         "test_scene_2",
         "test_scene_3",
         "A01_inicio",
-        "A02_checkpoint"
+        "A02_checkpoint",
+        "A03_water",
+        "A05_down"
     };
 }

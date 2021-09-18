@@ -17,10 +17,11 @@
 #include "c_text.h"
 #include "c_camera.h"
 #include "c_light.h"
+#include "c_noise.h"
 #include "c_timer.h"
 #include "c_patrol.h"
 #include "c_scene_transition.h"
-#include "c_noise.h"
+#include "c_dialogue.h"
 
 //Extra
 #include "c_player.h"
@@ -43,6 +44,7 @@ namespace Verse
                                        Component::Timer,
                                        Component::Patrol,
                                        Component::SceneTransition,
+                                       Component::Dialogue,
                                        Component::Player>;
 
     static const std::vector<str> component_names = {
@@ -51,6 +53,7 @@ namespace Verse
         "texture", "animation", "tilemap", "text", "camera",
         "light", "noise",
         "timer", "patrol", "scene_transition",
+        "dialogue",
         "player"
     };
 }
