@@ -11,6 +11,8 @@
 
 #include "r_textures.h"
 
+#include "reflection.h"
+
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
 #endif
@@ -20,6 +22,32 @@ using namespace Verse;
 namespace {
     Config config;
 }
+
+struct Test1 {
+    Serialize(Test1, z)
+    int z;
+};
+
+struct Test2 {
+    Serialize(Test2, t)
+    Test1 t;
+};
+
+struct Point {
+    Serialize(Point, x, y, test, t)
+    int x;
+    int y;
+    std::vector<float> test;
+    Test2 t;
+};
+
+struct Circle {
+    Serialize(Circle, point, radius, hola, c)
+    Point point;
+    float radius;
+    str hola;
+    char c;
+};
 
 #ifdef __EMSCRIPTEN__
 void game_loop_emscripten() {
@@ -64,6 +92,13 @@ int main(int argc, const char * argv[]) {
     
     Scene* scene = new Scene();
     
+    //TODO: DELETE
+    running = false;
+    Circle a{Point{3,7,{1,2,3,4,5}}, 3.5, "hola", 'k'};
+    log::reflection(a);
+    
+    //TODO: Custom save for members
+    //TODO: Fix member placement in YAML
     
 #ifdef USE_VULKAN
     Serialization::loadScene("test_vulkan", scene, config);

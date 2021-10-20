@@ -7,6 +7,7 @@
 ###  **[0.2.3]** ~ Reflection _2021-10-19_
 
 - Simple reflection
+- Struct printing
 
 ---
 
