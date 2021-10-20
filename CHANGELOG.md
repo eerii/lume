@@ -4,11 +4,18 @@
 
 ---
 
-###  **[0.2.2]** ~ Combat Dialog _2021-09-15_
+###  **[0.2.3]** ~ Reflection _2021-10-19_
+
+- Simple reflection
+
+---
+
+###  **[0.2.2]** ~ Circle collider _2021-09-15_
 
 - Circle Collider with collisions and rendering
 - Template for dialog files
 - Some test levels
+- Vulkan improvements
 
 ---
 
