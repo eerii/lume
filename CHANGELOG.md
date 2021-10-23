@@ -9,6 +9,7 @@
 - Simple reflection
 - Struct printing
 - Vulkan uniform buffers
+- Removed mango and added the components just like that
 
 ---
 

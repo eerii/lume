@@ -11,6 +11,3 @@
 [submodule "deps/yaml-cpp"]
 	path = deps/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-[submodule "game/components/mango"]
-	path = game/components/mango
-	url = https://github.com/josekoalas/mango
