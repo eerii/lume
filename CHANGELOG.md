@@ -8,6 +8,7 @@
 
 - Simple reflection
 - Struct printing
+- Vulkan uniform buffers
 
 ---
 

@@ -23,30 +23,26 @@ namespace {
     Config config;
 }
 
-struct Test1 {
-    Serialize(Test1, z)
-    int z;
-};
-
-struct Test2 {
-    Serialize(Test2, t)
-    Test1 t;
-};
-
 struct Point {
-    Serialize(Point, x, y, test, t)
+    Serialize(Point, x, y)
     int x;
     int y;
-    std::vector<float> test;
-    Test2 t;
 };
 
 struct Circle {
-    Serialize(Circle, point, radius, hola, c)
+    Serialize(Circle, point, radius)
     Point point;
     float radius;
-    str hola;
-    char c;
+};
+
+struct TestRefl {
+    Serialize(TestRefl, circle, hello, vec, map)
+    Circle circle;
+    str hello;
+    std::vector<ui16> vec;
+    std::map<str, float> map;
+    //Vec2 v; Doesn't work yet
+    //Rect2 r;
 };
 
 #ifdef __EMSCRIPTEN__
@@ -93,12 +89,32 @@ int main(int argc, const char * argv[]) {
     Scene* scene = new Scene();
     
     //TODO: DELETE
-    running = false;
-    Circle a{Point{3,7,{1,2,3,4,5}}, 3.5, "hola", 'k'};
-    log::reflection(a);
+    //running = false;
+    
+    TestRefl test{};
+    test.vec = {1, 2, 3, 4, 5};
+    test.map["hola"] = 3.5;
+    test.map["adios"] = 6.9;
+    //log::reflection(test);
+    
+    /*Reflection::forEach(a, [&](auto &&x, ui8 level, const char* name){
+        //Check for integers
+        if constexpr (std::is_integral_v<std::decay_t<decltype(x)>>)
+            log::num(x);
+        
+        if constexpr (Reflection::is_reflectable<decltype(x)>)
+            log::info(x.type_name);
+        else {
+            std::cout << name << " : " << x << "\n";
+        }
+    });*/
     
     //TODO: Custom save for members
     //TODO: Fix member placement in YAML
+    
+    //TODO: Change casts "(float)" to static casts when possible
+    //TODO: Change for loops from int to size_t
+    //TODO: Check if chrono is better than sdl time
     
 #ifdef USE_VULKAN
     Serialization::loadScene("test_vulkan", scene, config);

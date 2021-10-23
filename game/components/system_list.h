@@ -6,7 +6,6 @@
 
 #include "component_list.h"
 
-//Base
 #include "s_collider.h"
 #include "s_actor.h"
 #include "s_state.h"
@@ -21,8 +20,6 @@
 #include "s_scene_transition.h"
 #include "s_noise.h"
 #include "s_dialogue.h"
-
-//Extra
 #include "s_player.h"
 
 #define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
@@ -37,3 +34,4 @@
                            System::Noise::render(c); \
                        }
                        
+//TODO: Convert those to actual functions

@@ -6,7 +6,6 @@
 
 #include <variant>
 
-//Base
 #include "c_collider.h"
 #include "c_circle_collider.h"
 #include "c_actor.h"
@@ -22,11 +21,7 @@
 #include "c_patrol.h"
 #include "c_scene_transition.h"
 #include "c_dialogue.h"
-
-//Extra
 #include "c_player.h"
-
-#define USE_C_PLAYER
 
 namespace Verse
 {
@@ -57,3 +52,6 @@ namespace Verse
         "player"
     };
 }
+
+//TODO: Figure out if all of these are really necessary
+//Try to make them automatic with reflection, maybe add a flag or something with the name and create a list automatically
