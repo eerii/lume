@@ -55,7 +55,7 @@ int main(int argc, const char * argv[]) {
     
     config = {
         .name = "Proxecto Lume",
-        .version = {0, 2, 3},
+        .version = {0, 2, 4},
         
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),

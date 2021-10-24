@@ -161,7 +161,7 @@ void System::Noise::gui(Config &c, EntityID eid) {
     Verse::Gui::draw_vec2(noise->dir.x, noise->dir.y, "dir", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_ui8(noise->fps, "fps", eid);
+    Verse::Gui::draw_int(noise->fps, "fps", eid);
     ImGui::TableNextRow();
     
     Verse::Gui::draw_bool(noise->enabled, "enabled", eid);
