@@ -10,6 +10,9 @@
 - Struct printing
 - Vulkan uniform buffers
 - Removed mango and added the components just like that
+- Changed time from SDL_GetTicks to std::chrono
+- Added a performance GUI with plot
+- Added the ImPlot library for debug purposes
 
 ---
 

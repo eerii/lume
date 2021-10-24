@@ -11,3 +11,6 @@
 [submodule "deps/yaml-cpp"]
 	path = deps/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
+[submodule "deps/implot"]
+	path = deps/implot
+	url = https://github.com/epezent/implot

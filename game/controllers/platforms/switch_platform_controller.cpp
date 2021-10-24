@@ -41,8 +41,8 @@ bool Controller::SwitchPlatform::controller(Config &c, EntityID eid) {
             anim->queue.push_back("active");
         }
     } else if (col->layer != System::Collider::Layers::Disabled) {
-        ui32 t = getTimerRemainder(timer->tid[0]);
-        if (t < (ui32)(0.2f * (float)timer->ms[0]))
+        double t = ms(getTimerRemainder(timer->tid[0]));
+        if (t < (0.2 * (float)timer->ms[0]))
             anim->target_key = "pre_inactive";
     }
     

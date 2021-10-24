@@ -18,6 +18,10 @@
 
 using namespace Verse;
 
+namespace {
+    Clock::time_point start_time = time();
+}
+
 std::vector<glm::vec4> System::Light::render(Config &c, ui8 pid) {
     std::vector<glm::vec4> light_data;
     
@@ -25,7 +29,7 @@ std::vector<glm::vec4> System::Light::render(Config &c, ui8 pid) {
         Component::Light* light = c.active_scene->getComponent<Component::Light>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         
-        float variation = sin(time() * 0.001f * light->period * c.game_speed) * light->variation;
+        float variation = sin(ms(time() - start_time) * 0.001f * light->period * c.game_speed) * light->variation;
         float radius_with_var = ((light->radius + variation) > 2.0f) ? light->radius + variation : 2.0f;
         
         light->render_data = glm::vec4(light->pos.x, light->pos.y, radius_with_var, light->radius * light->center_radius);

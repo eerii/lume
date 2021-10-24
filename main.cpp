@@ -112,8 +112,6 @@ int main(int argc, const char * argv[]) {
     //TODO: Custom save for members
     //TODO: Fix member placement in YAML
     
-    //TODO: Change casts "(float)" to static casts when possible
-    //TODO: Change for loops from int to size_t
     //TODO: Check if chrono is better than sdl time
     
 #ifdef USE_VULKAN
