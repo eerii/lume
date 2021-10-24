@@ -22,16 +22,21 @@
 #include "s_dialogue.h"
 #include "s_player.h"
 
-#define PHYSICS_UPDATE_SYSTEMS System::Actor::update(c); \
-                               System::Noise::update(c); \
-                               System::Camera::update(c);
+namespace Verse::System
+{
+    static inline void physicsUpdateSystems(Config &c) {
+        Actor::update(c);
+        Noise::update(c);
+        Camera::update(c);
+    };
 
-#define RENDER_SYSTEMS System::Camera::prerender(c); \
-                       System::Tilemap::render(c); \
-                       if (not c.tme_active) { \
-                           System::Texture::render(c); \
-                           System::Text::render(c); \
-                           System::Noise::render(c); \
-                       }
-                       
-//TODO: Convert those to actual functions
+    static inline void renderUpdateSystems(Config &c) {
+        Camera::prerender(c);
+        Tilemap::render(c);
+        if (not c.tme_active) {
+            Texture::render(c);
+            Text::render(c);
+            Noise::render(c);
+        }
+    };
+}

@@ -112,8 +112,6 @@ int main(int argc, const char * argv[]) {
     //TODO: Custom save for members
     //TODO: Fix member placement in YAML
     
-    //TODO: Check if chrono is better than sdl time
-    
 #ifdef USE_VULKAN
     Serialization::loadScene("test_vulkan", scene, config);
     config.active_scene = scene;

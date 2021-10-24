@@ -286,7 +286,7 @@ void System::Actor::save(Component::Actor *actor, str path, std::vector<str> &ke
         std::vector<str> collision_mask_names;
         for (int i = 0; i < MAX_COLLISION_LAYERS; i++) {
             if (actor->collision_mask[i])
-                collision_mask_names.push_back(component_names[i]);
+                collision_mask_names.push_back(Component::component_names[i]);
         }
         Serialization::appendYAML(path, key, collision_mask_names, true);
     }

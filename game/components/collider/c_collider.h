@@ -11,6 +11,7 @@
 namespace Verse::Component
 {
     struct Collider {
+        Serialize(Collider, transform, layer, is_colliding)
         Rect2 transform;
         ui8 layer;
         bool is_colliding;

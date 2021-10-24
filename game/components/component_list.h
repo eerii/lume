@@ -23,7 +23,7 @@
 #include "c_dialogue.h"
 #include "c_player.h"
 
-namespace Verse
+namespace Verse::Component
 {
     using ComponentType = std::variant<Component::Collider,
                                        Component::CircleCollider,
@@ -52,6 +52,3 @@ namespace Verse
         "player"
     };
 }
-
-//TODO: Figure out if all of these are really necessary
-//Try to make them automatic with reflection, maybe add a flag or something with the name and create a list automatically
