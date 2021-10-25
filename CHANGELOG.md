@@ -8,6 +8,8 @@
 
 - Cleaned up Vulkan and OpenGL APIs
 - Reworked Gui Draw Types
+- Move OpenGL Renderer to ShaderData
+- Disabled perlin noise
 
 ---
 

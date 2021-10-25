@@ -47,7 +47,9 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
 }
 
 void System::Noise::update(Config &c) {
-    for (EntityID e : SceneView<Component::Noise>(*c.active_scene)) {
+    //TEMPORARILY DISABLED, PERFORMANCE IS TERRIBLE
+    //Check https://alain.xyz/blog/noise-generation-survey for reference
+    /*for (EntityID e : SceneView<Component::Noise>(*c.active_scene)) {
         Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         
@@ -71,11 +73,11 @@ void System::Noise::update(Config &c) {
         }
         if (noise->noise_offset > 16384)
             noise->noise_offset = 0;
-    }
+    }*/
 }
 
 void System::Noise::render(Config &c) {
-    for (EntityID e : SceneView<Component::Noise>(*c.active_scene)) {
+    /*for (EntityID e : SceneView<Component::Noise>(*c.active_scene)) {
         Component::Noise* noise = c.active_scene->getComponent<Component::Noise>(e);
         Component::Texture* tex = c.active_scene->getComponent<Component::Texture>(e);
         Component::Animation* anim = c.active_scene->getComponent<Component::Animation>(e);
@@ -124,7 +126,7 @@ void System::Noise::render(Config &c) {
         noise->noise_tex.vertices = std::vector<float>(vn, vn + sizeof vn / sizeof vn[0]);
         
         Graphics::Renderer::renderNoise(c, noise->mask_tex, noise->noise_tex);
-    }
+    }*/
 }
 
 void System::Noise::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
