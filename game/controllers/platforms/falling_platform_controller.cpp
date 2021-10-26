@@ -33,7 +33,7 @@ bool Controller::FallingPlatform::controller(Config &c, EntityID eid) {
         col->layer = System::Collider::Layers::Ground;
     }
     
-    if (*col->transform.y > 500)
+    if (col->transform.y > 500)
         c.active_scene->removeEntity(eid);
     
     return true;
@@ -42,9 +42,9 @@ bool Controller::FallingPlatform::controller(Config &c, EntityID eid) {
 bool Controller::FallingPlatform::checkActorAbove(Config &c, EntityID eid) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
     
-    col->transform -= Vec2::j;
+    col->transform -= Vec2(0,1);
     System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
-    col->transform += Vec2::j;
+    col->transform += Vec2(0,1);
     
     for (System::Collider::CollisionInfoPair collision : collisions) {
         if (collision.second[System::Collider::Layers::Actor])
@@ -56,9 +56,9 @@ bool Controller::FallingPlatform::checkActorAbove(Config &c, EntityID eid) {
 bool Controller::FallingPlatform::checkGroundBelow(Config &c, EntityID eid) {
     Component::Collider* col = c.active_scene->getComponent<Component::Collider>(eid);
     
-    col->transform += Vec2::j;
+    col->transform += Vec2(0,1);
     System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
-    col->transform -= Vec2::j;
+    col->transform -= Vec2(0,1);
     
     for (System::Collider::CollisionInfoPair collision : collisions) {
         if (collision.second[System::Collider::Layers::Ground])

@@ -38,7 +38,7 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
     Component::Noise* noise = s->getComponent<Component::Noise>(eid);
     Component::Texture* tex = s->getComponent<Component::Texture>(eid);
     
-    noise->size = tex->transform.size;
+    noise->size = tex->transform.size();
     noise->noise_data = std::vector<ui8>(noise->size.x * noise->size.y);
     
     Math::perlinNoise(noise->size, Vec2(0,0), noise->freq, noise->levels, noise->noise_data.data(), true);
@@ -132,9 +132,9 @@ void System::Noise::render(Config &c) {
 void System::Noise::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Noise* noise = s->addComponent<Component::Noise>(eid);
     if (entity["noise"]["offset"])
-        noise->offset = entity["noise"]["offset"].as<Vec2>();
+        noise->offset = entity["noise"]["offset"].as<Vec2<int>>();
     if (entity["noise"]["dir"])
-        noise->dir = entity["noise"]["dir"].as<Vec2>();
+        noise->dir = entity["noise"]["dir"].as<Vec2<int>>();
     if (entity["noise"]["fps"])
         noise->fps = (ui8)entity["noise"]["fps"].as<int>();
     if (entity["noise"]["freq"])

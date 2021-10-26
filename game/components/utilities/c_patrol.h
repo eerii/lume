@@ -9,7 +9,7 @@
 namespace Verse::Component
 {
     struct Patrol {
-        std::vector<Vec2> points;
+        std::vector<Vec2<int>> points;
         int current;
     };
 }

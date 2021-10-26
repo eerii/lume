@@ -20,7 +20,7 @@
 using namespace Verse;
 
 namespace {
-    Vec2f shake_vec;
+    Vec2<float> shake_vec;
     ui32 shake_timer = 0;
     float shake_strength;
 }
@@ -49,23 +49,23 @@ void System::Camera::prerender(Config &c) {
         
         cam->render_pos = cam->pos; // * c.physics_interpolation + cam->previous_pos * (1.0 - c.physics_interpolation);
         
-        Vec2 pixel_pos = Vec2(floor(cam->render_pos.x), floor(cam->render_pos.y));
-        Vec2 pixel_perfect_move = Vec2(0.5f * c.resolution.x + BORDER_WIDTH - pixel_pos.x,
-                                       0.5f * c.resolution.y + BORDER_WIDTH - pixel_pos.y);
+        Vec2 pixel_pos = Vec2<int>(floor(cam->render_pos.x), floor(cam->render_pos.y));
+        Vec2 pixel_perfect_move = Vec2<int>(0.5f * c.resolution.x + BORDER_WIDTH - pixel_pos.x,
+                                            0.5f * c.resolution.y + BORDER_WIDTH - pixel_pos.y);
         
-        Vec2f extra_move = cam->render_pos - pixel_pos.to_float();
+        Vec2<float> extra_move = cam->render_pos - pixel_pos;
         extra_move.x = -extra_move.x;
         if (not c.use_subpixel_cam)
-            extra_move = Vec2f(0,0);
+            extra_move = Vec2<float>(0,0);
         
         if(checkTimer(shake_timer)) {
-            shake_vec = Vec2f(0,0);
+            shake_vec = Vec2<float>(0,0);
             shake_timer = 0;
             shake_strength = 0;
         }
         
         if(shake_timer != 0)
-            shake_vec = (Vec2f(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX) * 2.0f - Vec2f::one) *
+            shake_vec = (Vec2<float>(rand() / (float)RAND_MAX, rand() / (float)RAND_MAX) * 2.0f - Vec2<float>(1, 1)) *
                          c.render_scale * shake_strength - extra_move;
         
         cam->m_pixel = glm::translate(glm::mat4(1.0f), glm::vec3(pixel_perfect_move.x, pixel_perfect_move.y, 0.0f));
@@ -85,11 +85,11 @@ void System::Camera::shake(Config &c, ui16 ms, float strength) {
 void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Camera* camera = s->addComponent<Component::Camera>(eid);
     if (entity["camera"]["pos"])
-        camera->pos = entity["camera"]["pos"].as<Vec2f>();
+        camera->pos = entity["camera"]["pos"].as<Vec2<float>>();
     camera->bounds = Rect2(0,0,0,0);
     if (entity["camera"]["bounds"]) {
         if (entity["camera"]["bounds"].IsSequence()) {
-            camera->bounds = entity["camera"]["bounds"].as<Rect2>();
+            camera->bounds = entity["camera"]["bounds"].as<Rect2<int>>();
         } else {
             if (entity["camera"]["bounds"].as<str>() == "scene")
                 camera->bounds = Rect2(s->size * 0.5f, s->size);
@@ -113,15 +113,15 @@ void System::Camera::save(Component::Camera *cam, str path, std::vector<str> &ke
     key[3] = "controller";
     Serialization::appendYAML(path, key, (str)cam->current_controller, true);
     
-    if (cam->pos != Vec2f(0,0)) {
+    if (cam->pos != Vec2(0.0f,0.0f)) {
         key[3] = "pos";
         Serialization::appendYAML(path, key, cam->pos, true);
     }
     
     key[3] = "bounds";
-    if (cam->bounds.size == s->size) {
+    if (cam->bounds.size() == s->size) {
         Serialization::appendYAML(path, key, (str)"scene", true);
-    } else if (cam->bounds.size == Vec2(0,0)) {
+    } else if (cam->bounds.size() == Vec2(0,0)) {
         Serialization::appendYAML(path, key, (str)"none", true);
     } else {
         Serialization::appendYAML(path, key, cam->bounds, true);
@@ -140,9 +140,9 @@ void System::Camera::gui(Config &c, EntityID eid) {
     Verse::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(cam->bounds.pos.x, cam->bounds.pos.y, "bounds pos", eid);
+    Verse::Gui::draw_vec2(cam->bounds.x, cam->bounds.y, "bounds pos", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(cam->bounds.size.x, cam->bounds.size.y, "bounds size", eid);
+    Verse::Gui::draw_vec2(cam->bounds.w, cam->bounds.h, "bounds size", eid);
     ImGui::TableNextRow();
     
     

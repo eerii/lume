@@ -10,7 +10,7 @@
 namespace Verse::Component
 {
     struct CircleCollider {
-        Vec2 pos;
+        Vec2<int> pos;
         ui16 radius;
         ui8 layer;
         bool is_colliding;

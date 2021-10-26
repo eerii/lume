@@ -74,9 +74,9 @@ void System::Texture::render(Config &c) {
                 vertices[3*4+2] = vertices[1*4+2];
             }
             
-            Rect2 dst = Rect2((tex->transform.pos + tex->offset[i]), tex->transform.size);
+            Rect2 dst = Rect2((tex->transform.pos() + tex->offset[i]), tex->transform.size());
             
-            tex->data.model = Graphics::Renderer::matModel2D(dst.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size);
+            tex->data.model = Graphics::Renderer::matModel2D(dst.pos() - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size());
             tex->data.vertices = vertices;
             tex->data.layer = tex->layer[i];
             
@@ -95,7 +95,7 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     texture->res = entity["texture"]["res"].as<str>();
     Graphics::Texture::loadTexture(texture->res, texture);
     if (entity["texture"]["transform"] and entity["texture"]["transform"].IsSequence()) {
-        texture->transform = entity["texture"]["transform"].as<Rect2>();
+        texture->transform = entity["texture"]["transform"].as<Rect2<int>>();
     } else {
         Component::Collider* collider = s->getComponent<Component::Collider>(eid);
         if (collider == nullptr) {
@@ -109,9 +109,9 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     if (entity["texture"]["offset"]) {
         texture->offset = {};
         if (entity["texture"]["offset"].IsSequence()) {
-            texture->offset = entity["texture"]["offset"].as<std::vector<Vec2>>();
+            texture->offset = entity["texture"]["offset"].as<std::vector<Vec2<int>>>();
         } else {
-            texture->offset.push_back(entity["texture"]["offset"].as<Vec2>());
+            texture->offset.push_back(entity["texture"]["offset"].as<Vec2<int>>());
         }
     }
     if (entity["texture"]["layer"]) {
@@ -178,9 +178,9 @@ void System::Texture::gui(Config &c, EntityID eid) {
     ImGui::TableNextRow();
     
     if (not tex->use_collider_transform) {
-        Verse::Gui::draw_vec2(*tex->transform.x, *tex->transform.y, "pos", eid);
+        Verse::Gui::draw_vec2(tex->transform.x, tex->transform.y, "pos", eid);
         ImGui::TableNextRow();
-        Verse::Gui::draw_vec2(*tex->transform.w, *tex->transform.h, "size", eid);
+        Verse::Gui::draw_vec2(tex->transform.w, tex->transform.h, "size", eid);
         ImGui::TableNextRow();
     }
     

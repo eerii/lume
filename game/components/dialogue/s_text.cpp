@@ -30,7 +30,7 @@ void System::Text::render(Config &c) {
         }
         
         text->tex_data.vertices = std::vector<float>(v, v + sizeof v / sizeof v[0]);
-        text->tex_data.model = Graphics::Renderer::matModel2D(text->transform.pos - Vec2(BORDER_WIDTH, BORDER_WIDTH), text->transform.size);
+        text->tex_data.model = Graphics::Renderer::matModel2D(text->transform.pos() - Vec2(BORDER_WIDTH, BORDER_WIDTH), text->transform.size());
         
         Graphics::Renderer::renderText(c, text->tex_data, text->r, text->g, text->b, text->solid_color);
     }
@@ -47,8 +47,8 @@ void System::Text::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Graphics::Font::load(text->font, entity["text"]["font"].as<str>());
     
     if (entity["text"]["transform"]) {
-        text->transform = entity["text"]["transform"].as<Rect2>();
-        text->bitmap_size = text->transform.size;
+        text->transform = entity["text"]["transform"].as<Rect2<int>>();
+        text->bitmap_size = text->transform.size();
     }
     
     text->layer = (entity["text"]["layer"]) ? entity["text"]["layer"].as<int>() : -10;
@@ -104,10 +104,10 @@ void System::Text::gui(Config &c, EntityID eid) {
     if (text == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(text->transform.pos.x, text->transform.pos.y, "pos", eid);
+    Verse::Gui::draw_vec2(text->transform.x, text->transform.y, "pos", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(text->transform.size.x, text->transform.size.y, "display size", eid);
+    Verse::Gui::draw_vec2(text->transform.w, text->transform.h, "display size", eid);
     ImGui::TableNextRow();
     
     Verse::Gui::draw_vec2(text->bitmap_size.x, text->bitmap_size.y, "bitmap size", eid, [&text](){ Graphics::Font::render(text); });

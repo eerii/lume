@@ -66,10 +66,10 @@ System::Collider::CollisionInfoPair System::Collider::checkTilemapCollision(Conf
     Component::Collider* tile_col = c.active_scene->getComponent<Component::Collider>(eid);
     Component::Tilemap* tilemap = c.active_scene->getComponent<Component::Tilemap>(eid);
     
-    Vec2 rel_pos = test_col->transform.pos - tile_col->transform.pos;
+    Vec2 rel_pos = test_col->transform.pos() - tile_col->transform.pos();
     Vec2 upleft = Vec2(floor(rel_pos.x / tilemap->tex_size.x), floor(rel_pos.y / tilemap->tex_size.y));
-    Vec2 downright = Vec2(floor((rel_pos.x + *test_col->transform.w - 1) / tilemap->tex_size.x),
-                          floor((rel_pos.y + *test_col->transform.h - 1) / tilemap->tex_size.y));
+    Vec2 downright = Vec2(floor((rel_pos.x + test_col->transform.w - 1) / tilemap->tex_size.x),
+                          floor((rel_pos.y + test_col->transform.h - 1) / tilemap->tex_size.y));
     
     System::Collider::CollisionInfoPair tile_collisions;
     tile_collisions.first = eid;
@@ -153,7 +153,7 @@ void System::Collider::load(EntityID eid, YAML::Node &entity, struct Scene *s, C
     Component::Collider* collider = s->addComponent<Component::Collider>(eid);
     if (entity["collider"].IsMap()) {
         if (entity["collider"]["transform"])
-            collider->transform = entity["collider"]["transform"].as<Rect2>();
+            collider->transform = entity["collider"]["transform"].as<Rect2<int>>();
         collider->layer = System::Collider::Layers::Ground;
         if (entity["collider"]["layer"]) {
             auto it = std::find(System::Collider::layers_name.begin(),
@@ -198,9 +198,9 @@ void System::Collider::gui(Config &c, EntityID eid) {
     if (col == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(*col->transform.x, *col->transform.y, "pos", eid);
+    Verse::Gui::draw_vec2(col->transform.x, col->transform.y, "pos", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(*col->transform.w, *col->transform.h, "size", eid);
+    Verse::Gui::draw_vec2(col->transform.w, col->transform.h, "size", eid);
     ImGui::TableNextRow();
     
     ImGui::TableSetColumnIndex(0);
@@ -217,7 +217,7 @@ void System::Collider::load_circle(EntityID eid, YAML::Node &entity, struct Scen
     Component::CircleCollider* collider = s->addComponent<Component::CircleCollider>(eid);
     if (entity["circle_collider"].IsMap()) {
         if (entity["circle_collider"]["pos"])
-            collider->pos = entity["circle_collider"]["pos"].as<Vec2>();
+            collider->pos = entity["circle_collider"]["pos"].as<Vec2<int>>();
         collider->layer = System::Collider::Layers::Ground;
         if (entity["circle_collider"]["layer"]) {
             auto it = std::find(System::Collider::layers_name.begin(),

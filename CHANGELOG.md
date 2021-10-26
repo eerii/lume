@@ -10,6 +10,12 @@
 - Reworked Gui Draw Types
 - Move OpenGL Renderer to ShaderData
 - Disabled perlin noise
+- IMPORTANT: Complete change to Vec2 and Rect2
+    - Now they are templates, instead of Vec2f, Vec2<float>
+    - Default behaviour for operations
+    - Rect2 now depends on x,y,w,h and not on pos,size
+    - Ease of notation around Rect2 operations with Vec2 (they apply to pos)
+    - Working on both OpenGL and Vulkan code
 
 ---
 

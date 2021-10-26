@@ -41,7 +41,7 @@ bool Controller::Camera::Actor::controller(Config &c, EntityID eid) {
     if (Input::down(Input::Key::Right) or Input::down(Input::Key::D))
         input = 1;
     
-    cam->target_pos = collider->transform.pos.to_float() + collider->transform.size.to_float() * 0.5f;
+    cam->target_pos = collider->transform.pos().to<float>() + collider->transform.size().to<float>() * 0.5f;
     
     vel_percent = (input != 0) ? (float)abs(actor->vel.x) / (float)actor->max_move_speed : vel_percent;
     
@@ -76,16 +76,16 @@ void Controller::Camera::Actor::lookahead(Config &c, Component::Camera *cam, int
 
 void Controller::Camera::Actor::checkBounds(Config &c, Component::Camera* cam) {
     if (cam->bounds.w != 0) {
-        if (cam->target_pos.x + (0.5f * c.resolution.x) > *cam->bounds.x + 0.5f * *cam->bounds.w)
-            cam->target_pos.x = *cam->bounds.x + 0.5f * *cam->bounds.w - 0.5f * c.resolution.x;
-        if (cam->target_pos.x - (0.5f * c.resolution.x) < *cam->bounds.x - 0.5f * *cam->bounds.w)
-            cam->target_pos.x = *cam->bounds.x - 0.5f * *cam->bounds.w + 0.5f * c.resolution.x;
+        if (cam->target_pos.x + (0.5f * c.resolution.x) > cam->bounds.x + 0.5f * cam->bounds.w)
+            cam->target_pos.x = cam->bounds.x + 0.5f * cam->bounds.w - 0.5f * c.resolution.x;
+        if (cam->target_pos.x - (0.5f * c.resolution.x) < cam->bounds.x - 0.5f * cam->bounds.w)
+            cam->target_pos.x = cam->bounds.x - 0.5f * cam->bounds.w + 0.5f * c.resolution.x;
     }
     
     if (cam->bounds.h != 0) {
-        if (cam->target_pos.y + (0.5f * c.resolution.y) > *cam->bounds.y + 0.5f * *cam->bounds.h)
-            cam->target_pos.y = *cam->bounds.y + 0.5f * *cam->bounds.h - 0.5f * c.resolution.y;
-        if (cam->target_pos.y - (0.5f * c.resolution.y) < *cam->bounds.y - 0.5f * *cam->bounds.h)
-            cam->target_pos.y = *cam->bounds.y - 0.5f * *cam->bounds.h + 0.5f * c.resolution.y;
+        if (cam->target_pos.y + (0.5f * c.resolution.y) > cam->bounds.y + 0.5f * cam->bounds.h)
+            cam->target_pos.y = cam->bounds.y + 0.5f * cam->bounds.h - 0.5f * c.resolution.y;
+        if (cam->target_pos.y - (0.5f * c.resolution.y) < cam->bounds.y - 0.5f * cam->bounds.h)
+            cam->target_pos.y = cam->bounds.y - 0.5f * cam->bounds.h + 0.5f * c.resolution.y;
     }
 }

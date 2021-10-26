@@ -10,7 +10,7 @@
 namespace Verse::Component
 {
     struct Light {
-        Vec2 pos;
+        Vec2<int> pos;
         float radius;
         
         float period = 5;

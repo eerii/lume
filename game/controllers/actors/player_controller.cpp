@@ -176,7 +176,7 @@ bool Controller::Player::controller(Config &c, EntityID eid) {
     
     
     //FALL OFF THE LEVEL
-    if (*collider->transform.y > 500) //TODO: Change
+    if (collider->transform.y > 500) //TODO: Change
         respawn(c);
     
     
@@ -268,9 +268,9 @@ void Controller::Player::releaseJump() {
 }
 
 void Controller::Player::down(Config &c, EntityID eid) {
-    collider->transform += Vec2::j;
+    collider->transform += Vec2(0,1);
     System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
-    collider->transform -= Vec2::j;
+    collider->transform -= Vec2(0,1);
     for (System::Collider::CollisionInfoPair collision : collisions) {
         if (collision.second[System::Collider::Layers::Platform]) {
             jump_state.handle(DownEvent(true));
@@ -279,30 +279,30 @@ void Controller::Player::down(Config &c, EntityID eid) {
 }
 
 void Controller::Player::respawn(Config &c) {
-    auto closest_vec = [=](Vec2 v1, Vec2 v2) -> bool {
-        return abs(v1.x - *collider->transform.x) < abs(v2.x - *collider->transform.x); };
+    auto closest_vec = [=](Vec2<int> v1, Vec2<int> v2) -> bool {
+        return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x); };
     
     Vec2 closest_checkpoint = *std::min_element(c.active_scene->checkpoints.cbegin(), c.active_scene->checkpoints.cend(), closest_vec);
     collider->transform = closest_checkpoint;
     
-    actor->vel = Vec2f(0,0);
+    actor->vel = Vec2(0.0f,0.0f);
     jump_state.handle(FallEvent());
     
     player->light_strength = 150.0f;
 }
 
 bool Controller::Player::checkGroundDown(Config &c, EntityID eid, int down) {
-    collider->transform += Vec2::j * down;
+    collider->transform += Vec2(0,1) * down;
     ui8 colliding = System::Actor::collisions(c, eid, false);
-    collider->transform -= Vec2::j * down;
+    collider->transform -= Vec2(0,1) * down;
     
     return colliding == System::Actor::Colliding::Solid;
 }
 
-Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
-    Vec2f vel = Vec2f(0,0);
+Vec2<float> Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
+    Vec2 vel = Vec2(0.0f,0.0f);
     
-    collider->transform += Vec2::j;
+    collider->transform += Vec2(0,1);
     
     System::Collider::CollisionInfo collision_info = System::Collider::checkCollisions(c, eid);
     for (System::Collider::CollisionInfoPair collision : collision_info) {
@@ -310,7 +310,7 @@ Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
             Component::Collider* platform_collider = c.active_scene->getComponent<Component::Collider>(collision.first);
             Component::Collider* actor_collider = c.active_scene->getComponent<Component::Collider>(eid);
             
-            bool above = *actor_collider->transform.y + *actor_collider->transform.h <= *platform_collider->transform.y + 1;
+            bool above = actor_collider->transform.y + actor_collider->transform.h <= platform_collider->transform.y + 1;
             if (above) {
                 Component::Actor* platform_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
                 if (platform_actor != nullptr)
@@ -319,7 +319,7 @@ Vec2f Controller::Player::getMovingPlatformVelocity(Config &c, EntityID eid) {
         }
     }
     
-    collider->transform -= Vec2::j;
+    collider->transform -= Vec2(0,1);
     
     return vel;
 }

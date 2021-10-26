@@ -12,7 +12,7 @@ namespace Verse::System::Tilemap
     void init(Config &c);
     void createVertices(Config &c, Component::Tilemap* tmap);
     void render(Config &c);
-    Vec2 calculateSize(Component::Tilemap* tmap);
+    Vec2<int> calculateSize(Component::Tilemap* tmap);
 
     void renderEditor(Config &c);
 

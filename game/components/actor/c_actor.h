@@ -13,9 +13,9 @@
 namespace Verse::Component
 {
     struct Actor {
-        Vec2f vel;
-        Vec2f extra_vel;
-        Vec2f remainder;
+        Vec2<float> vel;
+        Vec2<float> extra_vel;
+        Vec2<float> remainder;
         
         int max_move_speed; //TODO: Change to vec2
         int max_fall_speed;

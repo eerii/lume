@@ -47,9 +47,8 @@ namespace Verse::State::Checkpoint
             tex->use_collider_transform = false;
             
             Component::Collider* col = e.s->getComponent<Component::Collider>(e.eid);
-            e.s->checkpoints.push_back(col->transform.pos);
-            col->transform.pos -= Vec2(24, 16);
-            col->transform.size += Vec2(48, 32);
+            e.s->checkpoints.push_back(col->transform.pos());
+            col->transform += Rect2(-24, -16, 48, 32);
             
             Component::Light* light = e.s->getComponent<Component::Light>(e.eid);
             light->radius = 75;

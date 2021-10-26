@@ -10,14 +10,14 @@
 namespace Verse::Component
 {
     struct Noise {
-        Vec2 offset;
+        Vec2<int> offset;
         
         Verse::Graphics::TextureData mask_tex;
         Verse::Graphics::TextureData noise_tex;
         std::vector<ui8> noise_data;
-        Vec2 size;
+        Vec2<int> size;
         
-        Vec2 dir;
+        Vec2<int> dir;
         ui8 fps;
         
         float freq;

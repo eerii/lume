@@ -10,14 +10,14 @@
 namespace Verse::Component
 {
     struct Camera {
-        Vec2f target_pos;
-        Vec2f previous_target_pos;
+        Vec2<float> target_pos;
+        Vec2<float> previous_target_pos;
         
-        Vec2f pos;
-        Vec2f previous_pos;
-        Vec2f render_pos;
+        Vec2<float> pos;
+        Vec2<float> previous_pos;
+        Vec2<float> render_pos;
         
-        Rect2 bounds;
+        Rect2<int> bounds;
         
         glm::mat4 m_pixel;
         glm::mat4 m_extra;

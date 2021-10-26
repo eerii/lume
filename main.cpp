@@ -51,12 +51,12 @@ void game_loop_emscripten() {
 }
 #endif
 
+str Info::name = "Proxecto Lume";
+ui8 Info::version[3] = {0, 2, 4};
+
 int main(int argc, const char * argv[]) {
     
     config = {
-        .name = "Proxecto Lume",
-        .version = {0, 2, 4},
-        
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
@@ -76,7 +76,7 @@ int main(int argc, const char * argv[]) {
         .use_subpixel_cam = true,
         
         .gravity = 800,
-        .gravity_dir = Vec2f(0, 1),
+        .gravity_dir = Vec2<float>(0, 1),
         
         .player_loses_light = false,
     };

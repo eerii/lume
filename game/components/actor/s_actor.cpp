@@ -45,14 +45,14 @@ bool System::Actor::move(Config &c, EntityID eid) {
     if (actor->vel.y > actor->max_fall_speed)
         actor->vel.y = actor->max_fall_speed;
     
-    Vec2f total = actor->remainder + (actor->vel + actor->extra_vel) * c.physics_delta;
-    Vec2 to_move = Vec2(floor(total.x), floor(total.y));
-    actor->remainder = total - to_move.to_float();
+    Vec2<float> total = actor->remainder + (actor->vel + actor->extra_vel) * c.physics_delta;
+    Vec2<int> to_move = Vec2<int>(floor(total.x), floor(total.y));
+    actor->remainder = total - to_move.to<float>();
     
     //MoveX
     int sx = sign(to_move.x);
     while (to_move.x != 0) {
-        collider->transform += Vec2::i * sx;
+        collider->transform += Vec2(sx,0);
         
         ui8 colliding = collisions(c, eid);
         
@@ -60,7 +60,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
             return false;
         
         if (colliding == Colliding::Solid) {
-            collider->transform -= Vec2::i * sx;
+            collider->transform -= Vec2(sx,0);
             
             to_move.x = 0;
             actor->remainder.x = 0;
@@ -72,7 +72,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
             
             //Check on ground
             if (to_move.y == 0) {
-                collider->transform += Vec2::j;
+                collider->transform += Vec2(0,1);
                 
                 ui8 colliding = collisions(c, eid);
                 
@@ -84,7 +84,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
                     jump_state.handle(Player::FallEvent());
 #endif
                 
-                collider->transform -= Vec2::j;
+                collider->transform -= Vec2(0,1);
             }
         }
     }
@@ -92,7 +92,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
     //MoveY
     int sy = sign(to_move.y);
     while (to_move.y != 0) {
-        collider->transform += Vec2::j * sy;
+        collider->transform += Vec2(0,sy);
         
         ui8 colliding = collisions(c, eid);
         
@@ -100,7 +100,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
             return false;
         
         if (colliding == Colliding::Solid) {
-            collider->transform -= Vec2::j * sy;
+            collider->transform -= Vec2(0,sy);
             
             to_move.y = 0;
             actor->remainder.y = 0;
@@ -124,7 +124,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
     
     Component::Texture* texture = c.active_scene->getComponent<Component::Texture>(eid);
     if (texture != nullptr)
-        texture->transform.pos = collider->transform.pos;
+        texture->transform = collider->transform.pos();
         
     return true;
 }
@@ -176,7 +176,7 @@ ui8 System::Actor::collisions(Config &c, EntityID eid, bool perform_actions) {
             
             bool falling = (state != nullptr and state->has_state["jump"] and jump_state.is(Player::FallingFromPlatformState()));
             
-            bool above = *actor_collider->transform.y + *actor_collider->transform.h <= *platform_collider->transform.y + 1;
+            bool above = actor_collider->transform.y + actor_collider->transform.h <= platform_collider->transform.y + 1;
             if (not falling and above and actor->vel.y >= 0) {
                 solid = true;
             }

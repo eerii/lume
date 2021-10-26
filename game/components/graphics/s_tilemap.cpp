@@ -40,18 +40,13 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
     for (int l = 0; l < tmap->tex_data.size(); l++) {
         tmap->vert.push_back({});
         
-        Rect2 src;
-        src.pos = Vec2(0,0);
-        src.size = tmap->tex_size;
-        
-        Rect2 dst;
-        dst.pos = tmap->pos;
-        dst.size = tmap->tex_size;
+        Rect2 src(0, 0, tmap->tex_size.x, tmap->tex_size.y);
+        Rect2 dst(tmap->pos, tmap->tex_size);
         
         for (int i = 0; i < tmap->tiles.size(); i++) {
             for (int j = 0; j < tmap->tiles[i].size(); j++) {
                 if (tmap->tiles[i][j] == l) {
-                    src.pos.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
+                    src.x = (tmap->tiles[i][j] - 1) * tmap->tex_size.x;
                     float v[24] = {
                         0.0,  1.0,  0.0,  1.0,
                         1.0,  1.0,  1.0,  1.0,
@@ -62,19 +57,19 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
                     };
                     
                     for (int i = 0; i < 6; i++) {
-                        v[4*i + 0] = (i % 2 == 1) ? *dst.w : 0.0;
-                        v[4*i + 0] += *dst.x;
-                        v[4*i + 1] = (i < 2 or i == 3) ? *dst.h : 0.0;
-                        v[4*i + 1] += *dst.y;
+                        v[4*i + 0] = (i % 2 == 1) ? dst.w : 0.0;
+                        v[4*i + 0] += dst.x;
+                        v[4*i + 1] = (i < 2 or i == 3) ? dst.h : 0.0;
+                        v[4*i + 1] += dst.y;
                     }
                 
                     for (int i = 0; i < 24; i++)
                         tmap->vert[l].push_back(v[i]);
                 }
-                dst.pos.x += tmap->tex_size.x;
+                dst.x += tmap->tex_size.x;
             }
-            dst.pos.x = tmap->pos.x;
-            dst.pos.y += tmap->tex_size.y;
+            dst.x = tmap->pos.x;
+            dst.y += tmap->tex_size.y;
         }
         
         tmap->tex_data[l].vertices = tmap->vert[l];
@@ -101,7 +96,7 @@ void System::Tilemap::render(Config &c) {
     }
 }
 
-Vec2 System::Tilemap::calculateSize(Component::Tilemap* tmap) {
+Vec2<int> System::Tilemap::calculateSize(Component::Tilemap* tmap) {
     Vec2 size;
     
     size.x = (int)(tmap->tiles[0].size() * tmap->tex_size.x);
@@ -197,9 +192,9 @@ void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
                     entity["tilemap"]["res"].as<std::vector<str>>();
     Graphics::Texture::loadTexture(tilemap->res, tilemap);
     if (entity["tilemap"]["pos"])
-        tilemap->pos = entity["tilemap"]["pos"].as<Vec2>();
+        tilemap->pos = entity["tilemap"]["pos"].as<Vec2<int>>();
     if (entity["tilemap"]["tex_size"])
-        tilemap->tex_size = entity["tilemap"]["tex_size"].as<Vec2>();
+        tilemap->tex_size = entity["tilemap"]["tex_size"].as<Vec2<int>>();
     tilemap->layer = (entity["tilemap"]["layer"]) ? entity["tilemap"]["layer"].as<int>() : 0;
 }
 

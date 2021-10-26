@@ -19,21 +19,21 @@ bool Controller::DisablePlatform::controller(Config &c, EntityID eid) {
     Component::Timer* timer = c.active_scene->getComponent<Component::Timer>(eid);
     
     if (col->layer != System::Collider::Layers::Disabled and timer->tid[0] == 0) {
-        col->transform -= Vec2::j;
+        col->transform -= Vec2(0,1);
         System::Collider::CollisionInfo collisions = System::Collider::checkCollisions(c, eid);
         for (System::Collider::CollisionInfoPair collision : collisions) {
             if (collision.second[System::Collider::Layers::Actor]) {
                 Component::Collider* riding_col = c.active_scene->getComponent<Component::Collider>(collision.first);
                 Component::Actor* riding_actor = c.active_scene->getComponent<Component::Actor>(collision.first);
                 
-                bool above = *riding_col->transform.y + *riding_col->transform.h <= *col->transform.y + 1;
+                bool above = riding_col->transform.y + riding_col->transform.h <= col->transform.y + 1;
                 if (above and riding_actor->vel.y >= 0) {
                     anim->queue.push_back("pre_inactive");
                     timer->tid[0] = setTimer(timer->ms[0]);
                 }
             }
         }
-        col->transform += Vec2::j;
+        col->transform += Vec2(0,1);
     }
     
     if (checkTimer(timer->tid[0])) {

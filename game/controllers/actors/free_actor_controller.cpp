@@ -29,5 +29,5 @@ bool Controller::FreeActor::controller(Config &c, EntityID eid) {
     
     System::Actor::move(c, eid);
     
-    return actor->vel != Vec2f(0,0);
+    return actor->vel != Vec2(0.0f,0.0f);
 }
