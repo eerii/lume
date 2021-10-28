@@ -12,7 +12,7 @@ namespace Verse::Component
 {
     struct SceneTransition {
         Scene* to_scene;
-        Vec2<int> to_pos;
+        Vec2<> to_pos;
         str scene_name;
     };
 }

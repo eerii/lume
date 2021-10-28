@@ -53,7 +53,7 @@ std::vector<glm::vec4> System::Light::render(Config &c, ui8 pid) {
 void System::Light::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Light* light = s->addComponent<Component::Light>(eid);
     if (entity["light"]["pos"])
-        light->pos = entity["light"]["pos"].as<Vec2<int>>();
+        light->pos = entity["light"]["pos"].as<Vec2<>>();
     if (entity["light"]["radius"])
         light->radius = entity["light"]["radius"].as<float>();
 }

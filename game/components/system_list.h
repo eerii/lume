@@ -25,18 +25,18 @@
 namespace Verse::System
 {
     static inline void physicsUpdateSystems(Config &c) {
-        Actor::update(c);
+        /*Actor::update(c);
         Noise::update(c);
-        Camera::update(c);
+        Camera::update(c);*/
     };
 
     static inline void renderUpdateSystems(Config &c) {
-        Camera::prerender(c);
+        /*Camera::prerender(c);
         Tilemap::render(c);
         if (not c.tme_active) {
             Texture::render(c);
             Text::render(c);
             Noise::render(c);
-        }
+        }*/
     };
 }

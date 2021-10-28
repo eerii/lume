@@ -24,10 +24,10 @@ namespace Verse::Component
     struct Text {
         FontInfo* font;
         
-        Vec2<int> bitmap_size;
+        Vec2<> bitmap_size;
         
         Verse::Graphics::TextureData tex_data;
-        Rect2<int> transform;
+        Rect2<> transform;
         int layer;
         
         int line_height;

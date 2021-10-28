@@ -17,7 +17,7 @@ namespace Verse::Component
         Vec2<float> previous_pos;
         Vec2<float> render_pos;
         
-        Rect2<int> bounds;
+        Rect2<> bounds;
         
         glm::mat4 m_pixel;
         glm::mat4 m_extra;

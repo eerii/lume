@@ -30,7 +30,7 @@ void System::SceneTransition::handle(Config &c, Component::SceneTransition* tran
     handle(c, transition->to_scene, transition->to_pos);
 }
 
-void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2<int> new_pos) {
+void System::SceneTransition::handle(Config &c, Scene* new_scene, Vec2<> new_pos) {
     Scene* prev_scene = c.active_scene;
     
     if (prev_scene != new_scene) {
@@ -120,7 +120,7 @@ void System::SceneTransition::load(EntityID eid, YAML::Node &entity, Scene *s, C
         return;
     }
     transition->scene_name = entity["scene_transition"]["scene"].as<str>();
-    transition->to_pos =  entity["scene_transition"]["pos"] ? entity["scene_transition"]["pos"].as<Vec2<int>>() : Vec2(0,0);
+    transition->to_pos =  entity["scene_transition"]["pos"] ? entity["scene_transition"]["pos"].as<Vec2<>>() : Vec2(0,0);
 }
 
 //TODO: Scene transition save

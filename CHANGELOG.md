@@ -4,7 +4,11 @@
 
 ---
 
-###  **[0.2.4]** ~ Renderer API _2021-10-24_
+###  **[0.2.5]** ~ Rendering API _2021-10-26_
+
+---
+
+###  **[0.2.4]** ~ Refactoring _2021-10-26_
 
 - Cleaned up Vulkan and OpenGL APIs
 - Reworked Gui Draw Types

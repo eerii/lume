@@ -89,7 +89,7 @@ void System::Camera::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c)
     camera->bounds = Rect2(0,0,0,0);
     if (entity["camera"]["bounds"]) {
         if (entity["camera"]["bounds"].IsSequence()) {
-            camera->bounds = entity["camera"]["bounds"].as<Rect2<int>>();
+            camera->bounds = entity["camera"]["bounds"].as<Rect2<>>();
         } else {
             if (entity["camera"]["bounds"].as<str>() == "scene")
                 camera->bounds = Rect2(s->size * 0.5f, s->size);

@@ -46,7 +46,7 @@ bool System::Actor::move(Config &c, EntityID eid) {
         actor->vel.y = actor->max_fall_speed;
     
     Vec2<float> total = actor->remainder + (actor->vel + actor->extra_vel) * c.physics_delta;
-    Vec2<int> to_move = Vec2<int>(floor(total.x), floor(total.y));
+    Vec2<> to_move = Vec2<>(floor(total.x), floor(total.y));
     actor->remainder = total - to_move.to<float>();
     
     //MoveX

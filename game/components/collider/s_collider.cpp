@@ -153,7 +153,7 @@ void System::Collider::load(EntityID eid, YAML::Node &entity, struct Scene *s, C
     Component::Collider* collider = s->addComponent<Component::Collider>(eid);
     if (entity["collider"].IsMap()) {
         if (entity["collider"]["transform"])
-            collider->transform = entity["collider"]["transform"].as<Rect2<int>>();
+            collider->transform = entity["collider"]["transform"].as<Rect2<>>();
         collider->layer = System::Collider::Layers::Ground;
         if (entity["collider"]["layer"]) {
             auto it = std::find(System::Collider::layers_name.begin(),
@@ -217,7 +217,7 @@ void System::Collider::load_circle(EntityID eid, YAML::Node &entity, struct Scen
     Component::CircleCollider* collider = s->addComponent<Component::CircleCollider>(eid);
     if (entity["circle_collider"].IsMap()) {
         if (entity["circle_collider"]["pos"])
-            collider->pos = entity["circle_collider"]["pos"].as<Vec2<int>>();
+            collider->pos = entity["circle_collider"]["pos"].as<Vec2<>>();
         collider->layer = System::Collider::Layers::Ground;
         if (entity["circle_collider"]["layer"]) {
             auto it = std::find(System::Collider::layers_name.begin(),

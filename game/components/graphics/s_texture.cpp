@@ -76,11 +76,11 @@ void System::Texture::render(Config &c) {
             
             Rect2 dst = Rect2((tex->transform.pos() + tex->offset[i]), tex->transform.size());
             
-            tex->data.model = Graphics::Renderer::matModel2D(dst.pos() - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size());
+            /*tex->data.model = Graphics::Renderer::matModel2D(dst.pos() - Vec2(BORDER_WIDTH, BORDER_WIDTH), dst.size());
             tex->data.vertices = vertices;
             tex->data.layer = tex->layer[i];
             
-            Graphics::Renderer::renderTexture(c, tex->data);
+            Graphics::Renderer::renderTexture(c, tex->data);*/ //TODO: Redo
         }
     }
 }
@@ -95,7 +95,7 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     texture->res = entity["texture"]["res"].as<str>();
     Graphics::Texture::loadTexture(texture->res, texture);
     if (entity["texture"]["transform"] and entity["texture"]["transform"].IsSequence()) {
-        texture->transform = entity["texture"]["transform"].as<Rect2<int>>();
+        texture->transform = entity["texture"]["transform"].as<Rect2<>>();
     } else {
         Component::Collider* collider = s->getComponent<Component::Collider>(eid);
         if (collider == nullptr) {
@@ -109,9 +109,9 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     if (entity["texture"]["offset"]) {
         texture->offset = {};
         if (entity["texture"]["offset"].IsSequence()) {
-            texture->offset = entity["texture"]["offset"].as<std::vector<Vec2<int>>>();
+            texture->offset = entity["texture"]["offset"].as<std::vector<Vec2<>>>();
         } else {
-            texture->offset.push_back(entity["texture"]["offset"].as<Vec2<int>>());
+            texture->offset.push_back(entity["texture"]["offset"].as<Vec2<>>());
         }
     }
     if (entity["texture"]["layer"]) {

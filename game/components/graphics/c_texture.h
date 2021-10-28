@@ -13,15 +13,15 @@ namespace Verse::Component
         Verse::Graphics::TextureData data;
         str res;
         
-        Rect2<int> transform;
+        Rect2<> transform;
         bool use_collider_transform;
         
-        std::vector<Vec2<int>> offset;
+        std::vector<Vec2<>> offset;
         std::vector<int> layer;
         bool is_reversed;
         
         Texture() {
-            offset = std::vector<Vec2<int>>(1);
+            offset = std::vector<Vec2<>>(1);
             layer = std::vector<int>(1);
         };
     };

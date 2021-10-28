@@ -51,8 +51,10 @@ void game_loop_emscripten() {
 }
 #endif
 
-str Info::name = "Proxecto Lume";
-ui8 Info::version[3] = {0, 2, 4};
+str Conf::name = "Proxecto Lume";
+ui8 Conf::version[3] = {0, 2, 5};
+Vec2<> Conf::window_size = Vec2(1024, 720);
+Vec2<> Conf::resolution = Vec2(256, 180);
 
 int main(int argc, const char * argv[]) {
     
@@ -60,7 +62,6 @@ int main(int argc, const char * argv[]) {
         .resolution = Vec2(256, 180),
         .window_size = Vec2(1024, 720),
         .render_scale = 4,
-        .use_vsync = true,
         
         .timestep = 10.0,
         .game_speed = 1.0f,

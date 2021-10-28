@@ -20,7 +20,7 @@
 using namespace Verse;
 
 namespace {
-    float v[16] = {
+    /*float v[16] = {
          0.0,  1.0,  0.0,  1.0,
          1.0,  1.0,  1.0,  1.0,
          0.0,  0.0,  0.0,  0.0,
@@ -31,11 +31,11 @@ namespace {
         1.0,  1.0,
         0.0,  0.0,
         1.0,  0.0,
-    };
+    };*/
 }
 
 void System::Noise::init(Config &c, Scene *s, EntityID eid) {
-    Component::Noise* noise = s->getComponent<Component::Noise>(eid);
+    /*Component::Noise* noise = s->getComponent<Component::Noise>(eid);
     Component::Texture* tex = s->getComponent<Component::Texture>(eid);
     
     noise->size = tex->transform.size();
@@ -43,7 +43,7 @@ void System::Noise::init(Config &c, Scene *s, EntityID eid) {
     
     Math::perlinNoise(noise->size, Vec2(0,0), noise->freq, noise->levels, noise->noise_data.data(), true);
     noise->noise_tex.w = noise->size.x; noise->noise_tex.h = noise->size.y;
-    Graphics::Texture::createTexture(noise->noise_data.data(), noise->noise_tex, noise->size.x, noise->size.y, false);
+    Graphics::Texture::createTexture(noise->noise_data.data(), noise->noise_tex, noise->size.x, noise->size.y, false);*/
 }
 
 void System::Noise::update(Config &c) {
@@ -132,9 +132,9 @@ void System::Noise::render(Config &c) {
 void System::Noise::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     Component::Noise* noise = s->addComponent<Component::Noise>(eid);
     if (entity["noise"]["offset"])
-        noise->offset = entity["noise"]["offset"].as<Vec2<int>>();
+        noise->offset = entity["noise"]["offset"].as<Vec2<>>();
     if (entity["noise"]["dir"])
-        noise->dir = entity["noise"]["dir"].as<Vec2<int>>();
+        noise->dir = entity["noise"]["dir"].as<Vec2<>>();
     if (entity["noise"]["fps"])
         noise->fps = (ui8)entity["noise"]["fps"].as<int>();
     if (entity["noise"]["freq"])

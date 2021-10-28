@@ -52,3 +52,5 @@ namespace Verse::Component
         "player"
     };
 }
+
+//Use engine functions to initialize this instead of all of this!!!

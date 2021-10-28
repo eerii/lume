@@ -25,8 +25,10 @@
 using namespace Verse;
 
 namespace {
+#ifndef USE_VULKAN
     Component::Camera* prev_cam; //TODO: CHANGE
     Component::Camera* tile_cam;
+#endif
 }
 
 void System::Tilemap::init(Config &c) {
@@ -72,9 +74,10 @@ void System::Tilemap::createVertices(Config &c, Component::Tilemap* tmap) {
             dst.y += tmap->tex_size.y;
         }
         
-        tmap->tex_data[l].vertices = tmap->vert[l];
+        //TODO: Redo
+        /*tmap->tex_data[l].vertices = tmap->vert[l];
         tmap->tex_data[l].model = glm::translate(glm::mat4(1.0f), glm::vec3(-BORDER_WIDTH, -BORDER_WIDTH, 0.0f));
-        tmap->tex_data[l].layer = tmap->layer;
+        tmap->tex_data[l].layer = tmap->layer;*/
     }
 }
 
@@ -96,7 +99,7 @@ void System::Tilemap::render(Config &c) {
     }
 }
 
-Vec2<int> System::Tilemap::calculateSize(Component::Tilemap* tmap) {
+Vec2<> System::Tilemap::calculateSize(Component::Tilemap* tmap) {
     Vec2 size;
     
     size.x = (int)(tmap->tiles[0].size() * tmap->tex_size.x);
@@ -192,9 +195,9 @@ void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
                     entity["tilemap"]["res"].as<std::vector<str>>();
     Graphics::Texture::loadTexture(tilemap->res, tilemap);
     if (entity["tilemap"]["pos"])
-        tilemap->pos = entity["tilemap"]["pos"].as<Vec2<int>>();
+        tilemap->pos = entity["tilemap"]["pos"].as<Vec2<>>();
     if (entity["tilemap"]["tex_size"])
-        tilemap->tex_size = entity["tilemap"]["tex_size"].as<Vec2<int>>();
+        tilemap->tex_size = entity["tilemap"]["tex_size"].as<Vec2<>>();
     tilemap->layer = (entity["tilemap"]["layer"]) ? entity["tilemap"]["layer"].as<int>() : 0;
 }
 

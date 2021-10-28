@@ -279,7 +279,7 @@ void Controller::Player::down(Config &c, EntityID eid) {
 }
 
 void Controller::Player::respawn(Config &c) {
-    auto closest_vec = [=](Vec2<int> v1, Vec2<int> v2) -> bool {
+    auto closest_vec = [=](Vec2<> v1, Vec2<> v2) -> bool {
         return abs(v1.x - collider->transform.x) < abs(v2.x - collider->transform.x); };
     
     Vec2 closest_checkpoint = *std::min_element(c.active_scene->checkpoints.cbegin(), c.active_scene->checkpoints.cend(), closest_vec);
