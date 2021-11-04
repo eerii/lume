@@ -14,3 +14,6 @@
 [submodule "deps/implot"]
 	path = deps/implot
 	url = https://github.com/epezent/implot
+[submodule "deps/vma"]
+	path = deps/vma
+	url = https://github.com/GPUOpen-LibrariesAndSDKs/VulkanMemoryAllocator.git
