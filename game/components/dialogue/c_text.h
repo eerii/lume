@@ -1,14 +1,13 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
 #pragma once
 
-#include "dtypes.h"
+#include "r_dtypes.h"
 #include "stb_truetype_fresa.h"
-#include "r_texturedata.h"
 
-namespace Verse
+namespace Fresa
 {
     struct FontInfo {
         str path;
@@ -19,14 +18,14 @@ namespace Verse
     };
 }
 
-namespace Verse::Component
+namespace Fresa::Component
 {
     struct Text {
         FontInfo* font;
         
         Vec2<> bitmap_size;
         
-        Verse::Graphics::TextureData tex_data;
+        Fresa::Graphics::TextureData tex_data;
         Rect2<> transform;
         int layer;
         

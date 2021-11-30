@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -22,7 +22,7 @@
 #include "s_dialogue.h"
 #include "s_player.h"
 
-namespace Verse::System
+namespace Fresa::System
 {
     static inline void physicsUpdateSystems(Config &c) {
         /*Actor::update(c);

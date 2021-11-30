@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -10,7 +10,7 @@
 
 #define CAM_MOVE 200
 
-using namespace Verse;
+using namespace Fresa;
 
 bool Controller::Camera::Free::controller(Config &c, EntityID eid) {
     Component::Camera* cam = c.active_scene->getComponent<Component::Camera>(eid);

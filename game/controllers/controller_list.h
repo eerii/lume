@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -17,9 +17,9 @@
 #include "camera_actor_controller.h"
 #include "camera_free_controller.h"
 
-using namespace Verse;
+using namespace Fresa;
 
-namespace Verse
+namespace Fresa
 {
     static std::map<str, std::function<bool(Config &c, EntityID eid)>> controllers = {
         {"player", Controller::Player::controller},

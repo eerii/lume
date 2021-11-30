@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -11,7 +11,7 @@
 #define COYOTE_TIMEOUT 100
 #define GRACE_TIMEOUT 150
 
-namespace Verse::Controller::Player
+namespace Fresa::Controller::Player
 {
     bool controller(Config &c, EntityID eid);
     void move(Config &c, bool right);

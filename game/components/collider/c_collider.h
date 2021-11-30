@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -6,9 +6,8 @@
 
 #include "dtypes.h"
 #include "reflection.h"
-#include <vector>
 
-namespace Verse::Component
+namespace Fresa::Component
 {
     struct Collider {
         Serialize(Collider, transform, layer, is_colliding)

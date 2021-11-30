@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -8,13 +8,12 @@
 
 #include "s_collider.h"
 #include "s_scene_transition.h"
-#include "r_textures.h"
 #include "controller_list.h"
 
 #include "gui.h"
 #include "gui_types.h"
 
-using namespace Verse;
+using namespace Fresa;
 using namespace State;
 
 void System::Actor::update(Config &c) {
@@ -298,26 +297,26 @@ void System::Actor::gui(Config &c, EntityID eid) {
     if (actor == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(actor->vel.x, actor->vel.y, "vel", eid);
+    Fresa::Gui::draw_vec2(actor->vel.x, actor->vel.y, "vel", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(actor->remainder.x, actor->remainder.y, "remainder", eid);
-    ImGui::TableNextRow();
-    
-    Verse::Gui::draw_int(actor->max_move_speed, "max move speed", eid);
-    ImGui::TableNextRow();
-    Verse::Gui::draw_int(actor->max_fall_speed, "max fall speed", eid);
+    Fresa::Gui::draw_vec2(actor->remainder.x, actor->remainder.y, "remainder", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_int(actor->acc_ground, "acc (ground)", eid);
+    Fresa::Gui::draw_int(actor->max_move_speed, "max move speed", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_int(actor->friction_ground, "friction (ground)", eid);
-    ImGui::TableNextRow();
-    Verse::Gui::draw_int(actor->friction_air, "friction (air)", eid);
-    ImGui::TableNextRow();
-    Verse::Gui::draw_int(actor->friction_extra, "friction (extra)", eid);
+    Fresa::Gui::draw_int(actor->max_fall_speed, "max fall speed", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_bool(actor->has_gravity, "gravity", eid);
+    Fresa::Gui::draw_int(actor->acc_ground, "acc (ground)", eid);
+    ImGui::TableNextRow();
+    Fresa::Gui::draw_int(actor->friction_ground, "friction (ground)", eid);
+    ImGui::TableNextRow();
+    Fresa::Gui::draw_int(actor->friction_air, "friction (air)", eid);
+    ImGui::TableNextRow();
+    Fresa::Gui::draw_int(actor->friction_extra, "friction (extra)", eid);
+    ImGui::TableNextRow();
+    
+    Fresa::Gui::draw_bool(actor->has_gravity, "gravity", eid);
     ImGui::TableNextRow();
     
     

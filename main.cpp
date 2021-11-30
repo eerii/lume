@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -9,15 +9,13 @@
 #include "game.h"
 #include "serialization.h"
 
-#include "r_textures.h"
-
 #include "reflection.h"
 
 #ifdef __EMSCRIPTEN__
 #include "emscripten.h"
 #endif
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
     Config config;

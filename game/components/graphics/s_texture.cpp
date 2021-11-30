@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -10,14 +10,13 @@
 #include "s_animation.h"
 #include "r_renderer.h"
 #include "r_pipeline.h"
-#include "r_textures.h"
 
 #include "log.h"
 
 #include "gui.h"
 #include "gui_types.h"
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
     float v[16] = {
@@ -93,7 +92,7 @@ void System::Texture::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
         return;
     }
     texture->res = entity["texture"]["res"].as<str>();
-    Graphics::Texture::loadTexture(texture->res, texture);
+    //TEXTURE Graphics::Texture::loadTexture(texture->res, texture);
     if (entity["texture"]["transform"] and entity["texture"]["transform"].IsSequence()) {
         texture->transform = entity["texture"]["transform"].as<Rect2<>>();
     } else {
@@ -164,8 +163,8 @@ void System::Texture::gui(Config &c, EntityID eid) {
     ImGui::TableSetColumnIndex(1);
     float line_height = ImGui::GetStyle().FramePadding.y * 2.0f + ImGui::CalcTextSize("X").y;
     ImVec2 button_size = { line_height + 3.0f, line_height };
-    if (ImGui::Button("L", button_size))
-        Graphics::Texture::loadTexture(tex->res, tex);
+    // TEXTURE if (ImGui::Button("L", button_size))
+        //Graphics::Texture::loadTexture(tex->res, tex);
     
     ImGui::SameLine();
     str res_label = "##res" + std::to_string(eid);
@@ -174,13 +173,13 @@ void System::Texture::gui(Config &c, EntityID eid) {
     
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_bool(tex->use_collider_transform, "collider transform", eid);
+    Fresa::Gui::draw_bool(tex->use_collider_transform, "collider transform", eid);
     ImGui::TableNextRow();
     
     if (not tex->use_collider_transform) {
-        Verse::Gui::draw_vec2(tex->transform.x, tex->transform.y, "pos", eid);
+        Fresa::Gui::draw_vec2(tex->transform.x, tex->transform.y, "pos", eid);
         ImGui::TableNextRow();
-        Verse::Gui::draw_vec2(tex->transform.w, tex->transform.h, "size", eid);
+        Fresa::Gui::draw_vec2(tex->transform.w, tex->transform.h, "size", eid);
         ImGui::TableNextRow();
     }
     
@@ -207,10 +206,10 @@ void System::Texture::gui(Config &c, EntityID eid) {
             }
             
             str label = "offset " + std::to_string(i);
-            Verse::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label, eid);
+            Fresa::Gui::draw_vec2(tex->offset[i].x, tex->offset[i].y, label, eid);
             ImGui::TableNextRow();
             
-            Verse::Gui::draw_int(tex->layer[i], "layer " + std::to_string(i), eid);
+            Fresa::Gui::draw_int(tex->layer[i], "layer " + std::to_string(i), eid);
             ImGui::TableNextRow();
         }
         

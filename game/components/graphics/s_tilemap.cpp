@@ -1,10 +1,9 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
 #include "s_tilemap.h"
 
-#include <array>
 #include <glm/ext.hpp>
 
 #include "log.h"
@@ -12,7 +11,6 @@
 
 #include "r_pipeline.h"
 #include "r_renderer.h"
-#include "r_textures.h"
 #include "r_window.h"
 #include "stb_image.h"
 
@@ -22,7 +20,7 @@
 #include "gui_tilemap_editor.h"
 #endif
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
 #ifndef USE_VULKAN
@@ -173,7 +171,7 @@ void System::Tilemap::saveToImage(str path, std::vector<std::vector<ui8>> &tiles
         }
     }
     
-    stbi_write_png(path.c_str(), w, h, 1, data, w);
+    //TEXTURE stbi_write_png(path.c_str(), w, h, 1, data, w);
 }
 
 void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
@@ -193,7 +191,7 @@ void System::Tilemap::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c
     tilemap->res = (entity["tilemap"]["res"].IsScalar()) ?
                     std::vector<str>({entity["tilemap"]["res"].as<str>()}) :
                     entity["tilemap"]["res"].as<std::vector<str>>();
-    Graphics::Texture::loadTexture(tilemap->res, tilemap);
+    //TEXTURE Graphics::Texture::loadTexture(tilemap->res, tilemap);
     if (entity["tilemap"]["pos"])
         tilemap->pos = entity["tilemap"]["pos"].as<Vec2<>>();
     if (entity["tilemap"]["tex_size"])
@@ -275,7 +273,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
         
         button_label = "L##res" + std::to_string(i) + std::to_string(eid);
         if (ImGui::Button(button_label.c_str(), button_size)) {
-            Graphics::Texture::loadTexture(tile->res, tile);
+            //TEXTURE Graphics::Texture::loadTexture(tile->res, tile);
             System::Tilemap::createVertices(c, tile);
         }
         
@@ -284,7 +282,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
             button_label = "X##res" + std::to_string(i) + std::to_string(eid);
             if (ImGui::Button(button_label.c_str(), button_size)) {
                 tile->res.erase(tile->res.begin() + i);
-                Graphics::Texture::loadTexture(tile->res, tile);
+                //TEXTURE Graphics::Texture::loadTexture(tile->res, tile);
             }
         }
         
@@ -317,7 +315,7 @@ void System::Tilemap::gui(Config &c, EntityID eid) {
     str add_label = "add res##" + std::to_string(eid);
     if (ImGui::SmallButton(add_label.c_str())) {
         tile->res.push_back(tile->res[0]);
-        Graphics::Texture::loadTexture(tile->res, tile);
+        //TEXTURE Graphics::Texture::loadTexture(tile->res, tile);
         System::Tilemap::createVertices(c, tile);
     }
     

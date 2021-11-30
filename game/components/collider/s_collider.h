@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -6,9 +6,8 @@
 
 #include "config.h"
 #include "serialization.h"
-#include <map>
 
-namespace Verse::System::Collider
+namespace Fresa::System::Collider
 {
     using CollisionInfo = std::map<EntityID, std::bitset<MAX_COLLISION_LAYERS>>;
     using CollisionInfoPair = std::pair<EntityID, std::bitset<MAX_COLLISION_LAYERS>>;

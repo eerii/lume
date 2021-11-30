@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -18,7 +18,7 @@
 
 #include "player_controller.h"
 
-using namespace Verse;
+using namespace Fresa;
 
 void System::SceneTransition::handle(Config &c, Component::SceneTransition* transition) {
     if (transition->to_scene == nullptr) {
@@ -149,6 +149,6 @@ void System::SceneTransition::gui(Config &c, EntityID eid) {
     }
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(trans->to_pos.x, trans->to_pos.y, "new scene pos", eid);
+    Fresa::Gui::draw_vec2(trans->to_pos.x, trans->to_pos.y, "new scene pos", eid);
 #endif
 }

@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -7,7 +7,7 @@
 #include "config.h"
 #include "serialization.h"
 
-namespace Verse::System::Noise
+namespace Fresa::System::Noise
 {
     void init(Config &c, Scene *s, EntityID eid);
     void update(Config &c);

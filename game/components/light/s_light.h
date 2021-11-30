@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -7,7 +7,7 @@
 #include "config.h"
 #include "serialization.h"
 
-namespace Verse::System::Light
+namespace Fresa::System::Light
 {
     std::vector<glm::vec4> render(Config &c, ui8 pid);
 

@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -17,7 +17,7 @@
 #include "gui.h"
 #include "gui_types.h"
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
     Vec2<float> shake_vec;
@@ -134,15 +134,15 @@ void System::Camera::gui(Config &c, EntityID eid) {
     if (cam == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(cam->target_pos.x, cam->target_pos.y, "target pos", eid);
+    Fresa::Gui::draw_vec2(cam->target_pos.x, cam->target_pos.y, "target pos", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", eid);
+    Fresa::Gui::draw_vec2(cam->pos.x, cam->pos.y, "pos", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(cam->bounds.x, cam->bounds.y, "bounds pos", eid);
+    Fresa::Gui::draw_vec2(cam->bounds.x, cam->bounds.y, "bounds pos", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(cam->bounds.w, cam->bounds.h, "bounds size", eid);
+    Fresa::Gui::draw_vec2(cam->bounds.w, cam->bounds.h, "bounds size", eid);
     ImGui::TableNextRow();
     
     

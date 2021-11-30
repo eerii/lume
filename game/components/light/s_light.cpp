@@ -1,10 +1,8 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
 #include "s_light.h"
-
-#include <map>
 
 #include "game.h"
 #include "ftime.h"
@@ -16,7 +14,7 @@
 
 #define LIGHT_CENTER_RADIUS 0.25
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
     Clock::time_point start_time = time();
@@ -74,19 +72,19 @@ void System::Light::gui(Config &c, EntityID eid) {
     if (light == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(light->pos.x, light->pos.y, "pos", eid);
+    Fresa::Gui::draw_vec2(light->pos.x, light->pos.y, "pos", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_float(light->radius, "radius", eid);
+    Fresa::Gui::draw_float(light->radius, "radius", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_float(light->period, "period", eid);
+    Fresa::Gui::draw_float(light->period, "period", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_float(light->variation, "variation", eid);
+    Fresa::Gui::draw_float(light->variation, "variation", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_float(light->center_radius, "center_radius", eid);
+    Fresa::Gui::draw_float(light->center_radius, "center_radius", eid);
     ImGui::TableNextRow();
 #endif
 }

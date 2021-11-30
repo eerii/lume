@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -17,7 +17,7 @@
 
 #define MAKE_STRING(TYPE) [[maybe_unused]] static constexpr auto make_string(Types<TYPE>) { return Str{#TYPE}; };
 
-namespace Verse::State::Checkpoint
+namespace Fresa::State::Checkpoint
 {
     struct ActivateEvent {
         Scene* s;

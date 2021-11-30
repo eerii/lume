@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -9,7 +9,7 @@
 #include "gui.h"
 #include "gui_types.h"
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
     float v[16] = {
@@ -71,7 +71,7 @@ void System::Text::load(EntityID eid, YAML::Node &entity, Scene *s, Config &c) {
     
     ui8 bitmap[1] = {0};
     text->tex_data.w = 0; text->tex_data.h = 0;
-    Graphics::Texture::createTexture(bitmap, text->tex_data, false);
+    //TEXTURE Graphics::Texture::createTexture(bitmap, text->tex_data, false);
     Graphics::Font::render(text);
 }
 
@@ -105,19 +105,19 @@ void System::Text::gui(Config &c, EntityID eid) {
     if (text == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(text->transform.x, text->transform.y, "pos", eid);
+    Fresa::Gui::draw_vec2(text->transform.x, text->transform.y, "pos", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(text->transform.w, text->transform.h, "display size", eid);
+    Fresa::Gui::draw_vec2(text->transform.w, text->transform.h, "display size", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_vec2(text->bitmap_size.x, text->bitmap_size.y, "bitmap size", eid, [&text](){ Graphics::Font::render(text); });
+    Fresa::Gui::draw_vec2(text->bitmap_size.x, text->bitmap_size.y, "bitmap size", eid, [&text](){ Graphics::Font::render(text); });
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_int(text->layer, "layer", eid);
+    Fresa::Gui::draw_int(text->layer, "layer", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_int(text->line_height, "line_height", eid, [&text](){ Graphics::Font::render(text); });
+    Fresa::Gui::draw_int(text->line_height, "line_height", eid, [&text](){ Graphics::Font::render(text); });
     ImGui::TableNextRow();
     
     ImGui::TableSetColumnIndex(0);
@@ -131,10 +131,10 @@ void System::Text::gui(Config &c, EntityID eid) {
         Graphics::Font::render(text);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_float(text->r, "r", eid, [&text](){ Graphics::Font::render(text); });
+    Fresa::Gui::draw_float(text->r, "r", eid, [&text](){ Graphics::Font::render(text); });
     ImGui::TableNextRow();
-    Verse::Gui::draw_float(text->g, "g", eid, [&text](){ Graphics::Font::render(text); });
+    Fresa::Gui::draw_float(text->g, "g", eid, [&text](){ Graphics::Font::render(text); });
     ImGui::TableNextRow();
-    Verse::Gui::draw_float(text->b, "b", eid, [&text](){ Graphics::Font::render(text); });
+    Fresa::Gui::draw_float(text->b, "b", eid, [&text](){ Graphics::Font::render(text); });
 #endif
 }

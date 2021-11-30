@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -8,7 +8,7 @@
 #include <iostream>
 #include <fstream>
 
-using namespace Verse;
+using namespace Fresa;
 
 enum ReadStatus {
     WAITING_NAME,
@@ -63,7 +63,7 @@ void System::Dialogue::parse(Config &c, Component::Dialogue *dialogue, str name)
                 if (dialogue->fragments.count(curr_fragment_name) > 0)
                     log::error("Duplicated fragment in dialogue (" + path + "), " + curr_fragment_name);
                 
-                dialogue->fragments[curr_fragment_name] = Verse::Dialogue::Fragment();
+                dialogue->fragments[curr_fragment_name] = Fresa::Dialogue::Fragment();
                 rs = WAITING_END;
             }
         } else if (rs == WAITING_END) {
@@ -76,7 +76,7 @@ void System::Dialogue::parse(Config &c, Component::Dialogue *dialogue, str name)
             
             str speaker = line.substr(0, it);
             str message = line.substr(it + 2);
-            Verse::Dialogue::Statement statement(speaker, message);
+            Fresa::Dialogue::Statement statement(speaker, message);
             dialogue->fragments[curr_fragment_name].statements.push_back(statement);
             
             

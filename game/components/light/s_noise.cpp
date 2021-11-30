@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -9,7 +9,6 @@
 #include "ftime.h"
 
 #include "r_pipeline.h"
-#include "r_textures.h"
 #include "r_renderer.h"
 
 #include "fmath.h"
@@ -17,7 +16,7 @@
 #include "gui.h"
 #include "gui_types.h"
 
-using namespace Verse;
+using namespace Fresa;
 
 namespace {
     /*float v[16] = {
@@ -153,19 +152,19 @@ void System::Noise::gui(Config &c, EntityID eid) {
     if (noise == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(noise->offset.x, noise->offset.y, "offset", eid);
+    Fresa::Gui::draw_vec2(noise->offset.x, noise->offset.y, "offset", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_float(noise->freq, "freq", eid);
+    Fresa::Gui::draw_float(noise->freq, "freq", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_int(noise->levels, "levels", eid);
+    Fresa::Gui::draw_int(noise->levels, "levels", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(noise->dir.x, noise->dir.y, "dir", eid);
-    ImGui::TableNextRow();
-    
-    Verse::Gui::draw_int(noise->fps, "fps", eid);
+    Fresa::Gui::draw_vec2(noise->dir.x, noise->dir.y, "dir", eid);
     ImGui::TableNextRow();
     
-    Verse::Gui::draw_bool(noise->enabled, "enabled", eid);
+    Fresa::Gui::draw_int(noise->fps, "fps", eid);
+    ImGui::TableNextRow();
+    
+    Fresa::Gui::draw_bool(noise->enabled, "enabled", eid);
 #endif
 }

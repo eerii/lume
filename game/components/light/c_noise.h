@@ -1,19 +1,18 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
 #pragma once
 
-#include "dtypes.h"
-#include "r_texturedata.h"
+#include "r_dtypes.h"
 
-namespace Verse::Component
+namespace Fresa::Component
 {
     struct Noise {
         Vec2<> offset;
         
-        Verse::Graphics::TextureData mask_tex;
-        Verse::Graphics::TextureData noise_tex;
+        Fresa::Graphics::TextureData mask_tex;
+        Fresa::Graphics::TextureData noise_tex;
         std::vector<ui8> noise_data;
         Vec2<> size;
         

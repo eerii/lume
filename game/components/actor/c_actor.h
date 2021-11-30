@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -10,7 +10,7 @@
 
 #define MAX_COLLISION_LAYERS 16
 
-namespace Verse::Component
+namespace Fresa::Component
 {
     struct Actor {
         Vec2<float> vel;

@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -6,9 +6,9 @@
 
 #include "dtypes.h"
 
-namespace Verse { struct Scene; }
+namespace Fresa { struct Scene; }
 
-namespace Verse::Component
+namespace Fresa::Component
 {
     struct SceneTransition {
         Scene* to_scene;

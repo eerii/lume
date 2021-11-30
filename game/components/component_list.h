@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -23,7 +23,7 @@
 #include "c_dialogue.h"
 #include "c_player.h"
 
-namespace Verse::Component
+namespace Fresa::Component
 {
     using ComponentType = std::variant<Component::Collider,
                                        Component::CircleCollider,

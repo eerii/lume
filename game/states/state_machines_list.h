@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -27,14 +27,14 @@
                         {"checkpoint", false} \
                     }
 
-namespace Verse
+namespace Fresa
 {
     using StateType = std::variant<State::Player::JumpSM,
                                    State::Player::MoveSM,
                                    State::Checkpoint::CheckpointSM>;
 }
 
-namespace Verse::State
+namespace Fresa::State
 {
     template <typename State>
     str getCurrentState(State state) {

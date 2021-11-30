@@ -1,4 +1,4 @@
-//project verse, 2017-2021
+//project fresa, 2017-2022
 //by jose pazos perez
 //all rights reserved uwu
 
@@ -12,7 +12,7 @@
 #include "gui.h"
 #include "gui_types.h"
 
-using namespace Verse;
+using namespace Fresa;
 
 std::vector<System::Collider::CollisionTypeAndID> System::Collider::checkObjectCollisions(Config &c, EntityID eid) {
     Component::Collider* collider = c.active_scene->getComponent<Component::Collider>(eid);
@@ -198,9 +198,9 @@ void System::Collider::gui(Config &c, EntityID eid) {
     if (col == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(col->transform.x, col->transform.y, "pos", eid);
+    Fresa::Gui::draw_vec2(col->transform.x, col->transform.y, "pos", eid);
     ImGui::TableNextRow();
-    Verse::Gui::draw_vec2(col->transform.w, col->transform.h, "size", eid);
+    Fresa::Gui::draw_vec2(col->transform.w, col->transform.h, "size", eid);
     ImGui::TableNextRow();
     
     ImGui::TableSetColumnIndex(0);
@@ -250,11 +250,11 @@ void System::Collider::gui_circle(Config &c, EntityID eid) {
     if (col == nullptr)
         return;
     
-    Verse::Gui::draw_vec2(col->pos.x, col->pos.y, "pos", eid);
+    Fresa::Gui::draw_vec2(col->pos.x, col->pos.y, "pos", eid);
     ImGui::TableNextRow();
     
     int radius = col->radius;
-    Verse::Gui::draw_int(radius, "radius", eid);
+    Fresa::Gui::draw_int(radius, "radius", eid);
     col->radius = radius;
     ImGui::TableNextRow();
     
